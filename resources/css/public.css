@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../views';
+
+@theme {
+    --color-amc-blue: #00203f;
+    --color-amc-blue-dark: #001a33;
+    --color-amc-orange: #f37b12;
+    --color-amc-orange-hover: #d96c0f;
+    --color-amc-gray-text: #6b7280;
+    --color-amc-gray-bg: #f9fafb;
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@layer components {
+    .hero-gradient {
+        background: linear-gradient(90deg, rgb(0 32 63) 0%, rgb(0 32 63 / 0.8) 40%, rgb(0 32 63 / 0) 100%);
+    }
+
+    .service-card-gradient {
+        background: linear-gradient(to top, rgb(0 32 63 / 0.9) 0%, rgb(0 32 63 / 0.6) 40%, rgb(0 32 63 / 0) 100%);
+    }
+
+    .grayscale-hover {
+        filter: grayscale(100%);
+        transition: filter 0.3s ease;
+
+        &:hover {
+            filter: grayscale(0%);
+        }
+    }
+}
