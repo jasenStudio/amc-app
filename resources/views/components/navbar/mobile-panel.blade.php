@@ -16,11 +16,26 @@
     </div>
 
     <nav aria-label="{{ __('Navegación móvil') }}" class="flex flex-col gap-2 px-6 py-6">
-        <x-navbar.link href="{{ route('home') }}" :label="__('Inicio')" :active="request()->routeIs('home')" />
-        <x-navbar.link :label="__('Servicios')" />
-        <x-navbar.link :label="__('Nosotros')" />
-        <x-navbar.link :label="__('Contacto')" />
-        <x-navbar.cta />
+        @if (request()->routeIs('home'))
+            <x-navbar.link href="#hero" :label="__('Inicio')" section="hero" />
+        @else
+            <x-navbar.link :href="route('home')" :label="__('Inicio')" />
+        @endif
+        <x-navbar.dropdown
+            href="{{ route('home') }}#about"
+            :label="__('Nosotros')"
+            :active="request()->routeIs('about', 'about.*')"
+            variant="mobile"
+            :items="[
+                ['label' => __('Visión'), 'href' => route('about.vision'), 'active' => request()->routeIs('about.vision')],
+                ['label' => __('Misión'), 'href' => route('about.mission'), 'active' => request()->routeIs('about.mission')],
+            ]"
+        />
+        <x-navbar.link href="{{ route('home') }}#services" :label="__('Servicios')" section="services" />
+        <x-navbar.link href="{{ route('home') }}#projects" :label="__('Proyectos')" section="projects" />
+        <x-navbar.link href="{{ route('home') }}#blog" :label="__('Blog')" section="blog" />
+        <x-navbar.link href="{{ route('home') }}#contact" :label="__('Contacto')" section="contact" />
+        <x-navbar.cta href="{{ route('projects') }}" />
     </nav>
 </div>
 

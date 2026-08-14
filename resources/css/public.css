@@ -15,7 +15,25 @@
     --font-sans: 'Inter', system-ui, sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+main section[id] {
+    scroll-margin-top: 6rem;
+}
+
 @layer components {
+    [x-cloak] {
+        display: none !important;
+    }
+
     .hero-gradient {
         background: linear-gradient(90deg, rgb(0 32 63) 0%, rgb(0 32 63 / 0.8) 40%, rgb(0 32 63 / 0) 100%);
     }

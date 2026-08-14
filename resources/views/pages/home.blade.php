@@ -3,29 +3,50 @@
     <x-header />
 
     <main>
-        <section class="relative isolate overflow-hidden bg-amc-blue">
-            <div
-                class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2200&q=80')] bg-cover bg-center grayscale-hover">
-            </div>
+        <section class="relative isolate overflow-hidden bg-amc-blue" id="hero">
+            <picture>
+                <!-- 1. Imagen para pantallas pequeñas (Móviles) hasta 767px -->
+                <source media="(max-width: 767px)" srcset="{{ asset('assets/images/hero-amc-gestion-riesgo.webp') }}">
+
+                <!-- 2. Imagen para pantallas medianas/grandes (Desktop) desde 768px -->
+                <source media="(min-width: 768px)" srcset="{{ asset('assets/images/hero-acm-desktop.webp') }}">
+
+                <!-- 3. Etiqueta img de respaldo (aplica los estilos CSS y atributos de prioridad) -->
+                <img src="{{ asset('assets/images/hero-acm-desktop.webp') }}"
+                    alt="Técnico de AMC Gestión de Riesgos realizando trabajo en altura con anclaje certificado"
+                    fetchpriority="high"
+                    class="absolute inset-0 h-full w-full object-cover object-[70%_20%] md:object-[80%_10%] grayscale-15">
+            </picture>
+
+            <img src="{{ asset('assets/images/hero-acm-desktop.webp') }}"
+                alt="Técnico de AMC Gestión de Riesgos realizando trabajo en altura con anclaje certificado"
+                fetchpriority="high"
+                class="absolute inset-0 h-full w-full object-cover object-[70%_10%] md:object-[80%_10%] 
+                grayscale-15 
+                ">
+
             <div class="hero-gradient absolute inset-0"></div>
             <div class="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 py-24 lg:px-8">
                 <div class="max-w-2xl text-white">
                     <p class="mb-6 text-sm font-semibold uppercase tracking-[0.24em] text-amc-orange">
-                        {{ __('Welcome to AMC') }}</p>
+                        {{ __('Certificación ONAC / Res. 4272') }}</p>
                     <h1 class="text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
-                        {{ __('Ideas that move your business forward.') }}
+                        {{ __('Protegemos vidas mediante') }}
+                        <span class="text-amc-orange">
+                            {{ __('soluciones certificadas.') }}
+                        </span>
                     </h1>
                     <p class="mt-6 max-w-xl text-lg leading-8 text-white/80">
-                        {{ __('We combine strategy, design, and technology to build digital experiences that create lasting impact.') }}
+                        {{ __('La seguridad de su equipo es nuestra mayor responsabilidad.') }}
                     </p>
                     <div class="mt-10 flex flex-wrap items-center gap-4">
                         <a href="#services"
-                            class="rounded-full bg-amc-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover">
-                            {{ __('Explore services') }}
+                            class="rounded-md bg-amc-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover">
+                            {{ __('Solicitar acesoría') }}
                         </a>
                         <a href="#contact"
-                            class="rounded-full border border-white/50 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10">
-                            {{ __('Start a conversation') }}
+                            class="rounded-md border border-white/50 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10">
+                            {{ __('Ver portafolio') }}
                         </a>
                     </div>
                 </div>
@@ -45,6 +66,10 @@
                     </p>
                     <p>{{ __('Our approach is collaborative, practical, and built around outcomes that matter to your team and your audience.') }}
                     </p>
+                    <a href="{{ route('about') }}"
+                        class="inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                        {{ __('Conoce más sobre nosotros') }} <span aria-hidden="true">&rarr;</span>
+                    </a>
                 </div>
             </div>
         </section>
@@ -70,6 +95,40 @@
                     </article>
                 @endforeach
             </div>
+            <a href="{{ route('services') }}"
+                class="mt-10 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                {{ __('Ver todos los servicios') }} <span aria-hidden="true">&rarr;</span>
+            </a>
+        </section>
+
+        <section id="projects" class="bg-amc-gray-bg">
+            <div class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Projects') }}</p>
+                <h2 class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
+                    {{ __('Selected work and practical results.') }}
+                </h2>
+                <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
+                    {{ __('Explore projects where strategy, design, and delivery came together to create measurable progress.') }}
+                </p>
+                <a href="{{ route('projects') }}"
+                    class="mt-8 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                    {{ __('Ver proyectos') }} <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="blog" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Blog') }}</p>
+            <h2 class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
+                {{ __('Ideas for moving forward.') }}
+            </h2>
+            <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
+                {{ __('Read our latest perspectives, practical guides, and lessons from the work we do.') }}
+            </p>
+            <a href="{{ route('blog') }}"
+                class="mt-8 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                {{ __('Ir al blog') }} <span aria-hidden="true">&rarr;</span>
+            </a>
         </section>
 
         <section id="contact" class="bg-amc-blue text-white">
