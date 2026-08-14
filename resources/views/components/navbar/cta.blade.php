@@ -1,0 +1,7 @@
+<a
+    href="#"
+    @click="open = false"
+    class="rounded-md bg-amc-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue"
+>
+    {{ __('Portafolio') }}
+</a>
