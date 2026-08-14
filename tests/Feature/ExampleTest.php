@@ -15,7 +15,8 @@ class ExampleTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Ideas that move your business forward.')
+            ->assertSee('Protegemos vidas mediante')
+            ->assertSee('soluciones certificadas')
             ->assertSee('amc-blue')
             ->assertDontSee('flux:')
             ->assertDontSee('dark:');
