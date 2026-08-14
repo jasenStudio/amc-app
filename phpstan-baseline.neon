@@ -1,0 +1,5 @@
+parameters:
+    ignoreErrors:
+        -
+            message: '#^Trait App\\Concerns\\ProfileValidationRules is used zero times and is not analysed\.$#'
+            path: app/Concerns/ProfileValidationRules.php
