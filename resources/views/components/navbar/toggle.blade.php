@@ -1,6 +1,6 @@
 <button
     type="button"
-    class="rounded-md p-2 text-white transition-colors hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue md:hidden"
+    class="rounded-md p-2 text-white transition-colors hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue lg:hidden"
     @click="open = !open"
     :aria-expanded="open.toString()"
     aria-controls="mobile-navigation"

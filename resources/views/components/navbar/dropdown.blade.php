@@ -1,4 +1,4 @@
-@props(['label', 'href' => '#', 'items' => [], 'active' => false, 'variant' => 'desktop'])
+@props(['label', 'href' => '#', 'items' => [], 'active' => false, 'variant' => 'desktop', 'section' => null])
 
 @php
     $dropdownId = 'navbar-dropdown-' . \Illuminate\Support\Str::slug($label) . '-' . $variant;
@@ -8,9 +8,12 @@
 <div x-data="{ dropdownOpen: {{ $active ? 'true' : 'false' }} }" @keydown.escape.stop="dropdownOpen = false" @click.outside="dropdownOpen = false"
     class="relative {{ $variant === 'mobile' ? 'w-full' : '' }}">
     <div class="flex items-center gap-2">
-        <a href="{{ $href }}" @if ($active) aria-current="page" @endif
+        <a href="{{ $href }}"
+            @if ($active && ! $section) aria-current="page" @endif
+            @if ($section) x-bind:aria-current="activeSection === '{{ $section }}' || {{ $active ? 'true' : 'false' }} ? 'page' : null" @endif
             @if ($variant === 'mobile') @click="$dispatch('navbar-close')" @endif
-            class="flex-1 rounded-sm px-1 py-2 text-sm font-medium transition-colors hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue {{ $active ? 'text-amc-orange' : 'text-white/90' }}">
+            class="flex-1 rounded-sm px-1 py-2 text-sm font-medium transition-colors hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue {{ ! $section && $active ? 'text-amc-orange' : 'text-white/90' }}"
+            @if ($section) x-bind:class="{ 'text-amc-orange': activeSection === '{{ $section }}' || {{ $active ? 'true' : 'false' }}, 'text-white/90': activeSection !== '{{ $section }}' && {{ $active ? 'false' : 'true' }} }" @endif>
             {{ $label }}
         </a>
         <button id="{{ $buttonId }}" type="button" @click="dropdownOpen = !dropdownOpen"
