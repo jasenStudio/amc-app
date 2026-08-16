@@ -8,6 +8,7 @@
         href="{{ route('home') }}#about"
         :label="__('Nosotros')"
         :active="request()->routeIs('about', 'about.*')"
+        section="about"
         :items="[
             ['label' => __('Visión'), 'href' => route('about.vision'), 'active' => request()->routeIs('about.vision')],
             ['label' => __('Misión'), 'href' => route('about.mission'), 'active' => request()->routeIs('about.mission')],
