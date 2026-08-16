@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "icons:sync": "cp node_modules/lucide-static/icons/{lightbulb,pencil-ruler,rocket,mail,settings,trending-up,user-check}.svg resources/svg/"
     },
     "dependencies": {
         "@tailwindcss/forms": "^0.5.11",
@@ -19,5 +20,8 @@
         "@rollup/rollup-linux-x64-gnu": "4.9.5",
         "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
         "lightningcss-linux-x64-gnu": "^1.29.1"
+    },
+    "devDependencies": {
+        "lucide-static": "^1.31.0"
     }
 }
