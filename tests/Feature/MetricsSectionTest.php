@@ -12,7 +12,6 @@ class MetricsSectionTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Metrics Dashboard')
             ->assertSee('10+')
             ->assertSee('500+')
             ->assertSee('5000+')

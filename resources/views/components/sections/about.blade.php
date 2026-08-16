@@ -34,10 +34,7 @@
             <img src="{{ asset('assets/images/' . $image) }}" width="768" height="512" alt="{{ $imageAlt }}"
                 loading="lazy" decoding="async" class="aspect-4/3 w-full object-cover scale-125 origin-[83%_35%]">
         </figure>
-
-
         <div class="order-2">
-
             <h2 id="nosotros-title" class="mb-6 max-w-2xl font-serif text-2xl italic text-amc-blue md:text-4xl">
                 {{ $title }}
             </h2>

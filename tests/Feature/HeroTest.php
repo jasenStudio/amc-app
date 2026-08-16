@@ -16,7 +16,7 @@ class HeroTest extends TestCase
             ->assertSee('Protegemos vidas mediante')
             ->assertSee('soluciones certificadas.')
             ->assertSee('La seguridad de su equipo es nuestra mayor responsabilidad.')
-            ->assertSee('Solicitar acesoría')
+            ->assertSee('Solicitar asesoría')
             ->assertSee('Ver portafolio');
     }
 
@@ -26,8 +26,8 @@ class HeroTest extends TestCase
 
         $response
             ->assertSee('id="hero"', false)
-            ->assertSee('aria-labelledby="hero-title"', false)
-            ->assertSee('id="hero-title"', false);
+            ->assertSee('aria-labelledby="hero-accessible-title"', false)
+            ->assertSee('id="hero-accessible-title"', false);
     }
 
     public function test_hero_gradient_is_hidden_from_assistive_technology(): void

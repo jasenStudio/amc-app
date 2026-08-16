@@ -11,10 +11,10 @@
 
         <x-sections.about />
 
-        <section id="services" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
+        <section id="services" aria-labelledby="services-title" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
             <div class="max-w-2xl">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('What we do') }}</p>
-                <h2 class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
+                <h2 id="services-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                     {{ __('Services designed around progress.') }}</h2>
             </div>
 
@@ -38,10 +38,10 @@
             </a>
         </section>
 
-        <section id="projects" class="bg-amc-gray-bg">
+        <section id="projects" aria-labelledby="projects-title" class="bg-amc-gray-bg">
             <div class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Projects') }}</p>
-                <h2 class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
+                <h2 id="projects-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                     {{ __('Selected work and practical results.') }}
                 </h2>
                 <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
@@ -54,9 +54,9 @@
             </div>
         </section>
 
-        <section id="blog" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
+        <section id="blog" aria-labelledby="blog-title" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Blog') }}</p>
-            <h2 class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
+            <h2 id="blog-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                 {{ __('Ideas for moving forward.') }}
             </h2>
             <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
@@ -68,13 +68,13 @@
             </a>
         </section>
 
-        <section id="contact" class="bg-amc-blue text-white">
+        <section id="contact" aria-labelledby="contact-title" class="bg-amc-blue text-white">
             <div
                 class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-24 sm:flex-row sm:items-end sm:justify-between lg:px-8">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Contact') }}
                     </p>
-                    <h2 class="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
+                    <h2 id="contact-title" class="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
                         {{ __('Have a project in mind? Let us talk.') }}</h2>
                 </div>
                 <a href="mailto:hello@example.com"

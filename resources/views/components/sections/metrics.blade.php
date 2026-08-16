@@ -9,6 +9,7 @@
 
 <section id="metrics" aria-labelledby="metrics-title" class="bg-amc-gray-bg">
     <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
+        <h2 id="metrics-title" class="sr-only">{{ __('Indicadores AMC') }}</h2>
         <div class="grid gap-x-6 grid-cols-2 md:grid-cols-4">
             @foreach ($items as $item)
                 <article class="flex flex-col items-center p-6 text-center">
