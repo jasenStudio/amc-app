@@ -14,9 +14,11 @@ class ServicesController extends Controller
 
     public function show(string $slug): View
     {
-        $service = collect(config('services.items'))->firstWhere('slug', $slug);
+        $items = config('services.items');
 
-        if ($service === null) {
+        $service = is_array($items) ? collect($items)->firstWhere('slug', $slug) : null;
+
+        if (! is_array($service)) {
             throw new NotFoundHttpException;
         }
 
