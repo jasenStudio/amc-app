@@ -9,7 +9,8 @@
         <p class="mt-6 max-w-2xl text-lg leading-8 text-amc-gray-text">
             {{ __('Our mission is to combine strategy, design, and technology to create outcomes that matter.') }}
         </p>
-        <a href="{{ route('about') }}" class="mt-8 inline-flex font-semibold text-amc-orange hover:text-amc-orange-hover">
+        <a href="{{ route('home') }}/#about"
+            class="mt-8 inline-flex font-semibold text-amc-orange hover:text-amc-orange-hover">
             {{ __('Volver a nosotros') }} <span aria-hidden="true">&larr;</span>
         </a>
     </main>
