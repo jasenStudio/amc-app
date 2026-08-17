@@ -79,7 +79,7 @@ class NavbarTest extends TestCase
 
     public function test_placeholder_pages_are_navigable(): void
     {
-        foreach (['services', 'projects', 'blog', 'about', 'about.vision', 'about.mission'] as $routeName) {
+        foreach (['services', 'projects', 'blog', 'about.vision', 'about.mission'] as $routeName) {
             $this->get(route($routeName))->assertOk();
         }
     }

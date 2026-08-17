@@ -8,7 +8,7 @@ class AboutSectionTest extends TestCase
 {
     public function test_about_page_renders_the_about_section(): void
     {
-        $response = $this->get(route('about'));
+        $response = $this->get(route('home'));
 
         $response
             ->assertOk()
@@ -20,7 +20,7 @@ class AboutSectionTest extends TestCase
 
     public function test_about_section_exposes_accessible_structure(): void
     {
-        $response = $this->get(route('about'));
+        $response = $this->get(route('home'));
 
         $response
             ->assertSee('id="about"', false)
