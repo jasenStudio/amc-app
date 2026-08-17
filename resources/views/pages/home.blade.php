@@ -11,32 +11,7 @@
 
         <x-sections.about />
 
-        <section id="services" aria-labelledby="services-title" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <div class="max-w-2xl">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('What we do') }}</p>
-                <h2 id="services-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
-                    {{ __('Services designed around progress.') }}</h2>
-            </div>
-
-            <div class="mt-12 grid gap-6 md:grid-cols-3">
-                @foreach ([['icon' => 'lightbulb', 'title' => __('Strategy'), 'description' => __('Find the right direction, clarify priorities, and create a plan your team can act on.')], ['icon' => 'pencil-ruler', 'title' => __('Design'), 'description' => __('Shape intuitive experiences that make your brand useful, distinctive, and easy to trust.')], ['icon' => 'rocket', 'title' => __('Delivery'), 'description' => __('Move from idea to launch with thoughtful technology and a pragmatic delivery process.')]] as $service)
-                    <article class="group relative min-h-80 overflow-hidden rounded-2xl bg-amc-blue p-8 text-white">
-                        <div
-                            class="absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 service-card-gradient">
-                        </div>
-                        <div class="relative flex h-full flex-col">
-                            <x-icon :name="$service['icon']" class="size-8 text-amc-orange" aria-hidden="true" />
-                            <h3 class="mt-auto text-2xl font-semibold">{{ $service['title'] }}</h3>
-                            <p class="mt-3 leading-7 text-white/70">{{ $service['description'] }}</p>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-            <a href="{{ route('services') }}"
-                class="mt-10 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
-                {{ __('Ver todos los servicios') }} <span aria-hidden="true">&rarr;</span>
-            </a>
-        </section>
+        <x-sections.services />
 
         <section id="projects" aria-labelledby="projects-title" class="bg-amc-gray-bg">
             <div class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
