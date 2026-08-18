@@ -44,7 +44,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model has two-factor authentication configured.
+     * Indicate that the user has two-factor authentication configured.
      */
     public function withTwoFactor(): static
     {
@@ -52,6 +52,26 @@ class UserFactory extends Factory
             'two_factor_secret' => encrypt('secret'),
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1', 'recovery-code-2'])),
             'two_factor_confirmed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Indicate that the user has the admin role.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role' => 'admin',
+        ]);
+    }
+
+    /**
+     * Indicate that the user has the editor role.
+     */
+    public function editor(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role' => 'editor',
         ]);
     }
 }

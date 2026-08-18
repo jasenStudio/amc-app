@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
+@plugin '@tailwindcss/typography';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -22,6 +23,10 @@
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
+
+    --color-amc-blue: #00203f;
+    --color-amc-orange: #f37b12;
+    --color-amc-orange-hover: #d96c0f;
 
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
@@ -59,6 +64,18 @@ input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+[data-tiptap-target="toolbar"] button.is-active {
+    @apply bg-white text-zinc-900 ring-1 ring-inset ring-zinc-900;
+}
+
+.dark [data-tiptap-target="toolbar"] button.is-active {
+    @apply bg-zinc-100 text-zinc-900 ring-1 ring-inset ring-zinc-900;
+}
+
+[data-tiptap-target="toolbar"] button:focus-visible {
+    @apply outline-none ring-2 ring-zinc-900 dark:ring-zinc-100;
 }
 
 /* \[:where(&)\]:size-4 {

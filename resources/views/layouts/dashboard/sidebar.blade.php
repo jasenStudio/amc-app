@@ -15,6 +15,11 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    @can('manage-posts')
+                        <flux:sidebar.item icon="newspaper" :href="route('blog.index')" :current="request()->routeIs('blog.*')" wire:navigate>
+                            {{ __('Blog') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

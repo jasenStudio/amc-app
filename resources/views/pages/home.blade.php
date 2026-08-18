@@ -37,6 +37,7 @@
             <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
                 {{ __('Read our latest perspectives, practical guides, and lessons from the work we do.') }}
             </p>
+            <livewire:blog.featured-posts />
             <a href="{{ route('blog') }}"
                 class="mt-8 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
                 {{ __('Ir al blog') }} <span aria-hidden="true">&rarr;</span>

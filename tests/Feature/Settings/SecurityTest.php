@@ -31,6 +31,9 @@ class SecurityTest extends TestCase
 
     public function test_security_settings_page_renders_without_two_factor_when_feature_is_disabled(): void
     {
+
+        app()->setLocale('en');
+
         config(['fortify.features' => []]);
 
         $user = User::factory()->create();

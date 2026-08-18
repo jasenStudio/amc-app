@@ -1,8 +1,5 @@
-import Alpine from "alpinejs";
 import navbar from "./alpine/navbar";
 
-window.Alpine = Alpine;
-
-Alpine.data("navbar", navbar);
-
-Alpine.start();
+document.addEventListener("alpine:init", () => {
+    window.Alpine.data("navbar", navbar);
+});
