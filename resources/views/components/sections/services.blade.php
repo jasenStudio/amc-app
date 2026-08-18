@@ -10,7 +10,7 @@
             {{ $title }}
         </h2>
         <a href="{{ route('services') }}"
-            class="inline-flex shrink-0 items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange underline underline-offset-4 transition hover:text-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
+            class="inline-flex shrink-0 items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text underline underline-offset-4 transition hover:text-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
             {{ $viewAllLabel }}
             <span aria-hidden="true">&rarr;</span>
         </a>

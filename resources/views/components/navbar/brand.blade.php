@@ -1,4 +1,4 @@
-<a href="{{ route('home') }}" aria-label="{{ __('AMC, ir al inicio') }}"
+<a href="{{ route('home') }}" aria-label="{{ __('AMC Gestión de Riesgos SAS, ir al inicio') }}"
     class="flex justify-center items-center shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
     <img src="{{ asset('assets/images/logo.webp') }}" class="w-10 sm:w-8 md:w-10 lg:w-12 me-3"
         alt="Logo AMC Gestion del riesgo" />

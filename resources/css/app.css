@@ -102,13 +102,14 @@ select:focus[data-flux-control] {
 
 [data-resize-wrapper] img {
     @apply max-w-full;
+    margin-block: 15px;
 }
 
 [data-resize-handle] {
     @apply absolute z-10;
     width: 12px;
     height: 12px;
-    background-color: #00203f;
+    background-color: white;
     border: 2px solid white;
     border-radius: 2px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
@@ -133,18 +134,19 @@ select:focus[data-flux-control] {
 [data-resize-handle="top"],
 [data-resize-handle="bottom"] {
     cursor: ns-resize;
-    width: 24px;
-    height: 8px;
-    left: 50%;
+    width: 12px;
+    height: 12px;
+    left: 50%; 
     transform: translateX(-50%);
 }
 
 [data-resize-handle="left"],
 [data-resize-handle="right"] {
     cursor: ew-resize;
-    width: 8px;
-    height: 24px;
+    width: 12px;
+    height: 12px;
     top: 50%;
+    background-color: white;
     transform: translateY(-50%);
 }
 

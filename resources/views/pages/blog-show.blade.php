@@ -8,7 +8,7 @@
 
     <main class="mx-auto max-w-3xl px-6 py-24 lg:px-8">
         <a href="{{ route('blog') }}"
-            class="mb-8 inline-flex text-sm font-medium text-amc-orange hover:text-amc-orange-hover transition">
+            class="mb-8 inline-flex text-sm font-medium text-amc-orange-text hover:text-amc-orange-hover transition">
             &larr; {{ __('Back to blog') }}
         </a>
 
@@ -16,7 +16,7 @@
             <div class="mb-4 flex flex-wrap gap-2">
                 @foreach ($post->tags as $tag)
                     <a href="{{ route('blog', ['tag' => $tag->slug]) }}"
-                        class="rounded-full bg-amc-orange/10 px-3 py-1 text-xs font-medium text-amc-orange hover:bg-amc-orange/20 transition">
+                        class="rounded-full bg-amc-orange/10 px-3 py-1 text-xs font-medium text-amc-orange-text hover:bg-amc-orange/20 transition">
                         {{ $tag->name }}
                     </a>
                 @endforeach
@@ -49,7 +49,7 @@
                 class="mt-8 w-full rounded-lg object-cover" loading="lazy">
         @endif
 
-        <article class="prose dark:prose-invert prose-amc mt-12 max-w-none text-amc-blue/80">
+        <article class="prose article-prose-content dark:prose-invert prose-amc mt-5 max-w-none text-amc-blue/80">
             {!! $post->body !!}
         </article>
     </main>

@@ -83,7 +83,8 @@
                             :class="{ 'opacity-50 pointer-events-none': !isImage }"
                             class="rounded px-2 py-1 text-sm hover:bg-white dark:hover:bg-zinc-700"
                             aria-label="Editar alt de imagen">Alt</button>
-                        <span x-show="isImage" class="mx-0.5 inline-flex items-center gap-0.5 rounded bg-zinc-100 px-1 py-0.5 text-xs dark:bg-zinc-700">
+                        <span x-show="isImage"
+                            class="mx-0.5 inline-flex items-center gap-0.5 rounded bg-zinc-100 px-1 py-0.5 text-xs dark:bg-zinc-700">
                             <button type="button" data-cmd="set-image-align-left"
                                 :class="{ 'is-active': imageAlign === 'left' }"
                                 :aria-pressed="imageAlign === 'left'"
@@ -219,10 +220,10 @@
                         @endif
 
                         <flux:input wire:model="cover_upload" type="file" accept="image/png,image/jpeg,image/webp"
-                            :label="__('Upload new')" data-test="cover-upload" />
+                            :label="__('Upload new')" data-test="cover-upload" class="max-w-[320px] text-zinc-300" />
 
                         @if ($cover_upload)
-                            <p class="text-xs text-zinc-500">
+                            <p class="text-xs text-zinc-300">
                                 {{ __('New cover will replace the current one on save.') }}</p>
                         @endif
                     </div>

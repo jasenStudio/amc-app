@@ -3,7 +3,7 @@
     <picture>
         <source media="(max-width: 767px)" srcset="{{ asset('assets/images/hero-amc-gestion-riesgo.webp') }}">
         <source media="(min-width: 768px)" srcset="{{ asset('assets/images/hero-amc-desktop.webp') }}">
-        <img src="{{ asset('assets/images/hero-amc-desktop.webp') }}"
+        <img src="{{ asset('assets/images/hero-seguridad-trabajo-alturas-amc.webp') }}"
             alt="Técnico de AMC Gestión de Riesgos realizando trabajo en altura con anclaje certificado"
             fetchpriority="high"
             class="absolute inset-0 h-full w-full object-cover object-[70%_20%] md:object-[80%_10%] grayscale-15">
@@ -29,7 +29,7 @@
             </p>
             <div class="mt-10 flex flex-wrap items-center gap-4">
                 <a href="#services"
-                    class="rounded-md bg-amc-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
+                    class="rounded-md bg-amc-orange-text px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
                     {{ __('Solicitar asesoría') }}
                 </a>
                 <a href="#contact"

@@ -3,7 +3,7 @@
 
     <main>
         <section aria-labelledby="services-page-title" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Servicios') }}</p>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Servicios') }}</p>
             <h1 id="services-page-title" class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
                 {{ __('Soluciones para trabajar con más seguridad.') }}
             </h1>

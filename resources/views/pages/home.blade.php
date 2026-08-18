@@ -15,7 +15,7 @@
 
         <section id="projects" aria-labelledby="projects-title" class="bg-amc-gray-bg">
             <div class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Projects') }}</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Projects') }}</p>
                 <h2 id="projects-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                     {{ __('Selected work and practical results.') }}
                 </h2>
@@ -23,14 +23,14 @@
                     {{ __('Explore projects where strategy, design, and delivery came together to create measurable progress.') }}
                 </p>
                 <a href="{{ route('projects') }}"
-                    class="mt-8 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                    class="mt-8 inline-flex text-base font-semibold text-amc-orange-text transition hover:text-amc-orange-hover">
                     {{ __('Ver proyectos') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>
         </section>
 
         <section id="blog" aria-labelledby="blog-title" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Blog') }}</p>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Blog') }}</p>
             <h2 id="blog-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                 {{ __('Ideas for moving forward.') }}
             </h2>
@@ -39,7 +39,7 @@
             </p>
             <livewire:blog.featured-posts />
             <a href="{{ route('blog') }}"
-                class="mt-8 inline-flex text-base font-semibold text-amc-orange transition hover:text-amc-orange-hover">
+                class="mt-8 inline-flex text-base font-semibold text-amc-orange-text transition hover:text-amc-orange-hover">
                 {{ __('Ir al blog') }} <span aria-hidden="true">&rarr;</span>
             </a>
         </section>
@@ -48,13 +48,13 @@
             <div
                 class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-24 sm:flex-row sm:items-end sm:justify-between lg:px-8">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Contact') }}
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Contact') }}
                     </p>
                     <h2 id="contact-title" class="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
                         {{ __('Have a project in mind? Let us talk.') }}</h2>
                 </div>
                 <a href="mailto:hello@example.com"
-                    class="shrink-0 rounded-full bg-amc-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover">
+                    class="shrink-0 rounded-full bg-amc-orange-text px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover">
                     hello@example.com
                 </a>
             </div>

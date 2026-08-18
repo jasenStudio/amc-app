@@ -2,8 +2,9 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
 
-new #[Title('Appearance settings')] class extends Component {
+new #[Layout('layouts::dashboard', ['title' => 'Appearance settings'])] class extends Component {
     //
 }; ?>
 

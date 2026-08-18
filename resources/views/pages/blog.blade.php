@@ -2,7 +2,7 @@
     <x-header />
 
     <main class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange">{{ __('Blog') }}</p>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Blog') }}</p>
         <h1 class="mt-4 text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
             {{ __('Ideas for moving forward.') }}
         </h1>
@@ -13,12 +13,12 @@
         @if ($tags->isNotEmpty())
             <div class="mt-8 flex flex-wrap gap-2">
                 <a href="{{ route('blog') }}"
-                    class="rounded-full px-3 py-1 text-sm font-medium transition {{ $activeTag === null ? 'bg-amc-orange text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700' }}">
+                    class="rounded-full px-3 py-1 text-sm font-medium transition {{ $activeTag === null ? 'bg-amc-orange-text text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700' }}">
                     {{ __('All') }}
                 </a>
                 @foreach ($tags as $tag)
                     <a href="{{ route('blog', ['tag' => $tag->slug]) }}"
-                        class="rounded-full px-3 py-1 text-sm font-medium transition {{ $activeTag === $tag->slug ? 'bg-amc-orange text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700' }}">
+                        class="rounded-full px-3 py-1 text-sm font-medium transition {{ $activeTag === $tag->slug ? 'bg-amc-orange-text text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700' }}">
                         {{ $tag->name }}
                     </a>
                 @endforeach
@@ -41,7 +41,7 @@
                             @if ($post->tags->isNotEmpty())
                                 <div class="mb-2 flex flex-wrap gap-1">
                                     @foreach ($post->tags as $tag)
-                                        <span class="text-xs font-medium text-amc-orange">{{ $tag->name }}</span>
+                                        <span class="text-xs font-medium text-amc-orange-text">{{ $tag->name }}</span>
                                     @endforeach
                                 </div>
                             @endif
