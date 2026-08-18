@@ -144,17 +144,20 @@ class PostFormTest extends TestCase
             'blog/webp',
             $this->disk
         );
-        $post->update(['cover_image' => $paths['full'], 'cover_image_thumb' => $paths['thumb']]);
+        $post->coverImage()->create([
+            'thumb_path' => $paths['thumb'],
+            'full_path' => $paths['full'],
+            'order' => 0,
+        ]);
 
         Livewire::actingAs($admin)
             ->test(PostForm::class, ['postId' => $post->id])
-            ->call('removeCover')
+            ->set('shouldRemoveCover', true)
             ->call('save')
             ->assertHasNoErrors();
 
         $post->refresh();
-        $this->assertNull($post->cover_image);
-        $this->assertNull($post->cover_image_thumb);
+        $this->assertNull($post->coverImage);
         $this->assertFalse(Storage::disk($this->disk)->exists($paths['thumb']));
     }
 

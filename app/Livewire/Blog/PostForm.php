@@ -52,9 +52,11 @@ class PostForm extends Component
 
     public string $new_tag_name = '';
 
-    public ?UploadedFile $cover_upload = null;
+    public ?string $coverImageThumb = null;
 
-    public bool $should_remove_cover = false;
+    public ?string $coverImageFull = null;
+
+    public bool $shouldRemoveCover = false;
 
     public function mount(int $postId = 0): void
     {
@@ -69,7 +71,7 @@ class PostForm extends Component
 
         if ($postId > 0) {
             $this->post = Post::query()
-                ->with('tags')
+                ->with(['tags', 'coverImage'])
                 ->findOrFail($postId);
 
             $this->authorize('update', $this->post);
@@ -86,6 +88,11 @@ class PostForm extends Component
             $this->seo_description = (string) ($this->post->seo_description ?? '');
             $this->seo_image = $this->post->seo_image;
             $this->tag_ids = $this->post->tags->pluck('id')->map(fn ($id) => (string) $id)->all();
+
+            if ($this->post->coverImage) {
+                $this->coverImageThumb = \App\Support\ImageUrl::public($this->post->coverImage->thumb_path);
+                $this->coverImageFull = \App\Support\ImageUrl::public($this->post->coverImage->full_path);
+            }
         } else {
             $this->authorize('create', Post::class);
         }
@@ -98,10 +105,18 @@ class PostForm extends Component
         }
     }
 
-    public function removeCover(): void
+    public function onImageUploaded(array $imageData): void
     {
-        $this->should_remove_cover = true;
-        $this->cover_upload = null;
+        $this->coverImageThumb = $imageData['thumb_url'] ?? null;
+        $this->coverImageFull = $imageData['full'] ?? null;
+        $this->shouldRemoveCover = false;
+    }
+
+    public function onImageRemoved(): void
+    {
+        $this->coverImageThumb = null;
+        $this->coverImageFull = null;
+        $this->shouldRemoveCover = true;
     }
 
     public function regenerateSlug(): void
@@ -158,7 +173,6 @@ class PostForm extends Component
             'tag_ids' => ['array'],
             'tag_ids.*' => ['integer', 'exists:tags,id'],
             'new_tag_name' => ['nullable', 'string', 'max:50'],
-            'cover_upload' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=3000,max_height=3000'],
         ];
 
         $validated = $this->validate($rules);
@@ -175,29 +189,6 @@ class PostForm extends Component
         DB::transaction(function () use ($validated, $cleanBody): void {
             $user = Auth::user();
 
-            $coverThumb = $this->post?->cover_image_thumb;
-            $coverFull = $this->post?->cover_image;
-
-            if ($this->cover_upload instanceof UploadedFile) {
-                $slugHint = Str::slug($validated['title'] ?? $this->title);
-                $paths = app(UploadImageAction::class)($this->cover_upload, 'blog/webp', $slugHint, 'public');
-                $coverThumb = $paths['thumb'];
-                $coverFull = $paths['full'];
-
-                // Clean up previous cover when replacing.
-                if ($this->post !== null && $this->post->cover_image_thumb) {
-                    app(ConvertImageToWebp::class)
-                        ->delete((string) $this->post->cover_image_thumb, (string) $this->post->cover_image);
-                }
-            } elseif ($this->should_remove_cover) {
-                if ($this->post !== null) {
-                    app(ConvertImageToWebp::class)
-                        ->delete((string) $this->post->cover_image_thumb, (string) $this->post->cover_image);
-                }
-                $coverThumb = null;
-                $coverFull = null;
-            }
-
             $data = [
                 'title' => $validated['title'],
                 'slug' => $validated['slug'],
@@ -210,15 +201,37 @@ class PostForm extends Component
                 'seo_title' => $validated['seo_title'] ?: null,
                 'seo_description' => $validated['seo_description'] ?: null,
                 'seo_image' => $validated['seo_image'] ?: null,
-                'cover_image_thumb' => $coverThumb,
-                'cover_image' => $coverFull,
             ];
 
             if ($this->post !== null) {
                 $this->post->update($data);
+
+                // Handle cover image update
+                if ($this->shouldRemoveCover && $this->post->coverImage) {
+                    $this->post->coverImage->delete();
+                } elseif ($this->coverImageFull && $this->coverImageFull !== \App\Support\ImageUrl::public($this->post->coverImage?->full_path ?? '')) {
+                    // New cover uploaded
+                    if ($this->post->coverImage) {
+                        $this->post->coverImage->delete();
+                    }
+                    $this->post->coverImage()->create([
+                        'thumb_path' => $this->coverImageThumb ? basename(parse_url($this->coverImageThumb, PHP_URL_PATH)) : null,
+                        'full_path' => $this->coverImageFull ? basename(parse_url($this->coverImageFull, PHP_URL_PATH)) : null,
+                        'order' => 0,
+                    ]);
+                }
             } else {
                 $data['author_id'] = $user->id;
                 $this->post = Post::create($data);
+
+                // Create cover image if uploaded
+                if ($this->coverImageFull) {
+                    $this->post->coverImage()->create([
+                        'thumb_path' => $this->coverImageThumb ? basename(parse_url($this->coverImageThumb, PHP_URL_PATH)) : null,
+                        'full_path' => $this->coverImageFull ? basename(parse_url($this->coverImageFull, PHP_URL_PATH)) : null,
+                        'order' => 0,
+                    ]);
+                }
             }
 
             // Tag attach: combine existing selection with newly created tags.
@@ -245,6 +258,6 @@ class PostForm extends Component
         return view('livewire.blog.post-form', [
             'all_tags' => Tag::query()->orderBy('name')->get(),
             'author' => Auth::user(),
-        ]);
+        ])->title($this->post ? __('Edit post') : __('New post'));
     }
 }
