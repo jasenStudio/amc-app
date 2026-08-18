@@ -3,11 +3,10 @@
 ])
 
 @if ($sidebar)
-    <flux:sidebar.brand :name="config('app.name', 'AMC')" {{ $attributes }}>
-        <x-slot name="logo"
-            class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
+    <flux:sidebar.brand name="AMC Admin" {{ $attributes }}>
+        <x-slot name="logo" class="flex items-center justify-center bg-transparent">
 
-            <img src="{{ asset('assets/images/logo.webp') }}" class="w-10 sm:w-8 md:w-10 lg:w-12 me-3"
+            <img src="{{ asset('assets/images/logo.webp') }}" class="w-8 h-8 object-contain"
                 alt="Logo AMC Gestion del riesgo">
         </x-slot>
     </flux:sidebar.brand>

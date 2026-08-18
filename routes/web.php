@@ -5,6 +5,10 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ServicesController;
 use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
+use App\Livewire\Projects\ProjectsIndex;
+use App\Livewire\Services\ServicesIndex;
+use App\Livewire\Tags\TagsIndex;
+use App\Livewire\Users\UsersIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages::home')->name('home');
@@ -27,6 +31,13 @@ Route::middleware(['auth', 'verified', 'can:manage-posts'])->prefix('dashboard/b
     Route::get('create', PostForm::class)->name('create');
     Route::post('images', InlineImageController::class)->middleware('throttle:blog-inline-images')->name('images.store');
     Route::get('{post}/edit', PostForm::class)->whereNumber('post')->name('edit');
+});
+
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::get('users', UsersIndex::class)->name('users.index');
+    Route::get('projects', ProjectsIndex::class)->name('projects.index');
+    Route::get('services', ServicesIndex::class)->name('services.index');
+    Route::get('tags', TagsIndex::class)->name('tags.index');
 });
 
 require __DIR__.'/settings.php';

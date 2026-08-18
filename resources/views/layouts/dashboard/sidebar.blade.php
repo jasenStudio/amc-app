@@ -25,6 +25,22 @@
                         {{ __('Blog') }}
                     </flux:sidebar.item>
                 @endcan
+                <flux:sidebar.item icon="users" :href="route('dashboard.users.index')" :current="request()->routeIs('dashboard.users.*')"
+                    wire:navigate>
+                    {{ __('Users') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="briefcase" :href="route('dashboard.projects.index')" :current="request()->routeIs('dashboard.projects.*')"
+                    wire:navigate>
+                    {{ __('Projects') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="wrench-screwdriver" :href="route('dashboard.services.index')" :current="request()->routeIs('dashboard.services.*')"
+                    wire:navigate>
+                    {{ __('Services') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="tag" :href="route('dashboard.tags.index')" :current="request()->routeIs('dashboard.tags.*')"
+                    wire:navigate>
+                    {{ __('Tags') }}
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 
