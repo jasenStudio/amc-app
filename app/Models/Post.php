@@ -9,8 +9,11 @@ use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -111,6 +114,22 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * @return MorphOne<Image, $this>
+     */
+    public function coverImage(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('order', 0);
+    }
+
+    /**
+     * @return MorphMany<Image, $this>
+     */
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable')->orderBy('order');
     }
 
     /**

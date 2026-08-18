@@ -67,5 +67,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('manage-posts', fn (?User $user): bool => in_array($user?->role, ['admin', 'editor'], true));
 
         RateLimiter::for('blog-inline-images', fn (Request $request) => Limit::perMinute(30)->by($request->user()?->id ?: $request->ip()));
+
+        RateLimiter::for('dashboard-images', fn (Request $request) => Limit::perMinute(15)->by($request->user()?->id ?: $request->ip()));
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Blog\InlineImageController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Dashboard\ImageUploadController;
 use App\Http\Controllers\ServicesController;
 use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     Route::get('projects', ProjectsIndex::class)->name('projects.index');
     Route::get('services', ServicesIndex::class)->name('services.index');
     Route::get('tags', TagsIndex::class)->name('tags.index');
+    Route::post('images', ImageUploadController::class)->middleware('throttle:dashboard-images')->name('images.store');
 });
 
 require __DIR__.'/settings.php';
