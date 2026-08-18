@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Storage;
  */
 class UploadInlineImage
 {
-    public function __invoke(UploadedFile $file, string $disk = 'public'): string
+    public function __invoke(UploadedFile $file, ?string $slugHint = null, string $disk = 'public'): string
     {
         $paths = app(UploadImageAction::class)(
             $file,
             'blog/webp/body',
-            'inline',
+            $slugHint ?? 'inline',
             $disk,
         );
 

@@ -308,6 +308,76 @@ class PostFormTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $post->body);
     }
 
+    public function test_img_width_and_height_survive_sanitization(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'Image resize')
+            ->set('slug', 'image-resize')
+            ->set('body', '<p>before</p><img src="/blog/webp/photo.webp" alt="Photo" width="640" height="480"><p>after</p>')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $post = Post::query()->where('slug', 'image-resize')->first();
+        $this->assertStringContainsString('width="640"', $post->body);
+        $this->assertStringContainsString('height="480"', $post->body);
+        $this->assertStringContainsString('alt="Photo"', $post->body);
+    }
+
+    public function test_img_align_survives_sanitization(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'Image align')
+            ->set('slug', 'image-align')
+            ->set('body', '<p>before</p><img src="/blog/webp/photo.webp" alt="Photo" width="640" height="480" data-align="center"><p>after</p>')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $post = Post::query()->where('slug', 'image-align')->first();
+        $this->assertStringContainsString('data-align="center"', $post->body);
+        $this->assertStringContainsString('width="640"', $post->body);
+    }
+
+    public function test_youtube_embed_survives_sanitization(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'YouTube test')
+            ->set('slug', 'youtube-test')
+            ->set('body', '<p>Watch:</p><div data-youtube-video><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $post = Post::query()->where('slug', 'youtube-test')->first();
+        $this->assertStringContainsString('data-youtube-video', $post->body);
+        $this->assertStringContainsString('youtube.com/embed', $post->body);
+    }
+
+    public function test_arbitrary_iframe_is_removed(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'Iframe test')
+            ->set('slug', 'iframe-test')
+            ->set('body', '<p>Text</p><iframe src="https://evil.com/track" width="640" height="480"></iframe>')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $post = Post::query()->where('slug', 'iframe-test')->first();
+        $this->assertStringNotContainsString('evil.com', $post->body);
+        $this->assertStringNotContainsString('<iframe', $post->body);
+        $this->assertStringContainsString('<p>Text</p>', $post->body);
+    }
+
     public function test_cover_upload_validation_rejects_non_image(): void
     {
         $this->markTestSkipped('Blocked by Livewire 4.1 upstream bug: UploadedFile::$name undefined in Testable::upload().');

@@ -2,14 +2,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script>
-    window.__t = @json([
+    window.__t = <?php echo json_encode([
         'url' => __('URL'),
         'imageUploadFailed' => __('Image upload failed.'),
-    ]);
+        'youtubeUrl' => __('actions.youtube_url'),
+        'youtubeUrlInvalid' => __('actions.youtube_url_invalid'),
+        'selectImageFirst' => __('actions.select_image_first'),
+        'imageAlt' => __('actions.image_alt'),
+    ]); ?>
 </script>
 
 <title>
-    {{ filled($title ?? null) ? $title . ' - ' . config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
+    {{ filled($title ?? null) ? $title . ' - ' . config('app.name', 'amc Gestion del riesgo') : config('app.name', 'amc Gestion del riesgo') }}
 </title>
 
 <link rel="icon" href="/favicon.ico" sizes="any">

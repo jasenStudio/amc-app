@@ -46,8 +46,8 @@ class HtmlSanitizerTest extends TestCase
                 '<p>before</p>alert(1)<p>after</p>',
             ],
 
-            'iframe is removed' => [
-                '<iframe src="evil"></iframe><p>safe</p>',
+            'iframe from unknown host is removed' => [
+                '<iframe src="https://evil.com/embed"></iframe><p>safe</p>',
                 '<p>safe</p>',
             ],
 
@@ -110,6 +110,76 @@ class HtmlSanitizerTest extends TestCase
                 '<form action="/x"><input type="text" /></form>',
                 '',
             ],
+
+            'inline code preserved' => [
+                '<p>Use <code>EPP</code> always.</p>',
+                '<p>Use <code>EPP</code> always.</p>',
+            ],
+
+            'table preserved' => [
+                '<table><thead><tr><th>Header</th></tr></thead><tbody><tr><td>Cell</td></tr></tbody></table>',
+                '<table><thead><tr><th>Header</th></tr></thead><tbody><tr><td>Cell</td></tr></tbody></table>',
+            ],
+
+            'youtube iframe preserved with wrapper' => [
+                '<div data-youtube-video><iframe src="https://www.youtube.com/embed/abc123" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+                '<div data-youtube-video><iframe src="https://www.youtube.com/embed/abc123" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+            ],
+
+            'youtube-nocookie iframe preserved' => [
+                '<div data-youtube-video><iframe src="https://www.youtube-nocookie.com/embed/abc123" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+                '<div data-youtube-video><iframe src="https://www.youtube-nocookie.com/embed/abc123" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+            ],
+
+            'vimeo iframe preserved' => [
+                '<div data-youtube-video><iframe src="https://player.vimeo.com/video/123456" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+                '<div data-youtube-video><iframe src="https://player.vimeo.com/video/123456" width="640" height="480" frameborder="0" allowfullscreen></iframe></div>',
+            ],
+
+            'arbitrary div unwrapped' => [
+                '<div class="article"><p>content</p></div>',
+                '<p>content</p>',
+            ],
+
+            'img width and height preserved' => [
+                '<img src="/x.webp" alt="foo" width="200" height="150">',
+                '<img src="/x.webp" alt="foo" width="200" height="150">',
+            ],
+
+            'img data-align center preserved' => [
+                '<img src="/x.webp" alt="foo" data-align="center">',
+                '<img src="/x.webp" alt="foo" data-align="center">',
+            ],
+
+            'img data-align left preserved' => [
+                '<img src="/x.webp" alt="foo" data-align="left">',
+                '<img src="/x.webp" alt="foo" data-align="left">',
+            ],
+
+            'img data-align right preserved' => [
+                '<img src="/x.webp" alt="foo" data-align="right">',
+                '<img src="/x.webp" alt="foo" data-align="right">',
+            ],
+
+            'img data-align invalid value stripped' => [
+                '<img src="/x.webp" alt="foo" data-align="top">',
+                '<img src="/x.webp" alt="foo">',
+            ],
+
+            'img data-align with script stripped' => [
+                '<img src="/x.webp" alt="foo" data-align="javascript:alert(1)">',
+                '<img src="/x.webp" alt="foo">',
+            ],
+
+            'p data-clear-float preserved' => [
+                '<p data-clear-float="true">Below the image</p>',
+                '<p data-clear-float="true">Below the image</p>',
+            ],
+
+            'javascript: in iframe src stripped' => [
+                '<iframe src="javascript:alert(1)"></iframe><p>safe</p>',
+                '<p>safe</p>',
+            ],
         ];
     }
 
@@ -136,5 +206,26 @@ class HtmlSanitizerTest extends TestCase
         // but its text remains.
         $this->assertStringContainsString('Title', $clean);
         $this->assertStringContainsString('<strong>strong</strong>', $clean);
+    }
+
+    public function test_youtube_embed_survives_round_trip(): void
+    {
+        $html = '<p>Watch this:</p><div data-youtube-video><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" width="640" height="480" frameborder="0" allowfullscreen></iframe></div><p>End.</p>';
+        $clean = $this->sanitizer->clean($html);
+
+        $this->assertStringContainsString('data-youtube-video', $clean);
+        $this->assertStringContainsString('youtube.com/embed/dQw4w9WgXcQ', $clean);
+        $this->assertStringContainsString('<p>Watch this:</p>', $clean);
+        $this->assertStringContainsString('<p>End.</p>', $clean);
+    }
+
+    public function test_non_youtube_iframe_is_removed(): void
+    {
+        $html = '<iframe src="https://evil.com/track" width="640" height="480"></iframe><p>safe</p>';
+        $clean = $this->sanitizer->clean($html);
+
+        $this->assertStringNotContainsString('evil.com', $clean);
+        $this->assertStringNotContainsString('<iframe', $clean);
+        $this->assertStringContainsString('<p>safe</p>', $clean);
     }
 }

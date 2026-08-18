@@ -16,7 +16,10 @@ class HtmlSanitizer
      */
     private const ALLOWED_ATTRS = [
         'a' => ['href', 'title'],
-        'img' => ['src', 'alt', 'title'],
+        'img' => ['src', 'alt', 'title', 'width', 'height', 'data-align'],
+        'iframe' => ['src', 'width', 'height', 'frameborder', 'allowfullscreen'],
+        'div' => ['data-youtube-video'],
+        'p' => ['data-clear-float'],
     ];
 
     /**
@@ -26,6 +29,17 @@ class HtmlSanitizer
      * @var array<int, string>
      */
     private const ALLOWED_SCHEMES = ['http', 'https', 'mailto', 'tel'];
+
+    /**
+     * Hostnames allowed for iframe src attributes.
+     *
+     * @var array<int, string>
+     */
+    private const IFRAME_ALLOWED_HOSTS = [
+        'youtube.com',
+        'youtube-nocookie.com',
+        'player.vimeo.com',
+    ];
 
     public function clean(?string $html): string
     {
@@ -99,7 +113,7 @@ class HtmlSanitizer
 
             $tag = strtolower($child->nodeName);
 
-            if (! $this->isTagallowed($tag)) {
+            if (! $this->isTagallowed($tag, $child)) {
                 // Unwrap: move children up into the parent before dropping
                 // the wrapping element. The first moved child now sits at
                 // the position `$child` previously held, so we restart the
@@ -125,17 +139,28 @@ class HtmlSanitizer
         }
     }
 
-    private function isTagallowed(string $tag): bool
+    private function isTagallowed(string $tag, DOMElement $element): bool
     {
         $allowed = [
             'p', 'br', 'h2', 'h3', 'h4',
             'ul', 'ol', 'li',
-            'strong', 'em', 'u', 's',
-            'code', 'pre', 'blockquote',
+            'strong', 'em', 'u', 's', 'code',
+            'blockquote',
             'a', 'img', 'hr',
+            'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'iframe',
         ];
 
-        return in_array($tag, $allowed, true);
+        if (in_array($tag, $allowed, true)) {
+            return true;
+        }
+
+        // Allow <div> only if it is a YouTube embed wrapper.
+        if ($tag === 'div' && $element->hasAttribute('data-youtube-video')) {
+            return true;
+        }
+
+        return false;
     }
 
     private function filterAttributes(DOMElement $element, string $tag): void
@@ -158,8 +183,24 @@ class HtmlSanitizer
                 continue;
             }
 
-            if (in_array($name, ['href', 'src'], true)) {
-                if (! $this->isSafeUrl($value)) {
+            // Validate URLs based on context.
+            if ($name === 'href' || $name === 'src') {
+                if ($tag === 'iframe' && $name === 'src') {
+                    // Iframe src must be from an allowed provider.
+                    if (! $this->isSafeIframeSrc($value)) {
+                        $element->removeAttributeNode($attr);
+                    }
+                } else {
+                    // General href/src: validate scheme.
+                    if (! $this->isSafeUrl($value)) {
+                        $element->removeAttributeNode($attr);
+                    }
+                }
+            }
+
+            // Validate data-align values.
+            if ($name === 'data-align') {
+                if (! in_array($value, ['left', 'center', 'right'], true)) {
                     $element->removeAttributeNode($attr);
                 }
             }
@@ -171,6 +212,22 @@ class HtmlSanitizer
             // Drop the link: keep text inside.
             while ($element->firstChild) {
                 $element->parentNode?->insertBefore($element->firstChild, $element);
+            }
+            $element->parentNode?->removeChild($element);
+        }
+
+        // Drop iframe if it has no valid src (e.g. stripped by isSafeIframeSrc).
+        if ($tag === 'iframe' && ! $element->hasAttribute('src')) {
+            $element->parentNode?->removeChild($element);
+        }
+
+        // Drop div wrapper if it lost its data-youtube-video attribute.
+        if ($tag === 'div' && ! $element->hasAttribute('data-youtube-video')) {
+            $first = null;
+            while ($element->firstChild) {
+                $moved = $element->firstChild;
+                $element->parentNode?->insertBefore($moved, $element);
+                $first ??= $moved;
             }
             $element->parentNode?->removeChild($element);
         }
@@ -194,6 +251,27 @@ class HtmlSanitizer
         }
 
         return in_array(strtolower($scheme), self::ALLOWED_SCHEMES, true);
+    }
+
+    /**
+     * Validate that an iframe src points to an allowed provider.
+     */
+    private function isSafeIframeSrc(string $value): bool
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return false;
+        }
+
+        $host = parse_url($value, PHP_URL_HOST);
+        if (! is_string($host)) {
+            return false;
+        }
+
+        $host = strtolower($host);
+        $host = preg_replace('/^www\./', '', $host);
+
+        return in_array($host, self::IFRAME_ALLOWED_HOSTS, true);
     }
 
     private function stripWrappingBodyTags(string $html): string

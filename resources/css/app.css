@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import '../../vendor/livewire/flux/dist/flux.css';
+@import "tailwindcss";
+@import "../../vendor/livewire/flux/dist/flux.css";
 @plugin '@tailwindcss/typography';
 
 @source '../views';
@@ -10,7 +10,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -42,7 +45,6 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -57,7 +59,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
@@ -78,6 +80,158 @@ select:focus[data-flux-control] {
     @apply outline-none ring-2 ring-zinc-900 dark:ring-zinc-100;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* Tiptap Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+    @apply float-left text-zinc-400 pointer-events-none h-0;
+    content: attr(data-placeholder);
+}
+
+.ProseMirror .is-empty::before {
+    @apply text-zinc-400 pointer-events-none;
+    content: attr(data-placeholder);
+}
+
+/* Tiptap Image Resize Handles */
+[data-resize-container] {
+    @apply inline-block;
+}
+
+[data-resize-container][data-node="image"] {
+    @apply block;
+}
+
+[data-resize-wrapper] img {
+    @apply max-w-full;
+}
+
+[data-resize-handle] {
+    @apply absolute z-10;
+    width: 12px;
+    height: 12px;
+    background-color: #00203f;
+    border: 2px solid white;
+    border-radius: 2px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-resize-handle="top-left"] {
+    cursor: nwse-resize;
+}
+
+[data-resize-handle="top-right"] {
+    cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-left"] {
+    cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-right"] {
+    cursor: nwse-resize;
+}
+
+[data-resize-handle="top"],
+[data-resize-handle="bottom"] {
+    cursor: ns-resize;
+    width: 24px;
+    height: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+[data-resize-handle="left"],
+[data-resize-handle="right"] {
+    cursor: ew-resize;
+    width: 8px;
+    height: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+[data-resize-state="true"] img {
+    @apply opacity-80;
+}
+
+.ProseMirror
+    .ProseMirror-selectednode
+    > [data-resize-wrapper]
+    > [data-resize-handle] {
+    @apply visible;
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+    @apply outline-2 outline-blue-500 outline-offset-1;
+}
+
+/* Tiptap Image Alignment */
+.ProseMirror [data-resize-container]:has(img[data-align="left"]) {
+    float: left;
+    margin: 0.25em 1.5em 1em 0;
+    max-width: 50%;
+}
+
+.ProseMirror [data-resize-container]:has(img[data-align="right"]) {
+    float: right;
+    margin: 0.25em 0 1em 1.5em;
+    max-width: 50%;
+}
+
+.ProseMirror [data-resize-container]:has(img[data-align="center"]) {
+    display: block;
+    float: none;
+    text-align: center;
+}
+
+.ProseMirror
+    [data-resize-container]:has(img[data-align="center"])
+    [data-resize-wrapper] {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ProseMirror p {
+    margin-bottom: 0;
+}
+
+.ProseMirror p[data-clear-float="true"] {
+    clear: both;
+}
+
+.ProseMirror::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Tiptap Table */
+.ProseMirror table {
+    @apply w-full border-collapse border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+    @apply border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-left;
+}
+
+.ProseMirror th {
+    @apply bg-zinc-100 dark:bg-zinc-800 font-semibold;
+}
+
+.ProseMirror td {
+    @apply bg-white dark:bg-zinc-900;
+}
+
+.ProseMirror .selectedCell {
+    @apply bg-blue-50 dark:bg-blue-900/30;
+}
+
+.ProseMirror .column-resize-handle {
+    @apply bg-blue-500 w-0.5 absolute top-0 bottom-0 right-0;
+}
+
+.ProseMirror.resize-cursor {
+    @apply cursor-col-resize;
+}
+
+
+/*** TODO ARREGLAR STULE DE NAVEGADOR

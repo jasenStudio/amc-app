@@ -23,10 +23,11 @@ class InlineImageController extends Controller
                 'max:2048',
                 'dimensions:max_width=3000,max_height=3000',
             ],
+            'slugHint' => ['nullable', 'string', 'max:200'],
         ]);
 
         try {
-            $url = $action($request->file('upload'));
+            $url = $action($request->file('upload'), slugHint: $request->input('slugHint'));
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => ['message' => $e->getMessage()],

@@ -32,9 +32,10 @@
                 @foreach ($posts as $post)
                     <a href="{{ route('blog.show', $post->slug) }}" class="group block">
                         @if ($post->cover_image_thumb)
-                            <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt="" class="aspect-[3/2] w-full rounded-lg object-cover" loading="lazy">
+                            <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt=""
+                                class="aspect-3/2 w-full rounded-lg object-cover" loading="lazy">
                         @else
-                            <div class="aspect-[3/2] w-full rounded-lg bg-zinc-100 dark:bg-zinc-800"></div>
+                            <div class="aspect-3/2 w-full rounded-lg bg-zinc-100 dark:bg-zinc-800"></div>
                         @endif
                         <div class="mt-4">
                             @if ($post->tags->isNotEmpty())
@@ -44,7 +45,8 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <h3 class="text-lg font-semibold text-amc-blue group-hover:text-amc-orange transition dark:text-white dark:group-hover:text-amc-orange">
+                            <h3
+                                class="text-lg font-semibold text-amc-blue group-hover:text-amc-orange transition dark:text-white dark:group-hover:text-amc-orange">
                                 {{ $post->title }}
                             </h3>
                             @if ($post->excerpt)
