@@ -48,7 +48,7 @@
                 <flux:table.row :key="$post->id">
                     <flux:table.cell>
                         @if ($post->cover_image_thumb)
-                            <img src="{{ asset('storage/' . $post->cover_image_thumb) }}" alt=""
+                            <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt=""
                                 class="size-10 rounded object-cover">
                         @else
                             <div class="size-10 rounded bg-zinc-100 dark:bg-zinc-700"></div>

@@ -25,6 +25,9 @@ class ConvertImageToWebp
      * full-size variant, and store both on the given disk under
      * `<basePath>/<thumbs|full>/<basename>.webp`.
      *
+     * @param  string  $basePath  Relative directory inside the disk.
+     * @param  string  $disk  Laravel filesystem disk name.
+     * @param  string|null  $basename  Pre-generated basename. When null a ULID is used (legacy).
      * @return array{thumb: string, full: string}
      *                                            Relative paths inside the disk (e.g. "blog/webp/thumbs/abc.webp").
      */
@@ -32,12 +35,13 @@ class ConvertImageToWebp
         UploadedFile $file,
         string $basePath,
         string $disk = 'public',
+        ?string $basename = null,
     ): array {
         $manager = $this->makeManager();
 
         $image = $manager->decode($file->getRealPath());
 
-        $basename = $this->uniqueBasename($file);
+        $basename ??= $this->uniqueBasename($file);
 
         $thumb = $this->store($image->scale(width: self::THUMB_WIDTH), $disk, $basePath, 'thumbs', $basename);
         $full = $this->store($image->scale(width: self::FULL_WIDTH), $disk, $basePath, 'full', $basename);

@@ -28,14 +28,14 @@ import Image from "@tiptap/extension-image";
  *       <div data-tiptap-target="editor"></div>
  *   </div>
  */
-export default () => {
+export default (config = {}) => {
     // Vive fuera del objeto reactivo de Alpine a propósito.
     let editor = null;
 
     return {
-        endpoint: "",
-        csrf: "",
-        initial: "",
+        endpoint: config.endpoint ?? "",
+        csrf: config.csrf ?? "",
+        initial: config.initial ?? "",
         _toolbarEl: null,
         _clickHandler: null,
         _mousedownHandler: null,
@@ -211,6 +211,7 @@ export default () => {
                 try {
                     const res = await fetch(this.endpoint, {
                         method: "POST",
+                        credentials: "same-origin",
                         headers: {
                             "X-CSRF-TOKEN": this.csrf,
                             "X-Requested-With": "XMLHttpRequest",
@@ -219,7 +220,18 @@ export default () => {
                         body: fd,
                     });
                     if (!res.ok) {
-                        window.alert(window.__t.imageUploadFailed);
+                        let msg = `Upload failed (${res.status})`;
+                        try {
+                            const err = await res.json();
+                            if (err.error?.message) {
+                                msg = err.error.message;
+                            } else if (err.errors?.upload?.[0]) {
+                                msg = err.errors.upload[0];
+                            }
+                        } catch (_e) {
+                            // Response was not JSON — keep the default msg.
+                        }
+                        window.alert(msg);
                         return;
                     }
                     const payload = await res.json();
@@ -231,7 +243,7 @@ export default () => {
                         .setImage({ src: payload.url, alt: "" })
                         .run();
                 } catch (err) {
-                    window.alert(window.__t.imageUploadFailed);
+                    window.alert(err?.message || window.__t.imageUploadFailed);
                 }
             });
             input.click();

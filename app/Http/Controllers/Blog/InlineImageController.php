@@ -15,7 +15,14 @@ class InlineImageController extends Controller
         Gate::authorize('manage-posts');
 
         $request->validate([
-            'upload' => ['required', 'file', 'image', 'max:4096', 'mimes:png,jpg,jpeg,webp'],
+            'upload' => [
+                'required',
+                'file',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+                'dimensions:max_width=3000,max_height=3000',
+            ],
         ]);
 
         try {

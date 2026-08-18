@@ -14,7 +14,16 @@
                 </div>
 
                 <div class="space-y-2">
-                    <flux:input wire:model="slug" :label="__('Slug')" required data-test="post-slug" />
+                    <div class="flex items-end gap-2">
+                        <div class="flex-1">
+                            <flux:input wire:model="slug" :label="__('Slug')" required data-test="post-slug" />
+                        </div>
+                        @if ($post)
+                            <flux:button type="button" variant="ghost" size="sm" wire:click="regenerateSlug" class="mb-0.5 whitespace-nowrap" data-test="regenerate-slug">
+                                {{ __('Regenerate') }}
+                            </flux:button>
+                        @endif
+                    </div>
                     <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Used in the public URL. Only letters, numbers and dashes.') }}</p>
                 </div>
 
@@ -47,9 +56,6 @@
 
                     @error('body')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
-
-                {{-- Hidden field synced by TipTap --}}
-                <input type="hidden" wire:model="body" />
 
                 <div class="space-y-2">
                     <flux:textarea wire:model="excerpt" :label="__('Excerpt')" :placeholder="__('Short summary used in listings…')" rows="3" data-test="post-excerpt" />
@@ -112,7 +118,7 @@
                         <flux:label>{{ __('Cover image') }}</flux:label>
 
                         @if ($post?->cover_image_thumb && ! $cover_upload && ! $should_remove_cover)
-                            <img src="{{ asset('storage/'.$post->cover_image_thumb) }}" alt="" class="size-full rounded-md object-cover" data-test="current-cover">
+                            <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt="" class="size-full rounded-md object-cover" data-test="current-cover">
                             <flux:button type="button" variant="ghost" icon="trash" wire:click="removeCover" data-test="remove-cover">
                                 {{ __('Remove cover') }}
                             </flux:button>

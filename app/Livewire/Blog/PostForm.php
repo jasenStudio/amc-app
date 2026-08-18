@@ -3,6 +3,7 @@
 namespace App\Livewire\Blog;
 
 use App\Actions\Images\ConvertImageToWebp;
+use App\Actions\Images\UploadImageAction;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Support\HtmlSanitizer;
@@ -103,6 +104,36 @@ class PostForm extends Component
         $this->cover_upload = null;
     }
 
+    public function regenerateSlug(): void
+    {
+        if ($this->title === '') {
+            $this->addError('title', __('Title is required to generate a slug.'));
+
+            return;
+        }
+
+        $base = Str::slug($this->title) ?: 'n-a';
+        $slug = $base;
+        $suffix = 1;
+
+        $exists = Post::query()
+            ->where('slug', $slug)
+            ->when($this->post !== null, fn ($q) => $q->where('id', '!=', $this->post->getKey()))
+            ->withTrashed()
+            ->exists();
+
+        while ($exists) {
+            $slug = $base.'-'.$suffix++;
+            $exists = Post::query()
+                ->where('slug', $slug)
+                ->when($this->post !== null, fn ($q) => $q->where('id', '!=', $this->post->getKey()))
+                ->withTrashed()
+                ->exists();
+        }
+
+        $this->slug = $slug;
+    }
+
     public function save(): void
     {
         $slugRules = ['required', 'string', 'max:255'];
@@ -127,7 +158,7 @@ class PostForm extends Component
             'tag_ids' => ['array'],
             'tag_ids.*' => ['integer', 'exists:tags,id'],
             'new_tag_name' => ['nullable', 'string', 'max:50'],
-            'cover_upload' => ['nullable', 'image', 'max:4096'],
+            'cover_upload' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=3000,max_height=3000'],
         ];
 
         $validated = $this->validate($rules);
@@ -148,7 +179,8 @@ class PostForm extends Component
             $coverFull = $this->post?->cover_image;
 
             if ($this->cover_upload instanceof UploadedFile) {
-                $paths = app(ConvertImageToWebp::class)($this->cover_upload, 'blog/webp', 'public');
+                $slugHint = Str::slug($validated['title'] ?? $this->title);
+                $paths = app(UploadImageAction::class)($this->cover_upload, 'blog/webp', $slugHint, 'public');
                 $coverThumb = $paths['thumb'];
                 $coverFull = $paths['full'];
 

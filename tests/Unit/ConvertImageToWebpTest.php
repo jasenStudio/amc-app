@@ -92,6 +92,29 @@ class ConvertImageToWebpTest extends TestCase
         $this->assertFalse($action->delete('', '', $this->disk));
     }
 
+    public function test_accepts_custom_basename(): void
+    {
+        $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);
+        $action = app(ConvertImageToWebp::class);
+
+        $paths = $action($file, 'blog/webp', $this->disk, 'custom-name');
+
+        $this->assertStringContainsString('custom-name.webp', $paths['thumb']);
+        $this->assertStringContainsString('custom-name.webp', $paths['full']);
+    }
+
+    public function test_defaults_to_ulid_when_basename_is_null(): void
+    {
+        $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);
+        $action = app(ConvertImageToWebp::class);
+
+        $paths = $action($file, 'blog/webp', $this->disk);
+
+        // ULID-based names should be 26 chars + .webp.
+        $thumbFilename = basename($paths['thumb']);
+        $this->assertMatchesRegularExpression('/^[0-9A-Z]{26}\.webp$/', $thumbFilename);
+    }
+
     public function test_soft_delete_does_not_remove_image_files(): void
     {
         $author = User::factory()->admin()->create();
