@@ -8,14 +8,14 @@ use App\Livewire\Blog\PostsIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages::home')->name('home');
-Route::view('projects', 'pages::projects')->name('projects');
+Route::view('projects', 'pages::projects.index')->name('projects');
 
 Route::get('blog', [BlogController::class, 'index'])->name('blog');
 Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::prefix('about')->name('about.')->group(function () {
-    Route::view('vision', 'pages::about-vision')->name('vision');
-    Route::view('mission', 'pages::about-mission')->name('mission');
+    Route::view('vision', 'pages::about.vision')->name('vision');
+    Route::view('mission', 'pages::about.mission')->name('mission');
 });
 
 Route::middleware(['auth', 'verified', 'role'])->group(function () {

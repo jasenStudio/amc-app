@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Líneas de Vida Certificadas y Seguridad en Alturas | AMC Gestión de Riesgos')" :description="__(
+<x-layouts::app :title="__('AMC Gestión de Riesgos | Seguridad en alturas y líneas de vida')" :description="__(
     'AMC Gestión de Riesgos SAS ofrece instalación de líneas de vida, puntos de anclaje certificados, seguridad en alturas y asesorías SG-SST para empresas.',
 )">
 

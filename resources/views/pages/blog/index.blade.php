@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Blog')" :description="__('Read AMC perspectives, guides, and practical insights.')">
+<x-layouts::app :title="__('Blog | AMC Gestión de Riesgos')" :description="__('Perspectivas, guías e ideas prácticas de AMC Gestión de Riesgos.')">
     <x-header />
 
     <main class="mx-auto max-w-7xl px-6 py-24 lg:px-8">

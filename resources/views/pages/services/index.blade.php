@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Servicios | AMC Gestión de Riesgos')" :description="__('Conoce el catálogo de servicios de AMC Gestión de Riesgos.')">
+<x-layouts::app :title="__('Servicios | AMC Gestión de Riesgos')" :description="__('Catálogo de servicios certificados de AMC Gestión de Riesgos para proteger personas, operaciones y activos.')">
     <x-header />
 
     <main>

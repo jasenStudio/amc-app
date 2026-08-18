@@ -30,7 +30,7 @@ class BlogController extends Controller
             $tags = Tag::query()->orderBy('name')->get();
         }
 
-        return view('pages::blog', [
+        return view('pages::blog.index', [
             'posts' => $posts,
             'tags' => $tags,
             'activeTag' => $tagSlug,
@@ -49,7 +49,7 @@ class BlogController extends Controller
             throw new NotFoundHttpException;
         }
 
-        return view('pages::blog-show', [
+        return view('pages::blog.show', [
             'post' => $post,
         ]);
     }
