@@ -121,10 +121,11 @@ class ConvertImageToWebpTest extends TestCase
         $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);
         $paths = app(ConvertImageToWebp::class)($file, 'blog/webp', $this->disk);
 
-        $post = Post::factory()->create([
-            'author_id' => $author->id,
-            'cover_image' => $paths['full'],
-            'cover_image_thumb' => $paths['thumb'],
+        $post = Post::factory()->create(['author_id' => $author->id]);
+        $post->coverImage()->create([
+            'thumb_path' => $paths['thumb'],
+            'full_path' => $paths['full'],
+            'order' => 0,
         ]);
 
         $post->delete();
@@ -139,10 +140,11 @@ class ConvertImageToWebpTest extends TestCase
         $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);
         $paths = app(ConvertImageToWebp::class)($file, 'blog/webp', $this->disk);
 
-        $post = Post::factory()->create([
-            'author_id' => $author->id,
-            'cover_image' => $paths['full'],
-            'cover_image_thumb' => $paths['thumb'],
+        $post = Post::factory()->create(['author_id' => $author->id]);
+        $post->coverImage()->create([
+            'thumb_path' => $paths['thumb'],
+            'full_path' => $paths['full'],
+            'order' => 0,
         ]);
 
         $post->forceDelete();

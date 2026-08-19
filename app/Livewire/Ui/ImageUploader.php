@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Ui;
 
+use App\Actions\Images\ConvertImageToWebp;
 use App\Actions\Images\UploadImageAction;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
@@ -24,6 +25,10 @@ class ImageUploader extends Component
 
     public ?string $existingFullUrl = null;
 
+    public ?string $pendingThumbPath = null;
+
+    public ?string $pendingFullPath = null;
+
     public bool $loading = false;
 
     public function mount(
@@ -38,9 +43,21 @@ class ImageUploader extends Component
         $this->existingFullUrl = $existingFullUrl;
     }
 
-    public function uploadImage(): void
+    public function updatedUpload(?UploadedFile $upload): void
     {
-        if (! $this->upload instanceof UploadedFile) {
+        if ($upload === null) {
+            return;
+        }
+
+        $this->upload = $upload;
+        $this->uploadImage();
+    }
+
+    public function uploadImage(?UploadedFile $file = null): void
+    {
+        $file ??= $this->upload;
+
+        if (! $file instanceof UploadedFile) {
             return;
         }
 
@@ -56,17 +73,21 @@ class ImageUploader extends Component
 
         try {
             $paths = app(UploadImageAction::class)(
-                $this->upload,
+                $file,
                 $this->path,
                 $this->slugHint,
                 'public',
             );
+
+            $this->cleanupPending();
 
             $thumbUrl = Storage::disk('public')->url($paths['thumb']);
             $fullUrl = Storage::disk('public')->url($paths['full']);
 
             $this->existingThumbUrl = $thumbUrl;
             $this->existingFullUrl = $fullUrl;
+            $this->pendingThumbPath = $paths['thumb'];
+            $this->pendingFullPath = $paths['full'];
             $this->upload = null;
 
             $this->dispatch('image-uploaded', [
@@ -84,6 +105,7 @@ class ImageUploader extends Component
 
     public function removeImage(): void
     {
+        $this->cleanupPending();
         $this->existingThumbUrl = null;
         $this->existingFullUrl = null;
         $this->upload = null;
@@ -94,6 +116,21 @@ class ImageUploader extends Component
     public function render(): View
     {
         return view('livewire.ui.image-uploader');
+    }
+
+    private function cleanupPending(): void
+    {
+        if ($this->pendingThumbPath === null && $this->pendingFullPath === null) {
+            return;
+        }
+
+        app(ConvertImageToWebp::class)->delete(
+            $this->pendingThumbPath ?? '',
+            $this->pendingFullPath ?? '',
+        );
+
+        $this->pendingThumbPath = null;
+        $this->pendingFullPath = null;
     }
 
     private function isRateLimited(): bool

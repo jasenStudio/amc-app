@@ -40,6 +40,15 @@ class GalleryUploader extends Component
         $this->images = $images;
     }
 
+    public function updatedUploads(array $uploads): void
+    {
+        if (empty($uploads)) {
+            return;
+        }
+
+        $this->uploadImages();
+    }
+
     public function uploadImages(): void
     {
         if (empty($this->uploads)) {

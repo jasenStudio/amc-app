@@ -44,8 +44,8 @@
             </p>
         @endif
 
-        @if ($post->cover_image)
-            <img src="{{ \App\Support\ImageUrl::public($post->cover_image) }}" alt=""
+        @if ($post->cover_image_url)
+            <img src="{{ $post->cover_image_url }}" alt=""
                 class="mt-8 w-full rounded-lg object-cover" loading="lazy">
         @endif
 

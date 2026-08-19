@@ -18,7 +18,6 @@
         <label class="block">
             <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300">{{ __('Upload new') }}</span>
             <input type="file" wire:model="upload" accept="image/png,image/jpeg,image/webp"
-                wire:change="uploadImage"
                 class="mt-1 block w-full text-sm text-zinc-500 dark:text-zinc-400
                        file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
                        file:text-sm file:font-semibold file:bg-zinc-100 file:text-zinc-700

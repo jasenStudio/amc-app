@@ -18,7 +18,7 @@ class FeaturedPosts extends Component
                 ->published()
                 ->featured()
                 ->ordered()
-                ->with('tags')
+                ->with(['tags', 'coverImage'])
                 ->limit(3)
                 ->get();
         }

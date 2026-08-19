@@ -29,7 +29,6 @@
                 @endif
             </span>
             <input type="file" wire:model="uploads" accept="image/png,image/jpeg,image/webp"
-                wire:change="uploadImages"
                 multiple
                 class="mt-1 block w-full text-sm text-zinc-500 dark:text-zinc-400
                        file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0

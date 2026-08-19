@@ -3,8 +3,8 @@
         <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($posts as $post)
                 <a href="{{ route('blog.show', $post->slug) }}" class="group block">
-                    @if ($post->cover_image_thumb)
-                        <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt="" class="aspect-[3/2] w-full rounded-lg object-cover" loading="lazy">
+                    @if ($post->cover_image_thumb_url)
+                        <img src="{{ $post->cover_image_thumb_url }}" alt="" class="aspect-[3/2] w-full rounded-lg object-cover" loading="lazy">
                     @else
                         <div class="aspect-[3/2] w-full rounded-lg bg-zinc-100 dark:bg-zinc-800"></div>
                     @endif

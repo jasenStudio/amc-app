@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\PostStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PostTest extends TestCase
@@ -108,9 +109,41 @@ class PostTest extends TestCase
 
     public function test_seo_image_falls_back_to_cover_image(): void
     {
-        $post = Post::factory()->create(['cover_image' => 'cover.webp', 'seo_image' => null]);
+        $post = Post::factory()->create(['seo_image' => null]);
+        $post->coverImage()->create([
+            'thumb_path' => 'blog/webp/thumbs/cover.webp',
+            'full_path' => 'blog/webp/full/cover.webp',
+            'order' => 0,
+        ]);
 
-        $this->assertSame('cover.webp', $post->seoImage());
+        $this->assertSame('blog/webp/full/cover.webp', $post->seoImage());
+    }
+
+    public function test_cover_image_url_accessors_resolve_from_relationship(): void
+    {
+        $post = Post::factory()->create();
+        $post->coverImage()->create([
+            'thumb_path' => 'blog/webp/thumbs/cover.webp',
+            'full_path' => 'blog/webp/full/cover.webp',
+            'order' => 0,
+        ]);
+
+        $this->assertSame(
+            Storage::disk('public')->url('blog/webp/full/cover.webp'),
+            $post->cover_image_url,
+        );
+        $this->assertSame(
+            Storage::disk('public')->url('blog/webp/thumbs/cover.webp'),
+            $post->cover_image_thumb_url,
+        );
+    }
+
+    public function test_cover_image_url_accessors_are_null_without_image(): void
+    {
+        $post = Post::factory()->create();
+
+        $this->assertNull($post->cover_image_url);
+        $this->assertNull($post->cover_image_thumb_url);
     }
 
     public function test_author_relationship_returns_user(): void

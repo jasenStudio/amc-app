@@ -24,8 +24,6 @@ class PostFactory extends Factory
             'title' => $title,
             'excerpt' => fake()->paragraph(),
             'body' => fake()->paragraphs(3, true),
-            'cover_image' => null,
-            'cover_image_thumb' => null,
             'status' => PostStatus::Draft,
             'published_at' => null,
             'author_id' => User::factory(),

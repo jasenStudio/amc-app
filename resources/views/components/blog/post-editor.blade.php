@@ -1,7 +1,7 @@
 @props(['body', 'slug'])
 
 <div wire:ignore wire:key="post-body-editor" class="space-y-2" x-data="tiptapEditor({
-    endpoint: '{{ route('dashboard.images.store') }}',
+    endpoint: '{{ route('blog.images.store') }}',
     csrf: document.querySelector('meta[name=\'csrf-token\']').content,
     initial: @js($body),
     slug: @js($slug ?? ''),

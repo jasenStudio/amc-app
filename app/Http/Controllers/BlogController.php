@@ -22,7 +22,7 @@ class BlogController extends Controller
             $posts = Post::query()
                 ->published()
                 ->ordered()
-                ->with('tags')
+                ->with(['tags', 'coverImage'])
                 ->when($tagSlug !== null && $tagSlug !== '', fn (Builder $q) => $q->whereHas('tags', fn (Builder $t) => $t->where('slug', $tagSlug)))
                 ->paginate(12)
                 ->appends(request()->query());
@@ -41,7 +41,7 @@ class BlogController extends Controller
     {
         $post = Post::query()
             ->published()
-            ->with(['author', 'tags'])
+            ->with(['author', 'tags', 'coverImage'])
             ->where('slug', $slug)
             ->first();
 

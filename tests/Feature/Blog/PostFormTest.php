@@ -221,6 +221,17 @@ class PostFormTest extends TestCase
             ->assertSee('window.__t', false);
     }
 
+    public function test_inline_editor_points_to_blog_images_endpoint(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $post = Post::factory()->create(['author_id' => $admin->id]);
+
+        $this->actingAs($admin)
+            ->get(route('blog.edit', ['post' => $post->id]))
+            ->assertOk()
+            ->assertSee(route('blog.images.store'), false);
+    }
+
     public function test_editor_is_forbidden_on_another_editors_post(): void
     {
         $editor = User::factory()->editor()->create();

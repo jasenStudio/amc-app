@@ -47,8 +47,8 @@
             @forelse ($posts as $post)
                 <flux:table.row :key="$post->id">
                     <flux:table.cell>
-                        @if ($post->cover_image_thumb)
-                            <img src="{{ \App\Support\ImageUrl::public($post->cover_image_thumb) }}" alt=""
+                        @if ($post->cover_image_thumb_url)
+                            <img src="{{ $post->cover_image_thumb_url }}" alt=""
                                 class="size-10 rounded object-cover">
                         @else
                             <div class="size-10 rounded bg-zinc-100 dark:bg-zinc-700"></div>

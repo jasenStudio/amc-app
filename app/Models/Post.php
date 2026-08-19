@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Actions\Images\ConvertImageToWebp;
 use App\Concerns\HasSlug;
 use App\PostStatus;
+use App\Support\ImageUrl;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Image;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -23,8 +22,6 @@ use Illuminate\Support\Carbon;
  * @property string $slug
  * @property string|null $excerpt
  * @property string $body
- * @property string|null $cover_image
- * @property string|null $cover_image_thumb
  * @property PostStatus $status
  * @property Carbon|null $published_at
  * @property int $author_id
@@ -52,14 +49,7 @@ class Post extends Model
     protected static function booted(): void
     {
         static::forceDeleted(function (Post $post): void {
-            $thumb = (string) ($post->cover_image_thumb ?? '');
-            $full = (string) ($post->cover_image ?? '');
-
-            if ($thumb === '' && $full === '') {
-                return;
-            }
-
-            app(ConvertImageToWebp::class)->delete($thumb, $full);
+            $post->images()->get()->each->delete();
         });
     }
 
@@ -72,8 +62,6 @@ class Post extends Model
         'slug',
         'excerpt',
         'body',
-        'cover_image',
-        'cover_image_thumb',
         'status',
         'published_at',
         'author_id',
@@ -178,7 +166,23 @@ class Post extends Model
 
     public function seoImage(): ?string
     {
-        return $this->seo_image ?: $this->cover_image;
+        return $this->seo_image ?: $this->coverImage?->full_path;
+    }
+
+    /**
+     * Public URL of the full-size cover image.
+     */
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        return ImageUrl::public($this->coverImage?->full_path);
+    }
+
+    /**
+     * Public URL of the cover thumbnail.
+     */
+    public function getCoverImageThumbUrlAttribute(): ?string
+    {
+        return ImageUrl::public($this->coverImage?->thumb_path);
     }
 
     protected function slugExists(string $slug): bool

@@ -67,7 +67,7 @@ class PostsIndex extends Component
     private function buildQuery(): Builder
     {
         $query = Post::query()
-            ->with(['author', 'tags'])
+            ->with(['author', 'tags', 'coverImage'])
             ->orderByDesc('id');
 
         if ($this->search !== '') {
