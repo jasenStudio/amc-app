@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.4",
         "intervention/image": "^4.2",
+        "lakm/laravel-comments": "^4.1",
         "laravel-lang/common": "^6.8",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",

@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use LakM\Commenter\Concerns\Commentable;
+use LakM\Commenter\Contracts\CommentableContract;
 
 /**
  * @property int $id
@@ -34,13 +36,15 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class Post extends Model
+class Post extends Model implements CommentableContract
 {
+    use Commentable;
+
     /**
      * @use HasFactory<PostFactory>
      * @use HasSlug<Post>
      */
-    use HasFactory, HasSlug, SoftDeletes;
+    use HasFactory, HasSlug,SoftDeletes;
 
     /**
      * Boot model hooks: clean up image assets only on permanent deletion.

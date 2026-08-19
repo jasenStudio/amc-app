@@ -45,12 +45,14 @@
         @endif
 
         @if ($post->cover_image_url)
-            <img src="{{ $post->cover_image_url }}" alt=""
-                class="mt-8 w-full rounded-lg object-cover" loading="lazy">
+            <img src="{{ $post->cover_image_url }}" alt="" class="mt-8 w-full rounded-lg object-cover"
+                loading="lazy">
         @endif
 
         <article class="prose article-prose-content dark:prose-invert prose-amc mt-5 max-w-none text-amc-blue/80">
             {!! $post->body !!}
         </article>
+
+        <x-commenter:: :model="$post" />
     </main>
 </x-layouts::app>
