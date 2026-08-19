@@ -2,19 +2,18 @@
 
 namespace App\Livewire\Blog;
 
-use App\Actions\Images\ConvertImageToWebp;
-use App\Actions\Images\UploadImageAction;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Support\HtmlSanitizer;
+use App\Support\ImageUrl;
 use Flux\Flux as FluxFacade;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -56,6 +55,10 @@ class PostForm extends Component
 
     public ?string $coverImageFull = null;
 
+    public ?string $coverImageThumbPath = null;
+
+    public ?string $coverImageFullPath = null;
+
     public bool $shouldRemoveCover = false;
 
     public function mount(int $postId = 0): void
@@ -90,8 +93,8 @@ class PostForm extends Component
             $this->tag_ids = $this->post->tags->pluck('id')->map(fn ($id) => (string) $id)->all();
 
             if ($this->post->coverImage) {
-                $this->coverImageThumb = \App\Support\ImageUrl::public($this->post->coverImage->thumb_path);
-                $this->coverImageFull = \App\Support\ImageUrl::public($this->post->coverImage->full_path);
+                $this->coverImageThumb = ImageUrl::public($this->post->coverImage->thumb_path);
+                $this->coverImageFull = ImageUrl::public($this->post->coverImage->full_path);
             }
         } else {
             $this->authorize('create', Post::class);
@@ -105,17 +108,23 @@ class PostForm extends Component
         }
     }
 
+    #[On('image-uploaded')]
     public function onImageUploaded(array $imageData): void
     {
         $this->coverImageThumb = $imageData['thumb_url'] ?? null;
-        $this->coverImageFull = $imageData['full'] ?? null;
+        $this->coverImageFull = $imageData['full_url'] ?? null;
+        $this->coverImageThumbPath = $imageData['thumb'] ?? null;
+        $this->coverImageFullPath = $imageData['full'] ?? null;
         $this->shouldRemoveCover = false;
     }
 
+    #[On('image-removed')]
     public function onImageRemoved(): void
     {
         $this->coverImageThumb = null;
         $this->coverImageFull = null;
+        $this->coverImageThumbPath = null;
+        $this->coverImageFullPath = null;
         $this->shouldRemoveCover = true;
     }
 
@@ -206,17 +215,17 @@ class PostForm extends Component
             if ($this->post !== null) {
                 $this->post->update($data);
 
-                // Handle cover image update
-                if ($this->shouldRemoveCover && $this->post->coverImage) {
-                    $this->post->coverImage->delete();
-                } elseif ($this->coverImageFull && $this->coverImageFull !== \App\Support\ImageUrl::public($this->post->coverImage?->full_path ?? '')) {
-                    // New cover uploaded
+                if ($this->shouldRemoveCover) {
+                    if ($this->post->coverImage) {
+                        $this->post->coverImage->delete();
+                    }
+                } elseif ($this->coverImageFullPath) {
                     if ($this->post->coverImage) {
                         $this->post->coverImage->delete();
                     }
                     $this->post->coverImage()->create([
-                        'thumb_path' => $this->coverImageThumb ? basename(parse_url($this->coverImageThumb, PHP_URL_PATH)) : null,
-                        'full_path' => $this->coverImageFull ? basename(parse_url($this->coverImageFull, PHP_URL_PATH)) : null,
+                        'thumb_path' => $this->coverImageThumbPath,
+                        'full_path' => $this->coverImageFullPath,
                         'order' => 0,
                     ]);
                 }
@@ -224,11 +233,10 @@ class PostForm extends Component
                 $data['author_id'] = $user->id;
                 $this->post = Post::create($data);
 
-                // Create cover image if uploaded
-                if ($this->coverImageFull) {
+                if ($this->coverImageFullPath) {
                     $this->post->coverImage()->create([
-                        'thumb_path' => $this->coverImageThumb ? basename(parse_url($this->coverImageThumb, PHP_URL_PATH)) : null,
-                        'full_path' => $this->coverImageFull ? basename(parse_url($this->coverImageFull, PHP_URL_PATH)) : null,
+                        'thumb_path' => $this->coverImageThumbPath,
+                        'full_path' => $this->coverImageFullPath,
                         'order' => 0,
                     ]);
                 }

@@ -3,7 +3,6 @@ import StarterKit from "@tiptap/starter-kit";
 import ImageAlign from "../tiptap/extensions/ImageAlign.js";
 import ClearFloat from "../tiptap/extensions/ClearFloat.js";
 import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
 import CharacterCount from "@tiptap/extension-character-count";
 import Typography from "@tiptap/extension-typography";
 import TextAlign from "@tiptap/extension-text-align";
@@ -108,7 +107,6 @@ export default (config = {}) => {
                     Placeholder.configure({
                         placeholder: "Escribe el contenido del post...",
                     }),
-                    Underline,
                     CharacterCount,
                     Typography,
                     TextAlign.configure({

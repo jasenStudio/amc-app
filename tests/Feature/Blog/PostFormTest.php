@@ -161,6 +161,33 @@ class PostFormTest extends TestCase
         $this->assertFalse(Storage::disk($this->disk)->exists($paths['thumb']));
     }
 
+    public function test_cover_image_is_saved_with_provided_paths(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $paths = app(ConvertImageToWebp::class)(
+            new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true),
+            'blog/webp',
+            $this->disk
+        );
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'Covered')
+            ->set('slug', 'covered')
+            ->set('body', '<p>x</p>')
+            ->set('coverImageThumbPath', $paths['thumb'])
+            ->set('coverImageFullPath', $paths['full'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $post = Post::query()->where('slug', 'covered')->first();
+        $this->assertNotNull($post);
+        $this->assertNotNull($post->coverImage);
+        $this->assertSame($paths['thumb'], $post->coverImage->thumb_path);
+        $this->assertSame($paths['full'], $post->coverImage->full_path);
+    }
+
     public function test_editor_can_open_form_for_their_own_post(): void
     {
         $editor = User::factory()->editor()->create();

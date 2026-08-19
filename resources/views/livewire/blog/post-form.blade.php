@@ -49,13 +49,10 @@
 
                 <flux:card>
                     <livewire:ui.image-uploader
-                        :endpoint="route('dashboard.images.store')"
                         path="blog/webp"
                         :slug-hint="$slug"
                         :existing-thumb-url="$coverImageThumb"
                         :existing-full-url="$coverImageFull"
-                        @image-uploaded="onImageUploaded"
-                        @image-removed="onImageRemoved"
                     />
                 </flux:card>
 

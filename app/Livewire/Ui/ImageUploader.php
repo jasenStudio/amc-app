@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Ui;
 
+use App\Actions\Images\UploadImageAction;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -13,8 +15,6 @@ class ImageUploader extends Component
     use WithFileUploads;
 
     public ?UploadedFile $upload = null;
-
-    public string $endpoint;
 
     public string $path;
 
@@ -27,13 +27,11 @@ class ImageUploader extends Component
     public bool $loading = false;
 
     public function mount(
-        string $endpoint,
         string $path,
         ?string $slugHint = null,
         ?string $existingThumbUrl = null,
         ?string $existingFullUrl = null,
     ): void {
-        $this->endpoint = $endpoint;
         $this->path = $path;
         $this->slugHint = $slugHint;
         $this->existingThumbUrl = $existingThumbUrl;
@@ -42,28 +40,43 @@ class ImageUploader extends Component
 
     public function uploadImage(): void
     {
-        if (!$this->upload instanceof UploadedFile) {
+        if (! $this->upload instanceof UploadedFile) {
             return;
         }
+
+        if ($this->isRateLimited()) {
+            $this->addError('upload', __('Too many uploads. Please try again in a moment.'));
+
+            return;
+        }
+
+        $this->hitRateLimiter();
 
         $this->loading = true;
 
         try {
-            $response = $this->uploadToEndpoint($this->upload);
+            $paths = app(UploadImageAction::class)(
+                $this->upload,
+                $this->path,
+                $this->slugHint,
+                'public',
+            );
 
-            if ($response['success']) {
-                $this->existingThumbUrl = $response['thumb_url'];
-                $this->existingFullUrl = $response['full_url'];
-                $this->upload = null;
+            $thumbUrl = Storage::disk('public')->url($paths['thumb']);
+            $fullUrl = Storage::disk('public')->url($paths['full']);
 
-                $this->dispatch('image-uploaded', [
-                    'thumb' => $response['thumb'],
-                    'full' => $response['full'],
-                    'url' => $response['full_url'],
-                ]);
-            } else {
-                $this->addError('upload', $response['error']);
-            }
+            $this->existingThumbUrl = $thumbUrl;
+            $this->existingFullUrl = $fullUrl;
+            $this->upload = null;
+
+            $this->dispatch('image-uploaded', [
+                'thumb' => $paths['thumb'],
+                'full' => $paths['full'],
+                'thumb_url' => $thumbUrl,
+                'full_url' => $fullUrl,
+            ]);
+        } catch (\Throwable $e) {
+            $this->addError('upload', $e->getMessage());
         } finally {
             $this->loading = false;
         }
@@ -83,55 +96,18 @@ class ImageUploader extends Component
         return view('livewire.ui.image-uploader');
     }
 
-    private function uploadToEndpoint(UploadedFile $file): array
+    private function isRateLimited(): bool
     {
-        $csrf = csrf_token();
+        return RateLimiter::tooManyAttempts($this->rateLimiterKey(), 15);
+    }
 
-        $ch = curl_init($this->endpoint);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                'upload' => curl_file_create(
-                    $file->getRealPath(),
-                    $file->getMimeType(),
-                    $file->getClientOriginalName(),
-                ),
-                'path' => $this->path,
-                'slugHint' => $this->slugHint ?? '',
-            ],
-            CURLOPT_HTTPHEADER => [
-                'X-CSRF-TOKEN: ' . $csrf,
-                'Accept: application/json',
-            ],
-        ]);
+    private function hitRateLimiter(): void
+    {
+        RateLimiter::hit($this->rateLimiterKey(), 60);
+    }
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode !== 200 || !$response) {
-            return [
-                'success' => false,
-                'error' => 'Upload failed. Please try again.',
-            ];
-        }
-
-        $data = json_decode($response, true);
-
-        if (!isset($data['thumb'], $data['full'], $data['url'])) {
-            return [
-                'success' => false,
-                'error' => 'Invalid response from server.',
-            ];
-        }
-
-        return [
-            'success' => true,
-            'thumb' => $data['thumb'],
-            'full' => $data['full'],
-            'thumb_url' => Storage::disk('public')->url($data['thumb']),
-            'full_url' => $data['url'],
-        ];
+    private function rateLimiterKey(): string
+    {
+        return 'dashboard-images|'.(auth()->id() ?: request()->ip());
     }
 }
