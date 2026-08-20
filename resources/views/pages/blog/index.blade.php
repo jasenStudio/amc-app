@@ -6,8 +6,8 @@
         <h1 class="mt-4 text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
             {{ __('Ideas for moving forward.') }}
         </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-amc-gray-text">
-            {{ __('Read our latest perspectives, practical guides, and lessons from the work we do.') }}
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-amc-gray-text">
+            {{ __('Perspectives, pratical guides') }}
         </p>
 
         @if ($tags->isNotEmpty())
@@ -41,18 +41,19 @@
                             @if ($post->tags->isNotEmpty())
                                 <div class="mb-2 flex flex-wrap gap-1">
                                     @foreach ($post->tags as $tag)
-                                        <span class="text-xs font-medium text-amc-orange-text">{{ $tag->name }}</span>
+                                        <span
+                                            class="text-xs font-medium text-amc-orange-text">{{ $tag->name }}</span>
                                     @endforeach
                                 </div>
                             @endif
                             <h3
-                                class="text-lg font-semibold text-amc-blue group-hover:text-amc-orange transition dark:text-white dark:group-hover:text-amc-orange">
+                                class="text-lg font-semibold text-amc-blue group-hover:text-amc-orange transition dark:group-hover:text-amc-orange group-hover:underline group-hover:underline-offset-3">
                                 {{ $post->title }}
                             </h3>
                             @if ($post->excerpt)
                                 <p class="mt-1 text-sm text-zinc-500 line-clamp-2">{{ $post->excerpt }}</p>
                             @endif
-                            <p class="mt-2 text-xs text-zinc-400">{{ $post->published_at?->format('M d, Y') }}</p>
+                            <p class="mt-2 text-xs text-zinc-500">{{ $post->published_at?->format('M d, Y') }}</p>
                         </div>
                     </a>
                 @endforeach

@@ -4,13 +4,15 @@
 <head>
     @include('partials.head-public')
     @commenterStyles
+    @livewireStyles
 </head>
 
-<body class="min-h-screen bg-white font-sans text-amc-blue antialiased">
+<body class="min-h-screen font-sans text-amc-blue antialiased bg-amc-blue">
     {{ $slot }}
 
     @stack('scripts')
     @commenterScripts
+    @livewireScripts
 </body>
 
 </html>

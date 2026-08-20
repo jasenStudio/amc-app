@@ -29,26 +29,14 @@
             </div>
         </section>
 
-        <section id="blog" aria-labelledby="blog-title" class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Blog') }}</p>
-            <h2 id="blog-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
-                {{ __('Ideas for moving forward.') }}
-            </h2>
-            <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
-                {{ __('Read our latest perspectives, practical guides, and lessons from the work we do.') }}
-            </p>
-            <livewire:blog.featured-posts />
-            <a href="{{ route('blog') }}"
-                class="mt-8 inline-flex text-base font-semibold text-amc-orange-text transition hover:text-amc-orange-hover">
-                {{ __('Ir al blog') }} <span aria-hidden="true">&rarr;</span>
-            </a>
-        </section>
+        <x-sections.blog />
 
         <section id="contact" aria-labelledby="contact-title" class="bg-amc-blue text-white">
             <div
                 class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-24 sm:flex-row sm:items-end sm:justify-between lg:px-8">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Contact') }}
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">
+                        {{ __('Contact') }}
                     </p>
                     <h2 id="contact-title" class="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
                         {{ __('Have a project in mind? Let us talk.') }}</h2>

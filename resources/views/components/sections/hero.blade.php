@@ -1,5 +1,6 @@
 <!-- TODO AGREGAR LOS VINCULOS PARA LOS CTA -->
-<section id="hero" aria-labelledby="hero-accessible-title" class="relative isolate overflow-hidden bg-amc-blue">
+<section id="hero" style="background-color: #00203f" aria-labelledby="hero-accessible-title"
+    class="relative isolate overflow-hidden bg-amc-blue">
     <picture>
         <source media="(max-width: 767px)" srcset="{{ asset('assets/images/hero-amc-gestion-riesgo.webp') }}">
         <source media="(min-width: 768px)" srcset="{{ asset('assets/images/hero-amc-desktop.webp') }}">
