@@ -14,12 +14,15 @@ return new class extends Migration
         $posts = Post::whereNotNull('cover_image')->get();
 
         foreach ($posts as $post) {
-            if ($post->cover_image && $post->cover_image_thumb) {
+            $coverImage = $post->getAttribute('cover_image');
+            $coverImageThumb = $post->getAttribute('cover_image_thumb');
+
+            if ($coverImage && $coverImageThumb) {
                 Image::create([
                     'imageable_type' => Post::class,
                     'imageable_id' => $post->id,
-                    'thumb_path' => $post->cover_image_thumb,
-                    'full_path' => $post->cover_image,
+                    'thumb_path' => $coverImageThumb,
+                    'full_path' => $coverImage,
                     'order' => 0,
                 ]);
             }

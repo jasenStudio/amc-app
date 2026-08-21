@@ -28,6 +28,9 @@ class GalleryUploader extends Component
 
     public bool $loading = false;
 
+    /**
+     * @param  array<int, array{thumb: string, full: string, url: string, alt?: string}>  $images
+     */
     public function mount(
         string $path,
         ?string $slugHint = null,
@@ -40,6 +43,9 @@ class GalleryUploader extends Component
         $this->images = $images;
     }
 
+    /**
+     * @param  array<int, UploadedFile>  $uploads
+     */
     public function updatedUploads(array $uploads): void
     {
         if (empty($uploads)) {

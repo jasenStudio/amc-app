@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Images\ConvertImageToWebp;
+use Database\Factories\ImageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Image extends Model
 {
+    /** @use HasFactory<ImageFactory> */
     use HasFactory;
 
     protected $fillable = [

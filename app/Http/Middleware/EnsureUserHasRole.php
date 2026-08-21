@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if ($user !== null && $user->role === null) {
+        if ($user !== null && $user instanceof User && $user->role === null) {
             abort(403);
         }
 

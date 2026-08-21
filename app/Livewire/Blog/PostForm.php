@@ -108,6 +108,9 @@ class PostForm extends Component
         }
     }
 
+    /**
+     * @param  array{thumb_url?: string, full_url?: string, thumb?: string, full?: string}  $imageData
+     */
     #[On('image-uploaded')]
     public function onImageUploaded(array $imageData): void
     {

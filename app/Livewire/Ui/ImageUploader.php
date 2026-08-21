@@ -36,6 +36,9 @@ class ImageUploader extends Component
     /** @var array{min_width:int,min_height:int,min_ratio:float,max_ratio:float}|null */
     public ?array $coverConstraints = null;
 
+    /**
+     * @param  array{min_width: int, min_height: int, min_ratio: float, max_ratio: float}|null  $coverConstraints
+     */
     public function mount(
         string $path,
         ?string $slugHint = null,
@@ -86,10 +89,10 @@ class ImageUploader extends Component
             if ($this->coverConstraints !== null) {
                 $c = $this->coverConstraints;
                 $rules['upload'][] = new ValidCoverImage(
-                    minWidth: $c['min_width'] ?? 1200,
-                    minHeight: $c['min_height'] ?? 675,
-                    minRatio: $c['min_ratio'] ?? 1.6,
-                    maxRatio: $c['max_ratio'] ?? 2.1,
+                    minWidth: $c['min_width'],
+                    minHeight: $c['min_height'],
+                    minRatio: $c['min_ratio'],
+                    maxRatio: $c['max_ratio'],
                 );
             }
 
