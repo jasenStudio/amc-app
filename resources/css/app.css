@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import '../../vendor/livewire/flux/dist/flux.css';
+@import "tailwindcss";
+@import "../../vendor/livewire/flux/dist/flux.css";
+@plugin '@tailwindcss/typography';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -9,7 +10,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -22,6 +26,10 @@
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
+
+    --color-amc-blue: #00203f;
+    --color-amc-orange: #f37b12;
+    --color-amc-orange-hover: #d96c0f;
 
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
@@ -37,7 +45,6 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -52,7 +59,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
@@ -61,6 +68,178 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+[data-tiptap-target="toolbar"] button.is-active {
+    @apply bg-white text-zinc-900 ring-1 ring-inset ring-zinc-900;
+}
+
+.dark [data-tiptap-target="toolbar"] button.is-active {
+    @apply bg-zinc-100 text-zinc-900 ring-1 ring-inset ring-zinc-900;
+}
+
+[data-tiptap-target="toolbar"] button:focus-visible {
+    @apply outline-none ring-2 ring-zinc-900 dark:ring-zinc-100;
+}
+
+/* Tiptap Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+    @apply float-left text-zinc-400 pointer-events-none h-0;
+    content: attr(data-placeholder);
+}
+
+.ProseMirror .is-empty::before {
+    @apply text-zinc-400 pointer-events-none;
+    content: attr(data-placeholder);
+}
+
+/* Tiptap Image Resize Handles */
+[data-resize-container] {
+    @apply inline-block;
+}
+
+[data-resize-container][data-node="image"] {
+    @apply block;
+}
+
+[data-resize-wrapper] img {
+    @apply max-w-full;
+    margin-block: 20px;
+}
+
+[data-resize-handle] {
+    @apply absolute z-10;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 2px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-resize-handle="top-left"] {
+    cursor: nwse-resize;
+}
+
+[data-resize-handle="top-right"] {
+    cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-left"] {
+    cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-right"] {
+    cursor: nwse-resize;
+}
+
+[data-resize-handle="top"],
+[data-resize-handle="bottom"] {
+    cursor: ns-resize;
+    width: 12px;
+    height: 12px;
+    left: 50%; 
+    transform: translateX(-50%);
+}
+
+[data-resize-handle="left"],
+[data-resize-handle="right"] {
+    cursor: ew-resize;
+    width: 12px;
+    height: 12px;
+    top: 50%;
+    background-color: white;
+    transform: translateY(-50%);
+}
+
+[data-resize-state="true"] img {
+    @apply opacity-80;
+}
+
+.ProseMirror
+    .ProseMirror-selectednode
+    > [data-resize-wrapper]
+    > [data-resize-handle] {
+    @apply visible;
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+    @apply outline-2 outline-blue-500 outline-offset-1;
+}
+
+/* Tiptap Image Alignment */
+.ProseMirror [data-resize-container]:has(img[data-align="left"]) {
+    float: left;
+    margin: 0.25em 1.5em 1em 0;
+    max-width: 50%;
+}
+
+.ProseMirror [data-resize-container]:has(img[data-align="right"]) {
+    float: right;
+    margin: 0.25em 0 1em 1.5em;
+    max-width: 50%;
+}
+
+.ProseMirror [data-resize-container]:has(img[data-align="center"]) {
+    display: block;
+    float: none;
+    text-align: center;
+}
+
+.ProseMirror
+    [data-resize-container]:has(img[data-align="center"])
+    [data-resize-wrapper] {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ProseMirror h2, h3 {
+    margin-block-start: 0;
+    margin-block-end: 10px;
+}
+
+.ProseMirror p {
+    margin-block-start: 0;
+    margin-block-end: 5px;
+}
+
+.ProseMirror p[data-clear-float="true"] {
+    clear: both;
+}
+
+.ProseMirror::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Tiptap Table */
+.ProseMirror table {
+    @apply w-full border-collapse border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+    @apply border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-left;
+}
+
+.ProseMirror th {
+    @apply bg-zinc-100 dark:bg-zinc-800 font-semibold;
+}
+
+.ProseMirror td {
+    @apply bg-white dark:bg-zinc-900;
+}
+
+.ProseMirror .selectedCell {
+    @apply bg-blue-50 dark:bg-blue-900/30;
+}
+
+.ProseMirror .column-resize-handle {
+    @apply bg-blue-500 w-0.5 absolute top-0 bottom-0 right-0;
+}
+
+.ProseMirror.resize-cursor {
+    @apply cursor-col-resize;
+}
+
+
+/*** TODO ARREGLAR STULE DE NAVEGADOR

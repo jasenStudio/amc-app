@@ -9,7 +9,7 @@ class ServicesController extends Controller
 {
     public function index(): View
     {
-        return view('pages::services', ['services' => config('services.items')]);
+        return view('pages::services.index', ['services' => config('services.items')]);
     }
 
     public function show(string $slug): View

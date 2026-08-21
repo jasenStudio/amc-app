@@ -1,11 +1,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <title>
-    {{ filled($title ?? null) ? $title . ' - ' . config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
+    {{ filled($title ?? null) ? $title . ' - ' . config('app.name', 'AMC Gestión de Riesgos | Seguridad en alturas y líneas de vida') : config('app.name', 'AMC Gestión de Riesgos | Seguridad en alturas y líneas de vida') }}
 </title>
 
-<meta name="description" content="{{ $description ?? config('app.name', 'Laravel') }}" />
+<meta name="description"
+    content="{{ $description ?? config('app.name', 'AMC Gestión de Riesgos SAS ofrece instalación de líneas de vida, puntos de anclaje certificados, seguridad en alturas y asesorías SG-SST para empresas.') }}" />
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

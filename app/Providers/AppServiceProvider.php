@@ -2,9 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureAuthorization();
     }
 
     /**
@@ -46,5 +52,22 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Register role-based authorization gates.
+     *
+     * Roles are nullable: users with `role = null` (e.g., freshly registered
+     * through the starter kit) are denied every gate.
+     */
+    protected function configureAuthorization(): void
+    {
+        Gate::define('admin', fn (?User $user): bool => $user?->role === 'admin');
+
+        Gate::define('manage-posts', fn (?User $user): bool => in_array($user?->role, ['admin', 'editor'], true));
+
+        RateLimiter::for('blog-inline-images', fn (Request $request) => Limit::perMinute(30)->by($request->user()?->id ?: $request->ip()));
+
+        RateLimiter::for('dashboard-images', fn (Request $request) => Limit::perMinute(15)->by($request->user()?->id ?: $request->ip()));
     }
 }
