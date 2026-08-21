@@ -15,6 +15,7 @@ return [
     'attach' => 'Adjuntar',
     'browse' => 'Navegar',
     'cancel' => 'Cancelar',
+    'characters' => 'caracteres',
     'choose' => 'Elegir',
     'choose_file' => 'Elegir archivo',
     'choose_image' => 'Elegir Imagen',
@@ -116,4 +117,8 @@ return [
     'user' => 'Usuario',
     'view' => 'Ver',
     'yes' => 'Sí',
+    'youtube_url' => 'URL de YouTube',
+    'youtube_url_invalid' => 'URL no válida. Solo se permiten enlaces de YouTube.',
+    'select_image_first' => 'Seleccioná una imagen primero.',
+    'image_alt' => 'Texto alternativo de la imagen',
 ];
