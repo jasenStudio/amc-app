@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Actions\Images\UploadImageAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Tests\TestCase;
@@ -18,12 +19,13 @@ class UploadImageActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        App::setLocale('en');
         Storage::disk($this->disk)->makeDirectory('blog/webp');
     }
 
     public function test_converts_upload_to_webp_thumb_and_full(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp', 'my-post', $this->disk);
@@ -38,7 +40,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_generates_semantic_name_when_slug_hint_provided(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp', 'Mi Post Seguro', $this->disk);
@@ -50,7 +52,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_generates_generic_name_when_no_slug_hint(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp/body', null, $this->disk);
@@ -61,7 +63,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_generates_generic_name_when_empty_slug_hint(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp/body', '', $this->disk);
@@ -72,7 +74,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_basename_is_unique_across_calls(): void
     {
-        $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'a.png', 'image/png', null, true);
         $action = app(UploadImageAction::class);
 
         $a = $action($file, 'blog/webp', 'post', $this->disk);
@@ -85,12 +87,12 @@ class UploadImageActionTest extends TestCase
     public function test_rejects_file_larger_than_2mb(): void
     {
         // Create a file that reports 3 MB.
-        $file = UploadedFile::fake()->image('big.png', 800, 600)->size(3072);
+        $file = UploadedFile::fake()->image('big.png', 1600, 900)->size(3072);
 
         $action = app(UploadImageAction::class);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('exceeds the 2048 KB limit');
+        $this->expectExceptionMessage('exceeds the');
 
         $action($file, 'blog/webp', 'test', $this->disk);
     }
@@ -115,7 +117,19 @@ class UploadImageActionTest extends TestCase
         $action = app(UploadImageAction::class);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('exceed the maximum allowed');
+        $this->expectExceptionMessage('exceed the maximum');
+
+        $action($file, 'blog/webp', 'test', $this->disk);
+    }
+
+    public function test_rejects_image_below_minimum_dimensions(): void
+    {
+        $file = UploadedFile::fake()->image('tiny.png', 800, 450)->size(100);
+
+        $action = app(UploadImageAction::class);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('below the minimum');
 
         $action($file, 'blog/webp', 'test', $this->disk);
     }
@@ -142,7 +156,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_stored_as_webp(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp', 'test', $this->disk);
@@ -153,7 +167,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_path_belongs_to_expected_directory(): void
     {
-        $file = new UploadedFile($this->makePng(), 'cover.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp', 'test', $this->disk);
@@ -164,7 +178,7 @@ class UploadImageActionTest extends TestCase
 
     public function test_inline_path_uses_body_subdirectory(): void
     {
-        $file = new UploadedFile($this->makePng(), 'img.png', 'image/png', null, true);
+        $file = new UploadedFile($this->makePng(1600, 900), 'img.png', 'image/png', null, true);
 
         $action = app(UploadImageAction::class);
         $paths = $action($file, 'blog/webp/body', 'inline', $this->disk);

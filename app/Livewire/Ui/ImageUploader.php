@@ -4,10 +4,12 @@ namespace App\Livewire\Ui;
 
 use App\Actions\Images\ConvertImageToWebp;
 use App\Actions\Images\UploadImageAction;
+use App\Rules\ValidCoverImage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -31,16 +33,21 @@ class ImageUploader extends Component
 
     public bool $loading = false;
 
+    /** @var array{min_width:int,min_height:int,min_ratio:float,max_ratio:float}|null */
+    public ?array $coverConstraints = null;
+
     public function mount(
         string $path,
         ?string $slugHint = null,
         ?string $existingThumbUrl = null,
         ?string $existingFullUrl = null,
+        ?array $coverConstraints = null,
     ): void {
         $this->path = $path;
         $this->slugHint = $slugHint;
         $this->existingThumbUrl = $existingThumbUrl;
         $this->existingFullUrl = $existingFullUrl;
+        $this->coverConstraints = $coverConstraints;
     }
 
     public function updatedUpload(?UploadedFile $upload): void
@@ -61,6 +68,8 @@ class ImageUploader extends Component
             return;
         }
 
+        $this->upload = $file;
+
         if ($this->isRateLimited()) {
             $this->addError('upload', __('Too many uploads. Please try again in a moment.'));
 
@@ -72,6 +81,20 @@ class ImageUploader extends Component
         $this->loading = true;
 
         try {
+            $rules = ['upload' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']];
+
+            if ($this->coverConstraints !== null) {
+                $c = $this->coverConstraints;
+                $rules['upload'][] = new ValidCoverImage(
+                    minWidth: $c['min_width'] ?? 1200,
+                    minHeight: $c['min_height'] ?? 675,
+                    minRatio: $c['min_ratio'] ?? 1.6,
+                    maxRatio: $c['max_ratio'] ?? 2.1,
+                );
+            }
+
+            $this->validate($rules);
+
             $paths = app(UploadImageAction::class)(
                 $file,
                 $this->path,
@@ -96,6 +119,12 @@ class ImageUploader extends Component
                 'thumb_url' => $thumbUrl,
                 'full_url' => $fullUrl,
             ]);
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
         } catch (\Throwable $e) {
             $this->addError('upload', $e->getMessage());
         } finally {

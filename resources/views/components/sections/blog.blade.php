@@ -7,7 +7,7 @@
                    {{ __('Read our latest perspectives, practical guides, and lessons from the work we do.') }}
                </p>
                <livewire:blog.featured-posts />
-               <a href="{{ route('blog') }}"
+               <a href="{{ route('blog') }}" data-id="link-to-posts"
                    class="mt-8 inline-flex text-base font-semibold text-amc-orange-text transition hover:text-amc-orange-hover">
                    {{ __('Ir al blog') }} <span aria-hidden="true">&rarr;</span>
                </a>

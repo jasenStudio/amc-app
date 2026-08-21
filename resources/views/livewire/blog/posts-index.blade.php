@@ -13,19 +13,19 @@
         <flux:input wire:model.live.debounce.300ms="search" :label="__('Search')" type="search"
             placeholder="{{ __('Title or tag…') }}" />
 
-        <flux:select wire:model.live="status" :label="__('Status')" placeholder="{{ __('Any') }}">
+        <flux:select wire:model.live="status" :label="__('Status')" placeholder="{{ __('Todos los Estados') }}">
             @foreach ($statuses as $s)
-                <flux:select.option :value="$s->value">{{ ucfirst($s->value) }}</flux:select.option>
+                <flux:select.option :value="$s->value">{{ __(ucfirst($s->value)) }}</flux:select.option>
             @endforeach
         </flux:select>
 
         <flux:select wire:model.live="featured" :label="__('Featured')">
-            <flux:select.option value="">{{ __('Any') }}</flux:select.option>
+            <flux:select.option value="">{{ __('Cualquier') }}</flux:select.option>
             <flux:select.option value="yes">{{ __('Featured only') }}</flux:select.option>
             <flux:select.option value="no">{{ __('Not featured') }}</flux:select.option>
         </flux:select>
 
-        <flux:select wire:model.live="tag" :label="__('Tag')" placeholder="{{ __('Any') }}">
+        <flux:select wire:model.live="tag" :label="__('Tag')" placeholder="{{ __('Todos las etiquetas') }}">
             @foreach ($tags as $t)
                 <flux:select.option :value="$t->slug">{{ $t->name }}</flux:select.option>
             @endforeach

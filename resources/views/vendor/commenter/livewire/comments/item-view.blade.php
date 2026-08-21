@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div @class(["w-full md:w-[96%]" => Helpers::isModernTheme()])>
+            <div @class(["w-full md:w-[96%] min-w-0" => Helpers::isModernTheme()])>
                 <div
                     @class([
                         "flex items-center justify-between p-1",
@@ -239,7 +239,7 @@
                          }, 2000);
                     }
                 }"
-                    class="p-1"
+                    class="p-1 break-words"
                 >
                     {!! $comment->text !!}
                 </div>

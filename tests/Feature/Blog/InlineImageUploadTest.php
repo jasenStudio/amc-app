@@ -67,7 +67,7 @@ class InlineImageUploadTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         // 3 MB file exceeds the 2 MB limit.
-        $file = UploadedFile::fake()->image('cover.png', 800, 600)->size(3072);
+        $file = UploadedFile::fake()->image('cover.png', 1600, 900)->size(3072);
 
         $this->actingAs($admin)
             ->postJson(route('blog.images.store'), [
@@ -210,7 +210,23 @@ class InlineImageUploadTest extends TestCase
             ->assertUnprocessable();
     }
 
-    private function uploadedPng(int $width = 800, int $height = 600): UploadedFile
+    public function test_small_image_is_accepted(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        // 400x300 is below the 1200x675 minimum that applies to covers/gallery,
+        // but inline images are exempt from that constraint.
+        $file = $this->uploadedPng(400, 300);
+
+        $this->actingAs($admin)
+            ->postJson(route('blog.images.store'), [
+                'upload' => $file,
+            ])
+            ->assertOk()
+            ->assertJsonStructure(['url']);
+    }
+
+    private function uploadedPng(int $width = 1600, int $height = 900): UploadedFile
     {
         return UploadedFile::fake()->image('cover.png', $width, $height)->size(100);
     }

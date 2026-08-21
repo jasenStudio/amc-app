@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('AMC Gestión de Riesgos | Seguridad en alturas y líneas de vida')" :description="__(
     'AMC Gestión de Riesgos SAS ofrece instalación de líneas de vida, puntos de anclaje certificados, seguridad en alturas y asesorías SG-SST para empresas.',
-)">
+)" bodyBg="bg-amc-blue">
 
     <x-header />
 

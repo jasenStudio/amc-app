@@ -209,7 +209,7 @@ return [
                 ['link', 'code-block'],
             ],
         ],
-        'placeholder' => 'Your message here',
+        'placeholder' => 'Escribe tu mensaje aquí',
         'theme' => 'snow',
     ],
 

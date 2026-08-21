@@ -64,6 +64,7 @@ class ImageUploaderTest extends TestCase
         Livewire::actingAs($editor)
             ->test(ImageUploader::class, ['path' => 'blog/webp', 'slugHint' => 'mi-post'])
             ->call('uploadImage', $file)
+            ->assertHasNoErrors()
             ->assertDispatched('image-uploaded');
 
         $files = Storage::disk($this->disk)->allFiles('blog/webp');
@@ -73,7 +74,7 @@ class ImageUploaderTest extends TestCase
         }
     }
 
-    private function makePng(int $width = 800, int $height = 600): string
+    private function makePng(int $width = 1600, int $height = 900): string
     {
         $path = tempnam(sys_get_temp_dir(), 'png_').'.png';
         $im = imagecreatetruecolor($width, $height);

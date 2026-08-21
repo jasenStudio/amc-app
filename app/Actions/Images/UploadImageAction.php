@@ -21,6 +21,10 @@ class UploadImageAction
 
     public const MAX_HEIGHT = 3000;
 
+    public const MIN_WIDTH = 1200;
+
+    public const MIN_HEIGHT = 675;
+
     /**
      * @var array<int, string>
      */
@@ -32,6 +36,7 @@ class UploadImageAction
      * @param  string  $basePath  Relative directory inside the disk (e.g. `blog/webp`).
      * @param  string|null  $slugHint  Optional semantic hint derived from a title or context.
      * @param  string  $disk  Laravel filesystem disk name.
+     * @param  bool  $enforceMinDimensions  Whether to enforce MIN_WIDTH/MIN_HEIGHT constraints.
      * @return array{thumb: string, full: string} Relative paths inside the disk.
      *
      * @throws RuntimeException When validation fails.
@@ -41,8 +46,9 @@ class UploadImageAction
         string $basePath,
         ?string $slugHint = null,
         string $disk = 'public',
+        bool $enforceMinDimensions = true,
     ): array {
-        $this->validate($file);
+        $this->validate($file, $enforceMinDimensions);
 
         $basename = $this->generateBasename($slugHint);
 
@@ -57,35 +63,47 @@ class UploadImageAction
     /**
      * @throws RuntimeException
      */
-    private function validate(UploadedFile $file): void
+    private function validate(UploadedFile $file, bool $enforceMinDimensions): void
     {
         if ($file->getSize() > self::MAX_BYTES) {
             throw new RuntimeException(
-                sprintf('Image exceeds the %d KB limit.', self::MAX_BYTES / 1024)
+                __('Image exceeds the :max KB limit.', ['max' => self::MAX_BYTES / 1024])
             );
         }
 
         $mime = (string) ($file->getMimeType() ?: '');
         if (! in_array($mime, self::ALLOWED_MIMES, true)) {
-            throw new RuntimeException("Image mime [{$mime}] is not permitted.");
+            throw new RuntimeException(
+                __('Image mime [:mime] is not permitted.', ['mime' => $mime])
+            );
         }
 
         $dimensions = @getimagesize($file->getRealPath());
         if ($dimensions === false) {
-            throw new RuntimeException('Unable to read image dimensions.');
+            throw new RuntimeException(__('Unable to read image dimensions.'));
         }
 
         [$width, $height] = $dimensions;
 
+        if ($enforceMinDimensions && ($width < self::MIN_WIDTH || $height < self::MIN_HEIGHT)) {
+            throw new RuntimeException(
+                __('Image dimensions (:widthx:height) are below the minimum (:min_widthx:min_height).', [
+                    'width' => $width,
+                    'height' => $height,
+                    'min_width' => self::MIN_WIDTH,
+                    'min_height' => self::MIN_HEIGHT,
+                ])
+            );
+        }
+
         if ($width > self::MAX_WIDTH || $height > self::MAX_HEIGHT) {
             throw new RuntimeException(
-                sprintf(
-                    'Image dimensions (%dx%d) exceed the maximum allowed (%dx%d).',
-                    $width,
-                    $height,
-                    self::MAX_WIDTH,
-                    self::MAX_HEIGHT,
-                )
+                __('Image dimensions (:widthx:height) exceed the maximum (:max_widthx:max_height).', [
+                    'width' => $width,
+                    'height' => $height,
+                    'max_width' => self::MAX_WIDTH,
+                    'max_height' => self::MAX_HEIGHT,
+                ])
             );
         }
     }

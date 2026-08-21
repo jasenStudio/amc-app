@@ -1,4 +1,4 @@
-<svg class="w-4" viewBox="-0.5 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg"
+<svg class="w-4 -scale-x-100" viewBox="-0.5 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg"
      xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

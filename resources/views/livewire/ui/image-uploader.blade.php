@@ -28,7 +28,7 @@
         </label>
 
         @error('upload')
-            <p class="text-xs text-red-500">{{ $message }}</p>
+            <flux:error name="upload" />
         @enderror
 
         @if ($upload)

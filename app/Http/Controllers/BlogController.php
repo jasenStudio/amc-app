@@ -14,6 +14,8 @@ class BlogController extends Controller
     public function index(): View
     {
         $tagSlug = request('tag');
+        $search = request('q');
+        $date = request('date');
 
         $posts = collect();
         $tags = collect();
@@ -24,6 +26,11 @@ class BlogController extends Controller
                 ->ordered()
                 ->with(['tags', 'coverImage'])
                 ->when($tagSlug !== null && $tagSlug !== '', fn (Builder $q) => $q->whereHas('tags', fn (Builder $t) => $t->where('slug', $tagSlug)))
+                ->when($search !== null && $search !== '', fn (Builder $q) => $q->where(function (Builder $q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('excerpt', 'like', "%{$search}%");
+                }))
+                ->when($date !== null && $date !== '', fn (Builder $q) => $q->whereDate('published_at', $date))
                 ->paginate(12)
                 ->appends(request()->query());
 

@@ -102,7 +102,7 @@ select:focus[data-flux-control] {
 
 [data-resize-wrapper] img {
     @apply max-w-full;
-    margin-block: 15px;
+    margin-block: 20px;
 }
 
 [data-resize-handle] {
@@ -191,8 +191,14 @@ select:focus[data-flux-control] {
     margin-right: auto;
 }
 
+.ProseMirror h2, h3 {
+    margin-block-start: 0;
+    margin-block-end: 10px;
+}
+
 .ProseMirror p {
-    margin-bottom: 0;
+    margin-block-start: 0;
+    margin-block-end: 5px;
 }
 
 .ProseMirror p[data-clear-float="true"] {

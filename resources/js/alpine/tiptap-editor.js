@@ -7,7 +7,12 @@ import CharacterCount from "@tiptap/extension-character-count";
 import Typography from "@tiptap/extension-typography";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
-import { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
+import {
+    Table,
+    TableRow,
+    TableCell,
+    TableHeader,
+} from "@tiptap/extension-table";
 import Youtube from "@tiptap/extension-youtube";
 
 /**
@@ -50,6 +55,7 @@ export default (config = {}) => {
         _clickHandler: null,
         _mousedownHandler: null,
         _morphHandler: null,
+        _syncTimeout: null,
         _rootEl: null,
 
         // Toolbar reactive state — driven by editor.isActive()
@@ -98,7 +104,12 @@ export default (config = {}) => {
                         allowBase64: false,
                         resize: {
                             enabled: true,
-                            directions: ["left", "right", "bottom-right", "bottom-left"],
+                            directions: [
+                                "left",
+                                "right",
+                                "bottom-right",
+                                "bottom-left",
+                            ],
                             minWidth: 50,
                             minHeight: 50,
                             alwaysPreserveAspectRatio: true,
@@ -126,8 +137,8 @@ export default (config = {}) => {
                     },
                 },
                 onUpdate: ({ editor: ed }) => {
-                    wire.set("body", ed.getHTML());
                     this.charCount = ed.storage.characterCount.characters();
+                    this.scheduleSync(wire, ed);
                 },
                 onSelectionUpdate: () => this.updateToolbarState(),
                 onTransaction: () => this.updateToolbarState(),
@@ -178,7 +189,9 @@ export default (config = {}) => {
                   ? "right"
                   : "left";
 
-            this.isClearFloat = editor.isActive("paragraph", { clearFloat: true });
+            this.isClearFloat = editor.isActive("paragraph", {
+                clearFloat: true,
+            });
         },
 
         bindToolbar(rootEl, wire) {
@@ -311,7 +324,10 @@ export default (config = {}) => {
                 return;
             }
             if (!this.isAllowedYoutubeUrl(url)) {
-                window.alert(window.__t.youtubeUrlInvalid ?? "URL no válida. Solo se permiten enlaces de YouTube.");
+                window.alert(
+                    window.__t.youtubeUrlInvalid ??
+                        "URL no válida. Solo se permiten enlaces de YouTube.",
+                );
                 return;
             }
             ed.commands.setYoutubeVideo({ src: url });
@@ -324,11 +340,10 @@ export default (config = {}) => {
             try {
                 const parsed = new URL(url);
                 const host = parsed.hostname.replace(/^www\./, "");
-                return [
-                    "youtube.com",
-                    "youtu.be",
-                    "youtube-nocookie.com",
-                ].some((allowed) => host === allowed || host.endsWith("." + allowed));
+                return ["youtube.com", "youtu.be", "youtube-nocookie.com"].some(
+                    (allowed) =>
+                        host === allowed || host.endsWith("." + allowed),
+                );
             } catch {
                 return false;
             }
@@ -336,11 +351,17 @@ export default (config = {}) => {
 
         promptImageAlt(ed) {
             if (!ed.isActive("image")) {
-                window.alert(window.__t.selectImageFirst ?? "Seleccioná una imagen primero.");
+                window.alert(
+                    window.__t.selectImageFirst ??
+                        "Seleccioná una imagen primero.",
+                );
                 return;
             }
             const prevAlt = ed.getAttributes("image").alt ?? "";
-            const alt = window.prompt(window.__t.imageAlt ?? "Texto alternativo de la imagen", prevAlt);
+            const alt = window.prompt(
+                window.__t.imageAlt ?? "Texto alternativo de la imagen",
+                prevAlt,
+            );
             if (alt === null) {
                 return;
             }
@@ -415,7 +436,17 @@ export default (config = {}) => {
             input.click();
         },
 
+        scheduleSync(wire, ed) {
+            clearTimeout(this._syncTimeout);
+            this._syncTimeout = setTimeout(() => {
+                wire.set("body", ed.getHTML(), false);
+            }, 400);
+        },
+
         destroy() {
+            clearTimeout(this._syncTimeout);
+            this._syncTimeout = null;
+
             if (this._morphHandler) {
                 document.removeEventListener(
                     "morph.removed",

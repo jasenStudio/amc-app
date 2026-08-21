@@ -36,7 +36,7 @@
                        showUpdateForm = false;
                  }
             }"
-            class="w-full"
+            class="w-full min-w-0"
         >
             <div
                 x-show="!showUpdateForm"
@@ -212,7 +212,7 @@
                             $refs.text.innerHTML = e.detail.text;
                         }
                     }"
-                    class="p-1"
+                    class="p-1 break-words"
                 >
                     {!! $reply->text !!}
                 </div>

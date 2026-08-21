@@ -3,16 +3,16 @@
 
 <head>
     @include('partials.head-public')
-    @commenterStyles
     @livewireStyles
+    @commenterStyles
 </head>
 
-<body class="min-h-screen font-sans text-amc-blue antialiased bg-amc-blue">
+<body class="min-h-screen font-sans text-amc-blue antialiased {{ $bodyBg ?? 'bg-white' }}">
     {{ $slot }}
 
     @stack('scripts')
-    @commenterScripts
     @livewireScripts
+    @commenterScripts
 </body>
 
 </html>

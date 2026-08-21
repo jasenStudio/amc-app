@@ -34,8 +34,7 @@
 
                 <div class="space-y-2">
                     <flux:textarea wire:model="excerpt" :label="__('Excerpt')"
-                        :placeholder="__('Short summary used in listings…')" rows="3"
-                        data-test="post-excerpt" />
+                        :placeholder="__('Short summary used in listings…')" rows="3" data-test="post-excerpt" />
                     <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ strlen($excerpt) }} / 500</p>
                 </div>
 
@@ -48,12 +47,18 @@
                 <x-blog.post-status />
 
                 <flux:card>
-                    <livewire:ui.image-uploader
-                        path="blog/webp"
-                        :slug-hint="$slug"
-                        :existing-thumb-url="$coverImageThumb"
-                        :existing-full-url="$coverImageFull"
-                    />
+                    <livewire:ui.image-uploader path="blog/webp" :slug-hint="$slug" :existing-thumb-url="$coverImageThumb" :existing-full-url="$coverImageFull"
+                        :cover-constraints="['min_width' => 1200, 'min_height' => 675, 'min_ratio' => 1.6, 'max_ratio' => 2.1]" />
+
+                    <div class="mt-3 text-sm text-zinc-500">
+                        {{ __('Tamaño recomendado') }}: <strong>1200 × 675px (16:9)</strong>.
+                        {{ __('Puede recortar tu imagen en') }}
+                        <a href="https://www.iloveimg.com/crop-image" target="_blank" rel="noopener"
+                            class="text-amc-orange-text underline hover:text-amc-orange-hover">
+                            iLoveIMG
+                        </a>
+                        {{ __('antes de subirlo.') }}
+                    </div>
                 </flux:card>
 
                 <div class="flex items-center justify-end gap-3">

@@ -70,7 +70,7 @@ class ImageUploadTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $file = UploadedFile::fake()->image('cover.png', 800, 600)->size(3072);
+        $file = UploadedFile::fake()->image('cover.png', 1600, 900)->size(3072);
 
         $this->actingAs($admin)
             ->postJson(route('dashboard.images.store'), [
@@ -193,7 +193,7 @@ class ImageUploadTest extends TestCase
             ->assertUnprocessable();
     }
 
-    private function uploadedPng(int $width = 800, int $height = 600): UploadedFile
+    private function uploadedPng(int $width = 1600, int $height = 900): UploadedFile
     {
         return UploadedFile::fake()->image('cover.png', $width, $height)->size(100);
     }
