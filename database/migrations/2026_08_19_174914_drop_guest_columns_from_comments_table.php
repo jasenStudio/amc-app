@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -16,7 +17,7 @@ return new class extends Migration {
             $indexes = [
                 'comments_guest_name_index',
                 'comments_guest_email_index',
-                'comments_ip_address_index'
+                'comments_ip_address_index',
             ];
 
             foreach ($indexes as $index) {
@@ -35,7 +36,7 @@ return new class extends Migration {
 
             foreach ($columns as $column) {
                 if ($this->checkColumnExists($column)) {
-                    $table->dropColumn($columns);
+                    $table->dropColumn($column);
                 }
             }
         });

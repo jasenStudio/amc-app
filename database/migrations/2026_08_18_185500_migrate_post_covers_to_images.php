@@ -2,11 +2,12 @@
 
 use App\Models\Image;
 use App\Models\Post;
+use Illuminate\Database\Migrations\Migration;
 
 /**
  * Migrate existing cover_image data from posts table to images table.
  */
-return new class extends \Illuminate\Database\Migrations\Migration
+return new class extends Migration
 {
     public function up(): void
     {

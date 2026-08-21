@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class sections.blog extends Component
+class SectionsBlog extends Component
 {
     /**
      * Create a new component instance.

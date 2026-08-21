@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ImageUploadController extends Controller
 {
@@ -35,7 +36,7 @@ class ImageUploadController extends Controller
                 'public',
             );
 
-            $url = \Illuminate\Support\Facades\Storage::disk('public')->url($paths['full']);
+            $url = Storage::disk('public')->url($paths['full']);
 
             return response()->json([
                 'thumb' => $paths['thumb'],

@@ -13,12 +13,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reactions', function (Blueprint $table) {
-           $table->id();
-           $table->morphs('owner');
-           $table->foreignIdFor(Comment::class);
+            $table->id();
+            $table->morphs('owner');
+            $table->foreignIdFor(Comment::class);
 
-           $table->string('type');
-           $table->timestamps();
+            $table->string('type');
+            $table->timestamps();
         });
     }
 

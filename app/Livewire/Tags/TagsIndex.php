@@ -21,7 +21,7 @@ class TagsIndex extends Component
         $query = Tag::query()->orderBy('name');
 
         if ($this->search !== '') {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         return view('livewire.tags.tags-index', [
