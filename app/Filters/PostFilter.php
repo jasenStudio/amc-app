@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,8 +27,8 @@ class PostFilter
 
         $user = Auth::user();
 
-        if ($user?->role !== 'admin') {
-            $query->where('author_id', $user->id);
+        if (! $user instanceof User || $user->role !== 'admin') {
+            $query->where('author_id', $user?->getAuthIdentifier());
         }
 
         if ($this->search !== '') {

@@ -133,7 +133,7 @@ class PostForm extends Component
             $this->post = app(SavePost::class)->handle(
                 post: $this->post,
                 data: $data,
-                authorId: Auth::id(),
+                authorId: (int) Auth::id(),
                 tagIds: $validated['tag_ids'] ?? [],
                 newTagName: $validated['new_tag_name'] ?? null,
                 shouldRemoveCover: $this->shouldRemoveCover,

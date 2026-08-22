@@ -15,11 +15,11 @@ class SlugGenerator
 
         $usesSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive($modelClass), true);
 
-        $exists = static::slugExists($modelClass, $slug, $ignoreId, $usesSoftDeletes);
+        $exists = self::slugExists($modelClass, $slug, $ignoreId, $usesSoftDeletes);
 
         while ($exists) {
             $slug = $base.'-'.$suffix++;
-            $exists = static::slugExists($modelClass, $slug, $ignoreId, $usesSoftDeletes);
+            $exists = self::slugExists($modelClass, $slug, $ignoreId, $usesSoftDeletes);
         }
 
         return $slug;
