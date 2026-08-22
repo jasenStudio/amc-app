@@ -180,6 +180,21 @@ class PostsIndexTest extends TestCase
         $this->assertNotSoftDeleted('posts', ['id' => $post->id]);
     }
 
+    public function test_editor_sees_only_their_own_posts(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $editor = User::factory()->editor()->create();
+        $otherEditor = User::factory()->editor()->create();
+
+        Post::factory()->count(2)->create(['author_id' => $editor->id]);
+        Post::factory()->create(['author_id' => $otherEditor->id]);
+        Post::factory()->create(['author_id' => $admin->id]);
+
+        Livewire::actingAs($editor)
+            ->test(PostsIndex::class)
+            ->assertViewHas('posts', fn ($posts) => $posts->total() === 2);
+    }
+
     public function test_view_only_renders_buttons_for_posts_user_can_act_on(): void
     {
         $admin = User::factory()->admin()->create();
@@ -191,11 +206,9 @@ class PostsIndexTest extends TestCase
         Livewire::actingAs($editor)
             ->test(PostsIndex::class)
             ->assertSee('Own Post')
-            ->assertSee('Other Post')
+            ->assertDontSee('Other Post')
             ->assertSeeHtml("data-test=\"edit-post-{$ownPost->id}\"")
-            ->assertSeeHtml("data-test=\"delete-post-{$ownPost->id}\"")
-            ->assertDontSeeHtml("data-test=\"edit-post-{$othersPost->id}\"")
-            ->assertDontSeeHtml("data-test=\"delete-post-{$othersPost->id}\"");
+            ->assertSeeHtml("data-test=\"delete-post-{$ownPost->id}\"");
     }
 
     public function test_admin_sees_buttons_for_all_posts(): void

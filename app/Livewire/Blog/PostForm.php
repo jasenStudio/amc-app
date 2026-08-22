@@ -2,24 +2,26 @@
 
 namespace App\Livewire\Blog;
 
+use App\Actions\Blog\SavePost;
+use App\Livewire\Concerns\WithCoverImage;
 use App\Models\Post;
 use App\Models\Tag;
-use App\Support\HtmlSanitizer;
 use App\Support\ImageUrl;
+use App\Support\SlugGenerator;
 use Flux\Flux as FluxFacade;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 #[Layout('layouts.dashboard')]
 class PostForm extends Component
 {
+    use WithCoverImage;
     use WithFileUploads;
 
     public ?Post $post = null;
@@ -50,16 +52,6 @@ class PostForm extends Component
     public array $tag_ids = [];
 
     public string $new_tag_name = '';
-
-    public ?string $coverImageThumb = null;
-
-    public ?string $coverImageFull = null;
-
-    public ?string $coverImageThumbPath = null;
-
-    public ?string $coverImageFullPath = null;
-
-    public bool $shouldRemoveCover = false;
 
     public function mount(int $postId = 0): void
     {
@@ -108,29 +100,6 @@ class PostForm extends Component
         }
     }
 
-    /**
-     * @param  array{thumb_url?: string, full_url?: string, thumb?: string, full?: string}  $imageData
-     */
-    #[On('image-uploaded')]
-    public function onImageUploaded(array $imageData): void
-    {
-        $this->coverImageThumb = $imageData['thumb_url'] ?? null;
-        $this->coverImageFull = $imageData['full_url'] ?? null;
-        $this->coverImageThumbPath = $imageData['thumb'] ?? null;
-        $this->coverImageFullPath = $imageData['full'] ?? null;
-        $this->shouldRemoveCover = false;
-    }
-
-    #[On('image-removed')]
-    public function onImageRemoved(): void
-    {
-        $this->coverImageThumb = null;
-        $this->coverImageFull = null;
-        $this->coverImageThumbPath = null;
-        $this->coverImageFullPath = null;
-        $this->shouldRemoveCover = true;
-    }
-
     public function regenerateSlug(): void
     {
         if ($this->title === '') {
@@ -139,29 +108,61 @@ class PostForm extends Component
             return;
         }
 
-        $base = Str::slug($this->title) ?: 'n-a';
-        $slug = $base;
-        $suffix = 1;
-
-        $exists = Post::query()
-            ->where('slug', $slug)
-            ->when($this->post !== null, fn ($q) => $q->where('id', '!=', $this->post->getKey()))
-            ->withTrashed()
-            ->exists();
-
-        while ($exists) {
-            $slug = $base.'-'.$suffix++;
-            $exists = Post::query()
-                ->where('slug', $slug)
-                ->when($this->post !== null, fn ($q) => $q->where('id', '!=', $this->post->getKey()))
-                ->withTrashed()
-                ->exists();
-        }
-
-        $this->slug = $slug;
+        $this->slug = SlugGenerator::unique(Post::class, $this->title, $this->post?->id);
     }
 
     public function save(): void
+    {
+        $validated = $this->validate($this->rules());
+
+        $data = [
+            'title' => $validated['title'],
+            'slug' => $validated['slug'],
+            'excerpt' => $validated['excerpt'] ?? null,
+            'body' => $validated['body'],
+            'status' => $validated['status'],
+            'published_at' => $validated['published_at'] ?? null,
+            'featured' => (bool) ($validated['featured'] ?? false),
+            'order' => (int) ($validated['order'] ?? 0),
+            'seo_title' => $validated['seo_title'] ?: null,
+            'seo_description' => $validated['seo_description'] ?: null,
+            'seo_image' => $validated['seo_image'] ?: null,
+        ];
+
+        try {
+            $this->post = app(SavePost::class)->handle(
+                post: $this->post,
+                data: $data,
+                authorId: Auth::id(),
+                tagIds: $validated['tag_ids'] ?? [],
+                newTagName: $validated['new_tag_name'] ?? null,
+                shouldRemoveCover: $this->shouldRemoveCover,
+                coverThumbPath: $this->coverImageThumbPath,
+                coverFullPath: $this->coverImageFullPath,
+            );
+        } catch (InvalidArgumentException $e) {
+            $this->addError('body', $e->getMessage());
+
+            return;
+        }
+
+        FluxFacade::toast(variant: 'success', text: __('Post saved.'));
+
+        $this->redirectRoute('blog.index', navigate: true);
+    }
+
+    public function render(): View
+    {
+        return view('livewire.blog.post-form', [
+            'all_tags' => Tag::query()->orderBy('name')->get(),
+            'author' => Auth::user(),
+        ])->title($this->post ? __('Edit post') : __('New post'));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function rules(): array
     {
         $slugRules = ['required', 'string', 'max:255'];
         if ($this->post !== null) {
@@ -170,7 +171,7 @@ class PostForm extends Component
             $slugRules[] = Rule::unique('posts', 'slug');
         }
 
-        $rules = [
+        return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => $slugRules,
             'excerpt' => ['nullable', 'string', 'max:500'],
@@ -186,89 +187,5 @@ class PostForm extends Component
             'tag_ids.*' => ['integer', 'exists:tags,id'],
             'new_tag_name' => ['nullable', 'string', 'max:50'],
         ];
-
-        $validated = $this->validate($rules);
-
-        $sanitizer = app(HtmlSanitizer::class);
-        $cleanBody = $sanitizer->clean($validated['body']);
-
-        if ($cleanBody === '') {
-            $this->addError('body', __('The post body cannot be empty after sanitization.'));
-
-            return;
-        }
-
-        DB::transaction(function () use ($validated, $cleanBody): void {
-            $user = Auth::user();
-
-            $data = [
-                'title' => $validated['title'],
-                'slug' => $validated['slug'],
-                'excerpt' => $validated['excerpt'] ?? null,
-                'body' => $cleanBody,
-                'status' => $validated['status'],
-                'published_at' => $validated['published_at'] ?? null,
-                'featured' => (bool) ($validated['featured'] ?? false),
-                'order' => (int) ($validated['order'] ?? 0),
-                'seo_title' => $validated['seo_title'] ?: null,
-                'seo_description' => $validated['seo_description'] ?: null,
-                'seo_image' => $validated['seo_image'] ?: null,
-            ];
-
-            if ($this->post !== null) {
-                $this->post->update($data);
-
-                if ($this->shouldRemoveCover) {
-                    if ($this->post->coverImage) {
-                        $this->post->coverImage->delete();
-                    }
-                } elseif ($this->coverImageFullPath) {
-                    if ($this->post->coverImage) {
-                        $this->post->coverImage->delete();
-                    }
-                    $this->post->coverImage()->create([
-                        'thumb_path' => $this->coverImageThumbPath,
-                        'full_path' => $this->coverImageFullPath,
-                        'order' => 0,
-                    ]);
-                }
-            } else {
-                $data['author_id'] = $user->id;
-                $this->post = Post::create($data);
-
-                if ($this->coverImageFullPath) {
-                    $this->post->coverImage()->create([
-                        'thumb_path' => $this->coverImageThumbPath,
-                        'full_path' => $this->coverImageFullPath,
-                        'order' => 0,
-                    ]);
-                }
-            }
-
-            // Tag attach: combine existing selection with newly created tags.
-            $tagIds = $validated['tag_ids'] ?? [];
-            $newName = trim($validated['new_tag_name'] ?? '');
-            if ($newName !== '') {
-                $tag = Tag::firstOrCreate(
-                    ['slug' => Str::slug($newName)],
-                    ['name' => $newName]
-                );
-                $tagIds[] = $tag->id;
-            }
-            $tagIds = array_values(array_unique(array_map('intval', $tagIds)));
-            $this->post->tags()->sync($tagIds);
-        });
-
-        FluxFacade::toast(variant: 'success', text: __('Post saved.'));
-
-        $this->redirectRoute('blog.index', navigate: true);
-    }
-
-    public function render(): View
-    {
-        return view('livewire.blog.post-form', [
-            'all_tags' => Tag::query()->orderBy('name')->get(),
-            'author' => Auth::user(),
-        ])->title($this->post ? __('Edit post') : __('New post'));
     }
 }

@@ -8,6 +8,7 @@ use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
 use App\Livewire\Projects\ProjectsIndex;
 use App\Livewire\Services\ServicesIndex;
+use App\Livewire\Tags\TagForm;
 use App\Livewire\Tags\TagsIndex;
 use App\Livewire\Users\UsersIndex;
 use Illuminate\Support\Facades\Route;
@@ -34,11 +35,16 @@ Route::middleware(['auth', 'verified', 'can:manage-posts'])->prefix('dashboard/b
     Route::get('{post}/edit', PostForm::class)->whereNumber('post')->name('edit');
 });
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth', 'verified', 'can:admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('users', UsersIndex::class)->name('users.index');
     Route::get('projects', ProjectsIndex::class)->name('projects.index');
     Route::get('services', ServicesIndex::class)->name('services.index');
     Route::get('tags', TagsIndex::class)->name('tags.index');
+    Route::get('tags/create', TagForm::class)->name('tags.create');
+    Route::get('tags/{tag}/edit', TagForm::class)->whereNumber('tag')->name('tags.edit');
+});
+
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::post('images', ImageUploadController::class)->middleware('throttle:dashboard-images')->name('images.store');
 });
 
