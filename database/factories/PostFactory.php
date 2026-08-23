@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Models\User;
-use App\PostStatus;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

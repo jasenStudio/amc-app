@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Blog;
 
+use App\Enums\PostStatus;
 use App\Filters\PostFilter;
 use App\Livewire\Concerns\WithFilters;
 use App\Models\Post;
 use App\Models\Tag;
-use App\PostStatus;
 use Flux\Flux as FluxFacade;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
