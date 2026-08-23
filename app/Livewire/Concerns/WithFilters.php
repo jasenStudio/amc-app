@@ -29,9 +29,16 @@ trait WithFilters
         $this->resetPage();
     }
 
+    public function updatingRole(): void
+    {
+        $this->resetPage();
+    }
+
     public function resetFilters(): void
     {
-        $this->reset(['search', 'status', 'featured', 'tag']);
+        $filters = ['search', 'status', 'featured', 'tag', 'role'];
+        $existing = array_filter($filters, fn (string $f) => property_exists($this, $f));
+        $this->reset($existing);
         $this->resetPage();
     }
 }
