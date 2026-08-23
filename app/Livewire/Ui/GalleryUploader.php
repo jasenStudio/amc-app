@@ -14,74 +14,55 @@ class GalleryUploader extends Component
 {
     use WithFileUploads;
 
-    /** @var UploadedFile[] */
+    /** @var array<int, UploadedFile> */
     public array $uploads = [];
 
     public string $path;
 
     public ?string $slugHint = null;
 
-    public int $maxFiles = 10;
-
-    /** @var array<int, array{thumb: string, full: string, url: string, alt?: string}> */
-    public array $images = [];
-
     public bool $loading = false;
 
+    public int $maxFiles = 20;
+
     /**
-     * @param  array<int, array{thumb: string, full: string, url: string, alt?: string}>  $images
+     * @param  array<int, array{path: string, order: int, is_cover: bool}>  $galleryImages
      */
     public function mount(
         string $path,
         ?string $slugHint = null,
-        int $maxFiles = 10,
-        array $images = [],
+        array $galleryImages = [],
+        int $maxFiles = 20,
     ): void {
         $this->path = $path;
         $this->slugHint = $slugHint;
         $this->maxFiles = $maxFiles;
-        $this->images = $images;
     }
 
-    /**
-     * @param  array<int, UploadedFile>  $uploads
-     */
-    public function updatedUploads(array $uploads): void
-    {
-        if (empty($uploads)) {
-            return;
-        }
-
-        $this->uploadImages();
-    }
-
-    public function uploadImages(): void
+    public function updatedUploads(): void
     {
         if (empty($this->uploads)) {
             return;
         }
 
-        $remaining = $this->maxFiles - count($this->images);
-        if ($remaining <= 0) {
-            $this->addError('uploads', __('Maximum number of images reached.'));
+        if ($this->isRateLimited()) {
+            $this->addError('uploads', __('Too many uploads. Please try again in a moment.'));
             $this->uploads = [];
 
             return;
         }
 
-        if ($this->isRateLimited()) {
-            $this->addError('uploads', __('Too many uploads. Please try again in a moment.'));
-
-            return;
-        }
-
+        $this->hitRateLimiter();
         $this->loading = true;
 
         try {
-            $toUpload = array_slice($this->uploads, 0, $remaining);
+            foreach ($this->uploads as $upload) {
+                if (! $upload instanceof UploadedFile) {
+                    continue;
+                }
 
-            foreach ($toUpload as $upload) {
-                $this->hitRateLimiter();
+                $rules = ['uploads.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']];
+                $this->validate($rules);
 
                 $paths = app(UploadImageAction::class)(
                     $upload,
@@ -90,17 +71,13 @@ class GalleryUploader extends Component
                     'public',
                 );
 
-                $this->images[] = [
-                    'thumb' => $paths['thumb'],
-                    'full' => $paths['full'],
+                $this->dispatch('gallery-image-uploaded', [
+                    'path' => $paths['full'],
                     'url' => Storage::disk('public')->url($paths['full']),
-                    'alt' => '',
-                ];
+                ]);
             }
 
             $this->uploads = [];
-
-            $this->dispatch('gallery-updated', $this->images);
         } catch (\Throwable $e) {
             $this->addError('uploads', $e->getMessage());
         } finally {
@@ -108,17 +85,9 @@ class GalleryUploader extends Component
         }
     }
 
-    public function removeImage(int $index): void
-    {
-        if (isset($this->images[$index])) {
-            array_splice($this->images, $index, 1);
-            $this->dispatch('gallery-updated', $this->images);
-        }
-    }
-
     public function render(): View
     {
-        return view('livewire.ui.gallery-uploader');
+        return view('livewire.ui.gallery-uploader-simple');
     }
 
     private function isRateLimited(): bool

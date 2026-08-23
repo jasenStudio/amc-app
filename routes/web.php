@@ -3,9 +3,11 @@
 use App\Http\Controllers\Blog\InlineImageController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Dashboard\ImageUploadController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
 use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
+use App\Livewire\Projects\ProjectForm;
 use App\Livewire\Projects\ProjectsIndex;
 use App\Livewire\Services\ServicesIndex;
 use App\Livewire\Tags\TagForm;
@@ -15,7 +17,8 @@ use App\Livewire\Users\UsersIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages::home')->name('home');
-Route::view('projects', 'pages::projects.index')->name('projects');
+Route::get('projects', [ProjectsController::class, 'index'])->name('projects');
+Route::get('projects/{slug}', [ProjectsController::class, 'show'])->name('projects.show');
 
 Route::get('blog', [BlogController::class, 'index'])->name('blog');
 Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
@@ -45,6 +48,8 @@ Route::middleware(['auth', 'verified', 'pending', 'can:admin'])->prefix('dashboa
     Route::get('users/create', UserForm::class)->name('users.create');
     Route::get('users/{user}/edit', UserForm::class)->whereNumber('user')->name('users.edit');
     Route::get('projects', ProjectsIndex::class)->name('projects.index');
+    Route::get('projects/create', ProjectForm::class)->name('projects.create');
+    Route::get('projects/{project}/edit', ProjectForm::class)->whereNumber('project')->name('projects.edit');
     Route::get('services', ServicesIndex::class)->name('services.index');
     Route::get('tags', TagsIndex::class)->name('tags.index');
     Route::get('tags/create', TagForm::class)->name('tags.create');

@@ -71,6 +71,20 @@ class ConvertImageToWebp
         return $removed;
     }
 
+    /**
+     * Delete a single image file. Returns true when the file was removed.
+     */
+    public function deleteSingle(string $relativePath, string $disk = 'public'): bool
+    {
+        $fs = Storage::disk($disk);
+
+        if ($relativePath !== '' && $fs->exists($relativePath)) {
+            return $fs->delete($relativePath);
+        }
+
+        return false;
+    }
+
     private function store(
         ImageInterface $image,
         string $disk,

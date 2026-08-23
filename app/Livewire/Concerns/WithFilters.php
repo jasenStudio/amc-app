@@ -34,9 +34,14 @@ trait WithFilters
         $this->resetPage();
     }
 
+    public function updatingLocation(): void
+    {
+        $this->resetPage();
+    }
+
     public function resetFilters(): void
     {
-        $filters = ['search', 'status', 'featured', 'tag', 'role'];
+        $filters = ['search', 'status', 'featured', 'tag', 'role', 'location'];
         $existing = array_filter($filters, fn (string $f) => property_exists($this, $f));
         $this->reset($existing);
         $this->resetPage();
