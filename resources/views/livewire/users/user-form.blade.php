@@ -1,12 +1,13 @@
-<section class="w-full space-y-6">
-    <div>
+<section class="space-y-6 flex flex-col justify-center items-center max-w-lg mx-auto mt-10 lg:mt-20">
+    <div class="self-start">
         <flux:heading size="xl">{{ $this->user ? __('Edit user') : __('New user') }}</flux:heading>
         <flux:subheading>
             {{ $this->user ? __('Update user information and role.') : __('Create a new platform user.') }}
         </flux:subheading>
     </div>
 
-    <form wire:submit="save" class="space-y-6 max-w-lg">
+    <form wire:submit="save" class="space-y-6 w-full">
+
         <flux:input wire:model="name" :label="__('Name')" required autofocus data-test="user-name" />
 
         <flux:input wire:model="email" :label="__('Email')" type="email" required data-test="user-email" />
@@ -17,10 +18,8 @@
             @endforeach
         </flux:select>
 
-        <flux:input wire:model="password" :label="__('Password')" type="password"
-            :required="! $this->user"
-            :placeholder="$this->user ? __('Leave blank to keep current password') : ''"
-            data-test="user-password" />
+        <flux:input wire:model="password" :label="__('Password')" type="password" :required="! $this->user"
+            :placeholder="$this->user ? __('Leave blank to keep current password') : ''" data-test="user-password" />
 
         <div class="flex items-center justify-end gap-3">
             <flux:button :href="route('dashboard.users.index')" wire:navigate variant="filled">
