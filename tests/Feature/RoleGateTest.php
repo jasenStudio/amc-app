@@ -11,6 +11,16 @@ class RoleGateTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_super_admin_passes_admin_and_manage_posts_gates(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($superAdmin);
+
+        $this->assertTrue($superAdmin->can('admin'));
+        $this->assertTrue($superAdmin->can('manage-posts'));
+    }
+
     public function test_admin_user_passes_admin_and_manage_posts_gates(): void
     {
         $admin = User::factory()->admin()->create();
@@ -31,16 +41,14 @@ class RoleGateTest extends TestCase
         $this->assertTrue($editor->can('manage-posts'));
     }
 
-    public function test_freshly_registered_user_without_role_fails_all_gates(): void
+    public function test_pending_user_fails_all_gates(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
-        $this->assertNull($user->role);
+        $this->actingAs($pending);
 
-        $this->actingAs($user);
-
-        $this->assertFalse($user->can('admin'));
-        $this->assertFalse($user->can('manage-posts'));
+        $this->assertFalse($pending->can('admin'));
+        $this->assertFalse($pending->can('manage-posts'));
     }
 
     public function test_guest_fails_all_gates(): void
@@ -49,13 +57,38 @@ class RoleGateTest extends TestCase
         $this->assertFalse(Gate::allows('manage-posts'));
     }
 
-    public function test_dashboard_returns_403_for_user_without_role(): void
+    public function test_pending_user_is_redirected_to_pending_approval_from_dashboard(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($pending)
             ->get(route('dashboard'))
-            ->assertForbidden();
+            ->assertRedirect(route('pending.approval'));
+    }
+
+    public function test_pending_user_can_logout_from_pending_approval_page(): void
+    {
+        $pending = User::factory()->pending()->create();
+
+        $this->actingAs($pending)
+            ->get(route('pending.approval'))
+            ->assertOk()
+            ->assertSee(__('Log out'), false);
+
+        $this->actingAs($pending)
+            ->post(route('logout'))
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+    }
+
+    public function test_dashboard_is_accessible_for_super_admin(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($superAdmin)
+            ->get(route('dashboard'))
+            ->assertOk();
     }
 
     public function test_dashboard_is_accessible_for_admin(): void
