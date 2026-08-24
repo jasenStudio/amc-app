@@ -1,8 +1,18 @@
 @props([
     'title' => __('Servicios Principales'),
     'viewAllLabel' => __('Ver todos'),
-    'services' => config('services.items'),
 ])
+
+@php
+    $services = \Illuminate\Support\Facades\Schema::hasTable('services')
+        ? \App\Models\Service::query()
+            ->active()
+            ->ordered()
+            ->with(['coverImage'])
+            ->limit(6)
+            ->get()
+        : collect();
+@endphp
 
 <section id="services" aria-labelledby="services-title" class="bg-amc-gray-bg">
 
@@ -19,11 +29,17 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                @foreach ($services as $service)
-                    <x-services.card :service="$service" />
-                @endforeach
-            </div>
+            @if ($services->count() > 0)
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($services as $service)
+                        <x-services.card :service="$service" />
+                    @endforeach
+                </div>
+            @else
+                <div class="rounded-lg border-2 border-dashed border-zinc-300 p-8 text-center">
+                    <p class="text-sm text-zinc-500">{{ __('No services available yet.') }}</p>
+                </div>
+            @endif
         </div>
     </div>
 </section>

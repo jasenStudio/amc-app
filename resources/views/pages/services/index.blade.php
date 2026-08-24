@@ -15,11 +15,24 @@
         <section aria-labelledby="services-catalog-title" class="bg-amc-gray-bg">
             <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
                 <h2 id="services-catalog-title" class="sr-only">{{ __('Catálogo de servicios') }}</h2>
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($services as $service)
-                        <x-services.card :service="$service" />
-                    @endforeach
-                </div>
+
+                @if ($services->count() > 0)
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach ($services as $service)
+                            <x-services.card :service="$service" />
+                        @endforeach
+                    </div>
+
+                    @if ($services->hasPages())
+                        <div class="mt-12">
+                            {{ $services->links() }}
+                        </div>
+                    @endif
+                @else
+                    <div class="rounded-lg border-2 border-dashed border-zinc-300 p-12 text-center">
+                        <p class="text-sm text-zinc-500">{{ __('No services available yet.') }}</p>
+                    </div>
+                @endif
             </div>
         </section>
     </main>
