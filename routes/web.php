@@ -9,6 +9,7 @@ use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
 use App\Livewire\Projects\ProjectForm;
 use App\Livewire\Projects\ProjectsIndex;
+use App\Livewire\Services\ServiceForm;
 use App\Livewire\Services\ServicesIndex;
 use App\Livewire\Tags\TagForm;
 use App\Livewire\Tags\TagsIndex;
@@ -51,6 +52,8 @@ Route::middleware(['auth', 'verified', 'pending', 'can:admin'])->prefix('dashboa
     Route::get('projects/create', ProjectForm::class)->name('projects.create');
     Route::get('projects/{project}/edit', ProjectForm::class)->whereNumber('project')->name('projects.edit');
     Route::get('services', ServicesIndex::class)->name('services.index');
+    Route::get('services/create', ServiceForm::class)->name('services.create');
+    Route::get('services/{service}/edit', ServiceForm::class)->whereNumber('service')->name('services.edit');
     Route::get('tags', TagsIndex::class)->name('tags.index');
     Route::get('tags/create', TagForm::class)->name('tags.create');
     Route::get('tags/{tag}/edit', TagForm::class)->whereNumber('tag')->name('tags.edit');
