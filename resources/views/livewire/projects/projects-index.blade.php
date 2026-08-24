@@ -1,44 +1,44 @@
 <section class="w-full space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <flux:heading size="xl">{{ __('Projects') }}</flux:heading>
-            <flux:subheading>{{ __('Manage projects and clients.') }}</flux:subheading>
+            <flux:heading size="xl">{{ __('projects') }}</flux:heading>
+            <flux:subheading>{{ __('manage_projects_and_clients') }}</flux:subheading>
         </div>
         <flux:button variant="primary" :href="route('dashboard.projects.create')" wire:navigate icon="plus" data-test="new-project">
-            {{ __('New project') }}
+            {{ __('new_project') }}
         </flux:button>
     </div>
 
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <flux:input wire:model.live.debounce.300ms="search" :label="__('Search')" type="search"
-            placeholder="{{ __('Title, client…') }}" />
+        <flux:input wire:model.live.debounce.300ms="search" :label="__('search')" type="search"
+            placeholder="{{ __('search_projects_placeholder') }}" />
 
-        <flux:select wire:model.live="status" :label="__('Status')">
-            <flux:select.option value="">{{ __('All statuses') }}</flux:select.option>
+        <flux:select wire:model.live="status" :label="__('status')">
+            <flux:select.option value="">{{ __('all_statuses') }}</flux:select.option>
             @foreach ($statuses as $s)
                 <flux:select.option :value="$s->value">{{ $s->label() }}</flux:select.option>
             @endforeach
         </flux:select>
 
-        <flux:select wire:model.live="featured" :label="__('Featured')">
-            <flux:select.option value="">{{ __('Any') }}</flux:select.option>
-            <flux:select.option value="yes">{{ __('Featured only') }}</flux:select.option>
-            <flux:select.option value="no">{{ __('Not featured') }}</flux:select.option>
+        <flux:select wire:model.live="featured" :label="__('featured')">
+            <flux:select.option value="">{{ __('any') }}</flux:select.option>
+            <flux:select.option value="yes">{{ __('featured_only') }}</flux:select.option>
+            <flux:select.option value="no">{{ __('not_featured') }}</flux:select.option>
         </flux:select>
 
-        <flux:input wire:model.live.debounce.300ms="location" :label="__('Location')" type="search"
-            placeholder="{{ __('City…') }}" />
+        <flux:input wire:model.live.debounce.300ms="location" :label="__('location')" type="search"
+            placeholder="{{ __('city_placeholder') }}" />
     </div>
 
     <flux:table :paginate="$projects">
         <flux:table.columns>
-            <flux:table.column>{{ __('Cover') }}</flux:table.column>
-            <flux:table.column>{{ __('Title') }}</flux:table.column>
-            <flux:table.column>{{ __('Client') }}</flux:table.column>
-            <flux:table.column>{{ __('Status') }}</flux:table.column>
-            <flux:table.column align="center">{{ __('Featured') }}</flux:table.column>
-            <flux:table.column>{{ __('Date') }}</flux:table.column>
-            <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
+            <flux:table.column>{{ __('cover') }}</flux:table.column>
+            <flux:table.column>{{ __('title') }}</flux:table.column>
+            <flux:table.column>{{ __('client') }}</flux:table.column>
+            <flux:table.column>{{ __('status') }}</flux:table.column>
+            <flux:table.column align="center">{{ __('featured') }}</flux:table.column>
+            <flux:table.column>{{ __('date') }}</flux:table.column>
+            <flux:table.column align="end">{{ __('actions') }}</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -84,14 +84,14 @@
                             @if ($this->canUpdate($project))
                                 <flux:button size="sm" :href="route('dashboard.projects.edit', $project)" wire:navigate
                                     variant="ghost" icon="pencil" data-test="edit-project-{{ $project->id }}">
-                                    {{ __('Edit') }}
+                                    {{ __('edit') }}
                                 </flux:button>
                             @endif
                             @if ($this->canDelete($project))
                                 <flux:button size="sm" variant="ghost" icon="trash"
                                     data-test="delete-project-{{ $project->id }}"
                                     wire:click="$set('confirmingDeletion', {{ $project->id }})">
-                                    {{ __('Delete') }}
+                                    {{ __('delete') }}
                                 </flux:button>
                             @endif
                         </div>
@@ -100,7 +100,7 @@
             @empty
                 <flux:table.row>
                     <flux:table.cell colspan="7" class="text-center text-zinc-500">
-                        {{ __('No projects found.') }}
+                        {{ __('no_projects_found') }}
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
@@ -110,20 +110,20 @@
     <flux:modal name="confirm-project-deletion" wire:model="confirmingDeletion" focusable class="max-w-lg">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ __('Delete this project?') }}</flux:heading>
+                <flux:heading size="lg">{{ __('delete_this_project') }}</flux:heading>
                 <flux:subheading>
-                    {{ __('The project will be hidden from the public site and can be restored later by an admin.') }}
+                    {{ __('delete_project_warning') }}
                 </flux:subheading>
             </div>
 
             <div class="flex justify-end space-x-2 rtl:space-x-reverse">
                 <flux:modal.close>
-                    <flux:button variant="filled">{{ __('Cancel') }}</flux:button>
+                    <flux:button variant="filled">{{ __('cancel') }}</flux:button>
                 </flux:modal.close>
 
                 <flux:button variant="danger" wire:click="delete({{ (int) $confirmingDeletion }})"
                     data-test="confirm-delete-project">
-                    {{ __('Delete project') }}
+                    {{ __('delete_project') }}
                 </flux:button>
             </div>
         </div>
