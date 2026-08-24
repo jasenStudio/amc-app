@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Editor User',
             'email' => 'editor@example.com',
         ]);
+
+        $this->call(ServiceSeeder::class);
     }
 }
