@@ -28,8 +28,8 @@ class ConvertImageToWebp
      * @param  string  $basePath  Relative directory inside the disk.
      * @param  string  $disk  Laravel filesystem disk name.
      * @param  string|null  $basename  Pre-generated basename. When null a ULID is used (legacy).
-     * @return array{thumb: string, full: string}
-     *                                            Relative paths inside the disk (e.g. "blog/webp/thumbs/abc.webp").
+     * @return array{thumb: string, full: string, width: int, height: int}
+     *                                                                     Relative paths inside the disk (e.g. "blog/webp/thumbs/abc.webp").
      */
     public function __invoke(
         UploadedFile $file,
@@ -43,12 +43,18 @@ class ConvertImageToWebp
 
         $basename ??= $this->uniqueBasename($file);
 
+        $fullImage = $image->scale(width: self::FULL_WIDTH);
+        $width = $fullImage->width();
+        $height = $fullImage->height();
+        $full = $this->store($fullImage, $disk, $basePath, 'full', $basename);
+
         $thumb = $this->store($image->scale(width: self::THUMB_WIDTH), $disk, $basePath, 'thumbs', $basename);
-        $full = $this->store($image->scale(width: self::FULL_WIDTH), $disk, $basePath, 'full', $basename);
 
         return [
             'thumb' => $thumb,
             'full' => $full,
+            'width' => $width,
+            'height' => $height,
         ];
     }
 
@@ -69,6 +75,20 @@ class ConvertImageToWebp
         }
 
         return $removed;
+    }
+
+    /**
+     * Delete a single image file. Returns true when the file was removed.
+     */
+    public function deleteSingle(string $relativePath, string $disk = 'public'): bool
+    {
+        $fs = Storage::disk($disk);
+
+        if ($relativePath !== '' && $fs->exists($relativePath)) {
+            return $fs->delete($relativePath);
+        }
+
+        return false;
     }
 
     private function store(

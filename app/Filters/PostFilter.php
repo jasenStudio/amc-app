@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Enums\UserRole;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +28,7 @@ class PostFilter
 
         $user = Auth::user();
 
-        if (! $user instanceof User || $user->role !== 'admin') {
+        if (! $user instanceof User || ! in_array($user->role, [UserRole::SuperAdmin, UserRole::Admin], true)) {
             $query->where('author_id', $user?->getAuthIdentifier());
         }
 

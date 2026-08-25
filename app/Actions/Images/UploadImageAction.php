@@ -37,7 +37,7 @@ class UploadImageAction
      * @param  string|null  $slugHint  Optional semantic hint derived from a title or context.
      * @param  string  $disk  Laravel filesystem disk name.
      * @param  bool  $enforceMinDimensions  Whether to enforce MIN_WIDTH/MIN_HEIGHT constraints.
-     * @return array{thumb: string, full: string} Relative paths inside the disk.
+     * @return array{thumb: string, full: string, width: int, height: int} Relative paths inside the disk.
      *
      * @throws RuntimeException When validation fails.
      */

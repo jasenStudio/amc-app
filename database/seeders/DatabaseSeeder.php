@@ -10,12 +10,9 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        User::factory()->admin()->create([
+        User::factory()->superAdmin()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
         ]);
@@ -24,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Editor User',
             'email' => 'editor@example.com',
         ]);
+
+        $this->call(ServiceSeeder::class);
     }
 }

@@ -2,11 +2,22 @@
 
 namespace Tests\Feature;
 
+use App\Models\Service;
+use Database\Seeders\ServiceSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ServicesPageTest extends TestCase
 {
-    public function test_services_index_renders_the_placeholder_catalog(): void
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        (new ServiceSeeder)->run();
+    }
+
+    public function test_services_index_renders_the_catalog(): void
     {
         $response = $this->get('/services');
 
@@ -24,9 +35,11 @@ class ServicesPageTest extends TestCase
         $this->assertSame(6, substr_count($html, '<article'));
     }
 
-    public function test_service_show_renders_a_valid_placeholder_service(): void
+    public function test_service_show_renders_a_valid_service(): void
     {
-        $response = $this->get('/services/puntos-de-anclaje');
+        $service = Service::query()->where('title', 'Instalación de Puntos de Anclaje')->first();
+
+        $response = $this->get("/services/{$service->slug}");
 
         $response
             ->assertOk()
@@ -42,8 +55,23 @@ class ServicesPageTest extends TestCase
 
     public function test_service_cards_link_to_the_show_route(): void
     {
+        $service = Service::query()->where('title', 'Líneas de Vida Certificadas')->first();
+
         $response = $this->get('/services');
 
-        $response->assertSee('href="'.route('services.show', 'lineas-de-vida-certificadas').'"', false);
+        $response->assertSee('href="'.route('services.show', $service->slug).'"', false);
+    }
+
+    public function test_service_show_does_not_render_price(): void
+    {
+        $service = Service::query()->where('title', 'Instalación de Puntos de Anclaje')->first();
+        $service->update(['price' => 1500.00]);
+
+        $response = $this->get("/services/{$service->slug}");
+
+        $response
+            ->assertOk()
+            ->assertDontSee('1500')
+            ->assertDontSee('1,500');
     }
 }

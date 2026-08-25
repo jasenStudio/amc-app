@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\HasSlug;
-use App\PostStatus;
+use App\Enums\PostStatus;
 use App\Support\ImageUrl;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -97,7 +97,7 @@ class Post extends Model implements CommentableContract
      */
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'author_id')->withTrashed();
     }
 
     /**

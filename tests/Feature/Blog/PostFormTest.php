@@ -3,11 +3,11 @@
 namespace Tests\Feature\Blog;
 
 use App\Actions\Images\ConvertImageToWebp;
+use App\Enums\PostStatus;
 use App\Livewire\Blog\PostForm;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
-use App\PostStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -32,13 +32,13 @@ class PostFormTest extends TestCase
         $this->get(route('blog.edit', ['post' => 1]))->assertRedirect(route('login'));
     }
 
-    public function test_create_page_is_forbidden_without_role(): void
+    public function test_create_page_redirects_pending_user(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($pending)
             ->get(route('blog.create'))
-            ->assertForbidden();
+            ->assertRedirect(route('pending.approval'));
     }
 
     public function test_editor_can_open_create_form(): void
@@ -243,15 +243,15 @@ class PostFormTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_user_without_role_is_forbidden_on_edit(): void
+    public function test_user_without_role_is_redirected_on_edit(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
         $admin = User::factory()->admin()->create();
         $post = Post::factory()->create(['author_id' => $admin->id]);
 
-        $this->actingAs($user)
+        $this->actingAs($pending)
             ->get(route('blog.edit', ['post' => $post->id]))
-            ->assertForbidden();
+            ->assertRedirect(route('pending.approval'));
     }
 
     public function test_admin_can_update_any_post(): void

@@ -58,6 +58,18 @@ class ConvertImageToWebpTest extends TestCase
         $this->assertSame('image/webp', $fullSize['mime']);
     }
 
+    public function test_returns_width_and_height_of_full_image(): void
+    {
+        $source = $this->makePng(width: 2400, height: 1600);
+        $file = new UploadedFile($source, 'cover.png', 'image/png', null, true);
+
+        $action = app(ConvertImageToWebp::class);
+        $paths = $action($file, 'blog/webp', $this->disk);
+
+        $this->assertSame(1600, $paths['width']);
+        $this->assertSame(1067, $paths['height']);
+    }
+
     public function test_basename_is_unique_across_calls(): void
     {
         $file = new UploadedFile($this->makePng(), 'a.png', 'image/png', null, true);

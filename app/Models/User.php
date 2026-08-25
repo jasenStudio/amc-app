@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -23,21 +25,20 @@ use LakM\Commenter\Contracts\CommenterContract;
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
- * @property string|null $role
+ * @property UserRole $role
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  */
 #[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements CommenterContract
 {
     /** @use HasFactory<UserFactory> */
-    use Commenter, HasFactory, Notifiable;
+    use Commenter, HasFactory, Notifiable, SoftDeletes;
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -45,6 +46,7 @@ class User extends Authenticatable implements CommenterContract
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
     }
 
@@ -58,5 +60,21 @@ class User extends Authenticatable implements CommenterContract
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    /**
+     * Restore a soft-deleted user by email or ID.
+     */
+    public static function restoreByEmailOrId(string|int $emailOrId): bool
+    {
+        $user = is_numeric($emailOrId)
+            ? static::withTrashed()->find((int) $emailOrId)
+            : static::withTrashed()->where('email', $emailOrId)->first();
+
+        if ($user === null || ! $user->trashed()) {
+            return false;
+        }
+
+        return (bool) $user->restore();
     }
 }

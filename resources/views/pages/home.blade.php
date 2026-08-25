@@ -13,21 +13,7 @@
 
         <x-sections.services />
 
-        <section id="projects" aria-labelledby="projects-title" class="bg-amc-gray-bg">
-            <div class="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Projects') }}</p>
-                <h2 id="projects-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
-                    {{ __('Selected work and practical results.') }}
-                </h2>
-                <p class="mt-5 max-w-2xl text-lg leading-8 text-amc-gray-text">
-                    {{ __('Explore projects where strategy, design, and delivery came together to create measurable progress.') }}
-                </p>
-                <a href="{{ route('projects') }}"
-                    class="mt-8 inline-flex text-base font-semibold text-amc-orange-text transition hover:text-amc-orange-hover">
-                    {{ __('Ver proyectos') }} <span aria-hidden="true">&rarr;</span>
-                </a>
-            </div>
-        </section>
+        <x-sections.projects />
 
         <x-sections.blog />
 

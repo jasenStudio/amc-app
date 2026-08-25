@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
-use App\PostStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
