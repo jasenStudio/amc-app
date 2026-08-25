@@ -6,7 +6,7 @@
 
     <x-header />
 
-    <main>
+    <main class="bg-amc-gray-bg">
         <section aria-labelledby="service-title" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
             <a href="{{ route('services') }}"
                 class="inline-flex items-center gap-2 text-sm font-semibold text-amc-orange-text transition hover:text-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
@@ -28,16 +28,14 @@
                 @endif
 
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Servicio') }}</p>
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">
+                        {{ __('Servicio') }}</p>
                     <h1 id="service-title" class="mt-4 text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
                         {{ $service->title }}
                     </h1>
 
-                    @if ($service->excerpt)
-                        <p class="mt-4 text-lg leading-8 text-amc-gray-text">{{ $service->excerpt }}</p>
-                    @endif
-
-                    <article class="prose article-prose-content dark:prose-invert prose-amc mt-6 max-w-none text-amc-blue/80">
+                    <article
+                        class="prose article-prose-content dark:prose-invert prose-amc mt-6 max-w-none text-amc-blue/80">
                         {!! nl2br(e($service->description)) !!}
                     </article>
 
@@ -48,21 +46,42 @@
                 </div>
             </div>
 
-            @if ($service->images->count() > 1)
+            @php
+                $galleryImages = $service->images->where('is_cover', false);
+            @endphp
+            @if ($galleryImages->isNotEmpty())
                 <div class="mt-12">
                     <h2 class="text-2xl font-semibold text-amc-blue">{{ __('Gallery') }}</h2>
-                    <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                        @foreach ($service->images as $image)
-                            @if (! $image->is_cover)
-                                <div class="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-700">
-                                    <img src="{{ \App\Support\ImageUrl::public($image->image_path) }}"
-                                        alt="{{ $service->title }}" class="aspect-square w-full object-cover" loading="lazy">
-                                </div>
-                            @endif
+
+                    <div id="pswp-gallery" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                        @foreach ($galleryImages as $image)
+                            <a href="{{ \App\Support\ImageUrl::public($image->image_path) }}"
+                                class="group block aspect-square overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-700"
+                                data-pswp-width="{{ $image->width }}" data-pswp-height="{{ $image->height }}"
+                                target="_blank" rel="noopener">
+                                <img src="{{ \App\Support\ImageUrl::public($image->image_path) }}"
+                                    alt="{{ $service->title }}" loading="lazy"
+                                    class="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                            </a>
                         @endforeach
                     </div>
                 </div>
             @endif
         </section>
     </main>
+
+    @once
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.min.css">
+        <script type="module">
+            import PhotoSwipeLightbox from 'https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js';
+            const lightbox = new PhotoSwipeLightbox({
+                gallery: '#pswp-gallery',
+                children: 'a',
+                pswpModule: () => import('https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.esm.min.js'),
+                bgOpacity: 0.92,
+                showHideAnimationType: 'fade',
+            });
+            lightbox.init();
+        </script>
+    @endonce
 </x-layouts::app>
