@@ -95,7 +95,7 @@ class PublicProjectsTest extends TestCase
 
         $this->get(route('projects.show', $project->slug))
             ->assertOk()
-            ->assertSee('Gallery');
+            ->assertSee(__('project_documentation'));
     }
 
     public function test_project_show_displays_client_and_location(): void
