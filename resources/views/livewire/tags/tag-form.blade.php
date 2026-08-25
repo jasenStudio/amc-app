@@ -1,5 +1,5 @@
-<section class="w-full space-y-6">
-    <div class="flex items-center justify-between">
+<section class="space-y-6 flex flex-col justify-center items-center max-w-lg mx-auto mt-10 lg:mt-20">
+    <div class="flex items-center justify-between self-start">
         <div>
             <flux:heading size="xl">{{ $tag ? __('edit_tag') : __('new_tag') }}</flux:heading>
             <flux:subheading>
@@ -15,7 +15,7 @@
         @endif
     </div>
 
-    <form wire:submit="save" class="space-y-6">
+    <form wire:submit="save" class="space-y-6 w-full">
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="space-y-6 lg:col-span-6">
                 <div class="space-y-2">

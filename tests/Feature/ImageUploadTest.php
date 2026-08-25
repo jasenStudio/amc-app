@@ -28,16 +28,16 @@ class ImageUploadTest extends TestCase
         ])->assertStatus(401);
     }
 
-    public function test_user_without_role_is_forbidden(): void
+    public function test_pending_user_is_redirected_to_pending_approval(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->pending()->create();
 
         $this->actingAs($user)
             ->postJson(route('dashboard.images.store'), [
                 'upload' => $this->uploadedPng(),
                 'path' => 'blog/webp',
             ])
-            ->assertForbidden();
+            ->assertRedirect(route('pending.approval'));
     }
 
     public function test_editor_can_upload_valid_image(): void

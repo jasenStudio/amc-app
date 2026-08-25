@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -15,26 +16,17 @@ use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->configureDefaults();
         $this->configureAuthorization();
     }
 
-    /**
-     * Configure default behaviors for production-ready applications.
-     */
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
@@ -54,17 +46,19 @@ class AppServiceProvider extends ServiceProvider
         );
     }
 
-    /**
-     * Register role-based authorization gates.
-     *
-     * Roles are nullable: users with `role = null` (e.g., freshly registered
-     * through the starter kit) are denied every gate.
-     */
     protected function configureAuthorization(): void
     {
-        Gate::define('admin', fn (?User $user): bool => $user?->role === 'admin');
+        Gate::before(function (User $user, string $ability): ?bool {
+            if ($user->role === UserRole::Pending) {
+                return false;
+            }
 
-        Gate::define('manage-posts', fn (?User $user): bool => in_array($user?->role, ['admin', 'editor'], true));
+            return null;
+        });
+
+        Gate::define('admin', fn (User $user): bool => in_array($user->role, [UserRole::SuperAdmin, UserRole::Admin], true));
+
+        Gate::define('manage-posts', fn (User $user): bool => in_array($user->role, [UserRole::SuperAdmin, UserRole::Admin, UserRole::Editor], true));
 
         RateLimiter::for('blog-inline-images', fn (Request $request) => Limit::perMinute(30)->by($request->user()?->id ?: $request->ip()));
 

@@ -34,14 +34,14 @@ class AdminRoutesAuthorizationTest extends TestCase
         }
     }
 
-    public function test_user_without_role_is_forbidden_on_admin_dashboard_routes(): void
+    public function test_pending_user_is_redirected_to_pending_approval_on_admin_dashboard_routes(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
         foreach ($this->adminRoutes() as $route) {
-            $this->actingAs($user)
+            $this->actingAs($pending)
                 ->get($route)
-                ->assertForbidden();
+                ->assertRedirect(route('pending.approval'));
         }
     }
 
@@ -50,6 +50,17 @@ class AdminRoutesAuthorizationTest extends TestCase
         foreach ($this->adminRoutes() as $route) {
             $this->get($route)
                 ->assertRedirect(route('login'));
+        }
+    }
+
+    public function test_super_admin_can_access_all_admin_dashboard_routes(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        foreach ($this->adminRoutes() as $route) {
+            $this->actingAs($superAdmin)
+                ->get($route)
+                ->assertOk();
         }
     }
 

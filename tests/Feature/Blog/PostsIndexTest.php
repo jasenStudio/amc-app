@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Blog;
 
+use App\Enums\PostStatus;
 use App\Livewire\Blog\PostsIndex;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
-use App\PostStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -21,13 +21,13 @@ class PostsIndexTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
-    public function test_user_without_role_is_forbidden(): void
+    public function test_pending_user_is_redirected_to_pending_approval(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($pending)
             ->get(route('blog.index'))
-            ->assertForbidden();
+            ->assertRedirect(route('pending.approval'));
     }
 
     public function test_admin_can_view_index(): void
@@ -221,5 +221,18 @@ class PostsIndexTest extends TestCase
             ->test(PostsIndex::class)
             ->assertSeeHtml("data-test=\"edit-post-{$post->id}\"")
             ->assertSeeHtml("data-test=\"delete-post-{$post->id}\"");
+    }
+
+    public function test_post_with_soft_deleted_author_still_shows_author_name(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $author = User::factory()->editor()->create(['name' => 'Deleted Author']);
+        $post = Post::factory()->create(['author_id' => $author->id, 'title' => 'Old Post']);
+        $author->delete();
+
+        Livewire::actingAs($admin)
+            ->test(PostsIndex::class)
+            ->assertSee('Deleted Author')
+            ->assertSee('Old Post');
     }
 }

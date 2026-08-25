@@ -22,11 +22,20 @@ class TagFormTest extends TestCase
 
     public function test_non_admin_is_forbidden(): void
     {
-        $user = User::factory()->create();
+        $editor = User::factory()->editor()->create();
 
-        $this->actingAs($user)
+        $this->actingAs($editor)
             ->get(route('dashboard.tags.create'))
             ->assertForbidden();
+    }
+
+    public function test_pending_user_is_redirected_to_pending_approval(): void
+    {
+        $pending = User::factory()->pending()->create();
+
+        $this->actingAs($pending)
+            ->get(route('dashboard.tags.create'))
+            ->assertRedirect(route('pending.approval'));
     }
 
     public function test_admin_can_open_create_form(): void

@@ -11,6 +11,15 @@ class PostPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_super_admin_can_update_any_post(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+        $author = User::factory()->editor()->create();
+        $post = Post::factory()->create(['author_id' => $author->id]);
+
+        $this->assertTrue($superAdmin->can('update', $post));
+    }
+
     public function test_admin_can_update_any_post(): void
     {
         $admin = User::factory()->admin()->create();
@@ -37,21 +46,30 @@ class PostPolicyTest extends TestCase
         $this->assertFalse($editor->can('update', $post));
     }
 
-    public function test_user_without_role_cannot_update_a_post_owned_by_another_user(): void
+    public function test_pending_user_cannot_update_any_post(): void
     {
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
         $otherUser = User::factory()->editor()->create();
         $post = Post::factory()->create(['author_id' => $otherUser->id]);
 
-        $this->assertFalse($user->can('update', $post));
+        $this->assertFalse($pending->can('update', $post));
     }
 
-    public function test_user_without_role_cannot_update_their_own_post_either(): void
+    public function test_pending_user_cannot_update_their_own_post_either(): void
     {
-        $user = User::factory()->create();
-        $post = Post::factory()->create(['author_id' => $user->id]);
+        $pending = User::factory()->pending()->create();
+        $post = Post::factory()->create(['author_id' => $pending->id]);
 
-        $this->assertFalse($user->can('update', $post));
+        $this->assertFalse($pending->can('update', $post));
+    }
+
+    public function test_super_admin_can_delete_any_post(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+        $author = User::factory()->editor()->create();
+        $post = Post::factory()->create(['author_id' => $author->id]);
+
+        $this->assertTrue($superAdmin->can('delete', $post));
     }
 
     public function test_admin_can_delete_any_post(): void
@@ -90,24 +108,28 @@ class PostPolicyTest extends TestCase
         $this->assertTrue($otherEditor->can('restore', $post));
     }
 
-    public function test_only_admin_can_force_delete(): void
+    public function test_super_admin_and_admin_can_force_delete(): void
     {
+        $superAdmin = User::factory()->superAdmin()->create();
         $admin = User::factory()->admin()->create();
         $editor = User::factory()->editor()->create();
         $post = Post::factory()->create(['author_id' => $editor->id]);
 
+        $this->assertTrue($superAdmin->can('forceDelete', $post));
         $this->assertTrue($admin->can('forceDelete', $post));
         $this->assertFalse($editor->can('forceDelete', $post));
     }
 
     public function test_create_requires_manage_posts_gate(): void
     {
+        $superAdmin = User::factory()->superAdmin()->create();
         $admin = User::factory()->admin()->create();
         $editor = User::factory()->editor()->create();
-        $user = User::factory()->create();
+        $pending = User::factory()->pending()->create();
 
+        $this->assertTrue($superAdmin->can('create', Post::class));
         $this->assertTrue($admin->can('create', Post::class));
         $this->assertTrue($editor->can('create', Post::class));
-        $this->assertFalse($user->can('create', Post::class));
+        $this->assertFalse($pending->can('create', Post::class));
     }
 }
