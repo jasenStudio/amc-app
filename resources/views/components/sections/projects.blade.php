@@ -4,10 +4,10 @@
     'viewAllLabel' => __('projects_view_all'),
 ])
 
-<section id="projects" aria-labelledby="projects-section-title" class="bg-amc-gray-bg min-h-screen">
-    <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+<section id="projects" aria-labelledby="projects-section-title" class="bg-amc-gray-bg">
+    <div class="mx-auto max-w-7xl px-6 py-28 lg:px-8">
         <h2 id="projects-section-title"
-            class="max-w-3xl text-3xl font-medium  leading-[1.1] tracking-tight text-amc-blue sm:text-5xl lg:text-6xl">
+            class="max-w-3xl text-3xl font-medium  leading-[1.1] tracking-tight text-amc-blue sm:text-5xl lg:text-5xl">
             {{ $title }}
         </h2>
 

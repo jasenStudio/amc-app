@@ -16,6 +16,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Instalación de puntos de anclaje certificados para trabajo seguro en alturas.',
                 'excerpt' => 'Instalación de puntos de anclaje certificados para trabajo seguro en alturas.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 1,
             ],
             [
@@ -24,6 +25,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Diseño e instalación de líneas de vida certificadas para proteger cada desplazamiento.',
                 'excerpt' => 'Diseño e instalación de líneas de vida certificadas para proteger cada desplazamiento.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 2,
             ],
             [
@@ -32,6 +34,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Formación práctica y certificada para equipos que trabajan en alturas.',
                 'excerpt' => 'Formación práctica y certificada para equipos que trabajan en alturas.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 3,
             ],
             [
@@ -40,6 +43,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Acompañamiento especializado para fortalecer la prevención y el cumplimiento legal.',
                 'excerpt' => 'Acompañamiento especializado para fortalecer la prevención y el cumplimiento legal.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 4,
             ],
             [
@@ -48,6 +52,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Inspección, mantenimiento y recertificación para conservar sus sistemas operativos.',
                 'excerpt' => 'Inspección, mantenimiento y recertificación para conservar sus sistemas operativos.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 5,
             ],
             [
@@ -56,6 +61,7 @@ class ServiceSeeder extends Seeder
                 'description' => 'Soluciones de gestión para identificar, controlar y reducir los riesgos de su operación.',
                 'excerpt' => 'Soluciones de gestión para identificar, controlar y reducir los riesgos de su operación.',
                 'status' => 'active',
+                'featured' => true,
                 'order' => 6,
             ],
         ];
