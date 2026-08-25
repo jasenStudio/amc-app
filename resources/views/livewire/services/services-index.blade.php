@@ -4,7 +4,8 @@
             <flux:heading size="xl">{{ __('services') }}</flux:heading>
             <flux:subheading>{{ __('manage_services_offered') }}</flux:subheading>
         </div>
-        <flux:button variant="primary" :href="route('dashboard.services.create')" wire:navigate icon="plus" data-test="new-service">
+        <flux:button variant="primary" :href="route('dashboard.services.create')" wire:navigate icon="plus"
+            data-test="new-service">
             {{ __('new_service') }}
         </flux:button>
     </div>
@@ -42,8 +43,8 @@
                 <flux:table.row :key="$service->id">
                     <flux:table.cell>
                         @if ($service->coverImage)
-                            <img src="{{ \App\Support\ImageUrl::public($service->coverImage->image_path) }}" alt=""
-                                class="size-10 rounded object-cover">
+                            <img src="{{ \App\Support\ImageUrl::public($service->coverImage->image_path) }}"
+                                alt="" class="size-10 rounded object-cover">
                         @else
                             <div class="size-10 rounded bg-zinc-100 dark:bg-zinc-700"></div>
                         @endif
@@ -72,8 +73,9 @@
                     <flux:table.cell align="end">
                         <div class="flex justify-end gap-2">
                             @if ($this->canUpdate($service))
-                                <flux:button size="sm" :href="route('dashboard.services.edit', $service)" wire:navigate
-                                    variant="ghost" icon="pencil" data-test="edit-service-{{ $service->id }}">
+                                <flux:button size="sm" :href="route('dashboard.services.edit', $service)"
+                                    wire:navigate variant="ghost" icon="pencil"
+                                    data-test="edit-service-{{ $service->id }}">
                                     {{ __('edit') }}
                                 </flux:button>
                             @endif

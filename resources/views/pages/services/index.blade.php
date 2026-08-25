@@ -1,10 +1,13 @@
-<x-layouts::app :title="__('Servicios | AMC Gestión de Riesgos')" :description="__('Catálogo de servicios certificados de AMC Gestión de Riesgos para proteger personas, operaciones y activos.')">
+<x-layouts::app :title="__('Servicios | AMC Gestión de Riesgos')" :description="__(
+    'Catálogo de servicios certificados de AMC Gestión de Riesgos para proteger personas, operaciones y activos.',
+)">
     <x-header />
 
-    <main>
+    <main class="bg-amc-gray-bg">
         <section aria-labelledby="services-page-title" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Servicios') }}</p>
-            <h1 id="services-page-title" class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
+            <h1 id="services-page-title"
+                class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
                 {{ __('Soluciones para trabajar con más seguridad.') }}
             </h1>
             <p class="mt-6 max-w-2xl text-lg leading-8 text-amc-gray-text">
