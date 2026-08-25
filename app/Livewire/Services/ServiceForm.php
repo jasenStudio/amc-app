@@ -71,6 +71,8 @@ class ServiceForm extends Component
                     'path' => $image->image_path,
                     'order' => $image->order,
                     'is_cover' => $image->is_cover,
+                    'width' => $image->width,
+                    'height' => $image->height,
                 ];
             }
         } else {

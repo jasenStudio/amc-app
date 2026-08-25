@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $image_path
  * @property int $order
  * @property bool $is_cover
+ * @property int|null $width
+ * @property int|null $height
  */
 class ServiceImage extends Model
 {
@@ -20,6 +22,8 @@ class ServiceImage extends Model
         'image_path',
         'order',
         'is_cover',
+        'width',
+        'height',
     ];
 
     protected $attributes = [
@@ -33,6 +37,8 @@ class ServiceImage extends Model
             'service_id' => 'integer',
             'order' => 'integer',
             'is_cover' => 'boolean',
+            'width' => 'integer',
+            'height' => 'integer',
         ];
     }
 

@@ -169,4 +169,58 @@ class SaveServiceTest extends TestCase
         $this->assertNull($service->fresh()->images->where('image_path', 'images/old.webp')->first());
         $this->assertNotNull($service->fresh()->images->where('image_path', 'images/new.webp')->first());
     }
+
+    public function test_stores_gallery_image_dimensions(): void
+    {
+        $service = $this->action->handle(
+            service: null,
+            data: [
+                'title' => 'Test Service',
+                'slug' => 'test-service',
+                'description' => 'Test description',
+                'status' => 'active',
+            ],
+            galleryImages: [
+                ['path' => 'images/test1.webp', 'order' => 0, 'is_cover' => true, 'width' => 1600, 'height' => 1067],
+                ['path' => 'images/test2.webp', 'order' => 1, 'is_cover' => false, 'width' => 800, 'height' => 600],
+            ],
+        );
+
+        $firstImage = $service->images->where('image_path', 'images/test1.webp')->first();
+        $secondImage = $service->images->where('image_path', 'images/test2.webp')->first();
+
+        $this->assertSame(1600, $firstImage->width);
+        $this->assertSame(1067, $firstImage->height);
+        $this->assertSame(800, $secondImage->width);
+        $this->assertSame(600, $secondImage->height);
+    }
+
+    public function test_updates_gallery_image_dimensions(): void
+    {
+        $service = Service::factory()->create();
+        $service->images()->create([
+            'image_path' => 'images/existing.webp',
+            'order' => 0,
+            'is_cover' => true,
+            'width' => 100,
+            'height' => 100,
+        ]);
+
+        $this->action->handle(
+            service: $service,
+            data: [
+                'title' => $service->title,
+                'slug' => $service->slug,
+                'description' => $service->description,
+                'status' => 'active',
+            ],
+            galleryImages: [
+                ['path' => 'images/existing.webp', 'order' => 0, 'is_cover' => true, 'width' => 1600, 'height' => 1067],
+            ],
+        );
+
+        $image = $service->fresh()->images->where('image_path', 'images/existing.webp')->first();
+        $this->assertSame(1600, $image->width);
+        $this->assertSame(1067, $image->height);
+    }
 }

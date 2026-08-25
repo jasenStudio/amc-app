@@ -212,4 +212,62 @@ class SaveProjectTest extends TestCase
         $image = $project->fresh()->images->where('image_path', 'images/existing.webp')->first();
         $this->assertTrue($image->is_cover);
     }
+
+    public function test_stores_gallery_image_dimensions(): void
+    {
+        $project = $this->action->handle(
+            project: null,
+            data: [
+                'title' => 'Test Project',
+                'slug' => 'test-project',
+                'description' => 'Test description',
+                'client' => 'Test Client',
+                'date' => '2024-01-15',
+                'status' => 'active',
+            ],
+            galleryImages: [
+                ['path' => 'images/test1.webp', 'order' => 0, 'is_cover' => true, 'width' => 1600, 'height' => 1067],
+                ['path' => 'images/test2.webp', 'order' => 1, 'is_cover' => false, 'width' => 800, 'height' => 600],
+            ],
+        );
+
+        $firstImage = $project->images->where('image_path', 'images/test1.webp')->first();
+        $secondImage = $project->images->where('image_path', 'images/test2.webp')->first();
+
+        $this->assertSame(1600, $firstImage->width);
+        $this->assertSame(1067, $firstImage->height);
+        $this->assertSame(800, $secondImage->width);
+        $this->assertSame(600, $secondImage->height);
+    }
+
+    public function test_updates_gallery_image_dimensions(): void
+    {
+        $project = Project::factory()->create();
+        $project->images()->create([
+            'image_path' => 'images/existing.webp',
+            'order' => 0,
+            'is_cover' => true,
+            'width' => 100,
+            'height' => 100,
+        ]);
+
+        $this->action->handle(
+            project: $project,
+            data: [
+                'title' => $project->title,
+                'slug' => $project->slug,
+                'description' => $project->description,
+                'client' => $project->client,
+                'date' => $project->date->format('Y-m-d'),
+                'status' => 'active',
+            ],
+            galleryImages: [
+                ['path' => 'images/existing.webp', 'order' => 0, 'is_cover' => true, 'width' => 1600, 'height' => 1067],
+            ],
+        );
+
+        $image = $project->fresh()->images->where('image_path', 'images/existing.webp')->first();
+        $this->assertSame(1600, $image->width);
+        $this->assertSame(1067, $image->height);
+    }
 }

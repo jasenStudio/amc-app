@@ -10,7 +10,7 @@ class SaveProject
 {
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, array{path: string, order: int, is_cover: bool}>  $galleryImages
+     * @param  array<int, array{path: string, order: int, is_cover: bool, width: ?int, height: ?int}>  $galleryImages
      */
     public function handle(
         ?Project $project,
@@ -43,7 +43,7 @@ class SaveProject
     }
 
     /**
-     * @param  array<int, array{path: string, order: int, is_cover: bool}>  $galleryImages
+     * @param  array<int, array{path: string, order: int, is_cover: bool, width: ?int, height: ?int}>  $galleryImages
      */
     private function syncGallery(Project $project, array $galleryImages): void
     {
@@ -61,6 +61,8 @@ class SaveProject
         foreach ($galleryImages as $index => $imageData) {
             $path = $imageData['path'];
             $isCover = (bool) ($imageData['is_cover'] ?? false);
+            $width = $imageData['width'] ?? null;
+            $height = $imageData['height'] ?? null;
 
             if ($isCover) {
                 $coverPath = $path;
@@ -70,6 +72,8 @@ class SaveProject
                 $existingImages[$path]->update([
                     'order' => $index,
                     'is_cover' => $isCover,
+                    ...($width !== null ? ['width' => $width] : []),
+                    ...($height !== null ? ['height' => $height] : []),
                 ]);
             } else {
                 ProjectImage::create([
@@ -77,6 +81,8 @@ class SaveProject
                     'image_path' => $path,
                     'order' => $index,
                     'is_cover' => $isCover,
+                    'width' => $width,
+                    'height' => $height,
                 ]);
             }
         }

@@ -26,7 +26,7 @@ class GalleryUploader extends Component
     public int $maxFiles = 20;
 
     /**
-     * @param  array<int, array{path: string, order: int, is_cover: bool}>  $galleryImages
+     * @param  array<int, array{path: string, order: int, is_cover: bool, width: ?int, height: ?int}>  $galleryImages
      */
     public function mount(
         string $path,
@@ -74,6 +74,8 @@ class GalleryUploader extends Component
                 $this->dispatch('gallery-image-uploaded', [
                     'path' => $paths['full'],
                     'url' => Storage::disk('public')->url($paths['full']),
+                    'width' => $paths['width'],
+                    'height' => $paths['height'],
                 ]);
             }
 

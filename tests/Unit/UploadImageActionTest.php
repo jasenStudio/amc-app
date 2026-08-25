@@ -154,6 +154,18 @@ class UploadImageActionTest extends TestCase
         $this->assertSame('image/webp', $fullSize['mime']);
     }
 
+    public function test_returns_width_and_height_of_full_image(): void
+    {
+        $source = $this->makePng(width: 2400, height: 1600);
+        $file = new UploadedFile($source, 'cover.png', 'image/png', null, true);
+
+        $action = app(UploadImageAction::class);
+        $paths = $action($file, 'blog/webp', 'test', $this->disk);
+
+        $this->assertSame(1600, $paths['width']);
+        $this->assertSame(1067, $paths['height']);
+    }
+
     public function test_stored_as_webp(): void
     {
         $file = new UploadedFile($this->makePng(1600, 900), 'cover.png', 'image/png', null, true);

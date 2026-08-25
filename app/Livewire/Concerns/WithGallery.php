@@ -5,15 +5,15 @@ namespace App\Livewire\Concerns;
 use Livewire\Attributes\On;
 
 /**
- * @property array<int, array{path: string, order: int, is_cover: bool}> $galleryImages
+ * @property array<int, array{path: string, order: int, is_cover: bool, width: ?int, height: ?int}> $galleryImages
  */
 trait WithGallery
 {
-    /** @var array<int, array{path: string, order: int, is_cover: bool}> */
+    /** @var array<int, array{path: string, order: int, is_cover: bool, width: ?int, height: ?int}> */
     public array $galleryImages = [];
 
     /**
-     * @param  array{path?: string, order?: int, is_cover?: bool}  $imageData
+     * @param  array{path?: string, order?: int, is_cover?: bool, width?: int, height?: int}  $imageData
      */
     #[On('gallery-image-uploaded')]
     public function onGalleryImageUploaded(array $imageData): void
@@ -35,6 +35,8 @@ trait WithGallery
             'path' => $path,
             'order' => count($this->galleryImages),
             'is_cover' => $isCover && count($this->galleryImages) === 0,
+            'width' => $imageData['width'] ?? null,
+            'height' => $imageData['height'] ?? null,
         ];
     }
 
