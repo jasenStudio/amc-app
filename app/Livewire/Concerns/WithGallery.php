@@ -46,7 +46,7 @@ trait WithGallery
             return;
         }
 
-        $wasCover = $this->galleryImages[$index]['is_cover'] ?? false;
+        $wasCover = $this->galleryImages[$index]['is_cover'];
 
         array_splice($this->galleryImages, $index, 1);
 

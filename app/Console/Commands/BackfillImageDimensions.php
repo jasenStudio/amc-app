@@ -69,7 +69,7 @@ class BackfillImageDimensions extends Command
             return null;
         }
 
-        if ($contents === false || $contents === null || $contents === '') {
+        if ($contents === null || $contents === '') {
             return null;
         }
 

@@ -26,8 +26,12 @@ class SaveService
                 }
             }
 
-            if (! $hasCover && count($galleryImages) > 0) {
-                $galleryImages[0]['is_cover'] = true;
+            if (! $hasCover) {
+                foreach ($galleryImages as $index => $img) {
+                    $galleryImages[$index]['is_cover'] = true;
+
+                    break;
+                }
             }
 
             if ($service !== null) {
@@ -60,7 +64,7 @@ class SaveService
 
         foreach ($galleryImages as $index => $imageData) {
             $path = $imageData['path'];
-            $isCover = (bool) ($imageData['is_cover'] ?? false);
+            $isCover = (bool) $imageData['is_cover'];
             $width = $imageData['width'] ?? null;
             $height = $imageData['height'] ?? null;
 

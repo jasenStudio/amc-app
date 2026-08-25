@@ -57,10 +57,6 @@ class GalleryUploader extends Component
 
         try {
             foreach ($this->uploads as $upload) {
-                if (! $upload instanceof UploadedFile) {
-                    continue;
-                }
-
                 $rules = ['uploads.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']];
                 $this->validate($rules);
 
