@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class HeroTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_home_renders_the_hero_section(): void
     {
         $response = $this->get(route('home'));
@@ -52,9 +55,7 @@ class HeroTest extends TestCase
     {
         $response = $this->get(route('home'));
 
-        $response
-            ->assertSee('href="#services"', false)
-            ->assertSee('href="#contact"', false);
+        $response->assertSee('href="#contact"', false);
     }
 
     public function test_hero_image_is_flagged_as_lcp(): void

@@ -19,7 +19,7 @@ class ServicesPageTest extends TestCase
 
     public function test_services_index_renders_the_catalog(): void
     {
-        $response = $this->get('/services');
+        $response = $this->get('/servicios');
 
         $response
             ->assertOk()
@@ -30,7 +30,7 @@ class ServicesPageTest extends TestCase
 
     public function test_services_index_renders_six_service_cards(): void
     {
-        $html = $this->get('/services')->getContent();
+        $html = $this->get('/servicios')->getContent();
 
         $this->assertSame(6, substr_count($html, '<article'));
     }
@@ -39,25 +39,26 @@ class ServicesPageTest extends TestCase
     {
         $service = Service::query()->where('title', 'Instalación de Puntos de Anclaje')->first();
 
-        $response = $this->get("/services/{$service->slug}");
+        $response = $this->get("/servicios/{$service->slug}");
 
         $response
             ->assertOk()
             ->assertSee('Instalación de Puntos de Anclaje')
-            ->assertSee('Volver a servicios')
+            ->assertSee('Breadcrumb')
+            ->assertSee('Servicios')
             ->assertSee('Solicitar asesoría');
     }
 
     public function test_service_show_returns_not_found_for_an_unknown_slug(): void
     {
-        $this->get('/services/no-existe')->assertNotFound();
+        $this->get('/servicios/no-existe')->assertNotFound();
     }
 
     public function test_service_cards_link_to_the_show_route(): void
     {
         $service = Service::query()->where('title', 'Líneas de Vida Certificadas')->first();
 
-        $response = $this->get('/services');
+        $response = $this->get('/servicios');
 
         $response->assertSee('href="'.route('services.show', $service->slug).'"', false);
     }
@@ -67,7 +68,7 @@ class ServicesPageTest extends TestCase
         $service = Service::query()->where('title', 'Instalación de Puntos de Anclaje')->first();
         $service->update(['price' => 1500.00]);
 
-        $response = $this->get("/services/{$service->slug}");
+        $response = $this->get("/servicios/{$service->slug}");
 
         $response
             ->assertOk()

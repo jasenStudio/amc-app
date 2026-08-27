@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Dashboard\ImageUploadController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\Blog\PostForm;
 use App\Livewire\Blog\PostsIndex;
 use App\Livewire\Projects\ProjectForm;
@@ -17,9 +18,14 @@ use App\Livewire\Users\UserForm;
 use App\Livewire\Users\UsersIndex;
 use Illuminate\Support\Facades\Route;
 
+Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
 Route::view('/', 'pages::home')->name('home');
-Route::get('projects', [ProjectsController::class, 'index'])->name('projects');
-Route::get('projects/{slug}', [ProjectsController::class, 'show'])->name('projects.show');
+Route::redirect(
+    '/portafolio',
+    'https://drive.google.com/file/d/1PL4N41EoJhcPEcnnm1OoOX8hHQPykDRw/view?usp=sharing'
+);
+Route::get('proyectos', [ProjectsController::class, 'index'])->name('projects');
+Route::get('proyectos/{slug}', [ProjectsController::class, 'show'])->name('projects.show');
 
 Route::get('blog', [BlogController::class, 'index'])->name('blog');
 Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
@@ -65,5 +71,5 @@ Route::middleware(['auth', 'verified', 'pending'])->prefix('dashboard')->name('d
 
 require __DIR__.'/settings.php';
 
-Route::get('services', [ServicesController::class, 'index'])->name('services');
-Route::get('services/{slug}', [ServicesController::class, 'show'])->name('services.show');
+Route::get('servicios', [ServicesController::class, 'index'])->name('services');
+Route::get('servicios/{slug}', [ServicesController::class, 'show'])->name('services.show');

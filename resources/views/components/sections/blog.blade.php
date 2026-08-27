@@ -1,5 +1,5 @@
        <section id="blog" aria-labelledby="blog-title" class="bg-amc-gray-bg">
-           <div class="min-h-screen mx-auto max-w-7xl px-6 py-10 lg:px-8">
+           <div class=" mx-auto max-w-7xl px-6 py-20 lg:px-8">
                <h2 id="blog-title" class="mt-4 text-3xl font-semibold tracking-tight text-amc-blue sm:text-4xl">
                    {{ __('From the field') }}
                </h2>

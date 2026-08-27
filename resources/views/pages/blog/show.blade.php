@@ -1,17 +1,13 @@
-<x-layouts::app :title="$post->seoTitle()" :description="$post->seoDescription()">
-    @if ($post->seoImage())
-        <meta property="og:image" content="{{ \App\Support\ImageUrl::public($post->seoImage()) }}">
-    @endif
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="{{ $post->published_at?->toIso8601String() }}">
+<x-layouts::app :title="$post->seoTitle()" :description="$post->seoDescription()" :ogImage="\App\Support\ImageUrl::public($post->seoImage())" ogType="article" :publishedTime="$post->published_at?->toIso8601String()">
     <x-header />
 
-    <main class="bg-amc-gray-bg">
+    <main id="main-content" class="bg-amc-gray-bg">
         <div class="mx-auto max-w-4xl px-6 py-10 lg:px-8">
-            <a href="{{ route('blog') }}"
-                class="mb-8 inline-flex text-sm font-medium text-amc-orange-text hover:text-amc-orange-hover transition">
-                &larr; {{ __('Back to blog') }}
-            </a>
+            <x-breadcrumbs :items="[
+                ['label' => __('Inicio'), 'href' => route('home')],
+                ['label' => __('Blog'), 'href' => route('blog')],
+                ['label' => $post->title],
+            ]" />
 
             @if ($post->tags->isNotEmpty())
                 <div class="mb-4 flex flex-wrap gap-2">
@@ -61,4 +57,33 @@
         </div>
 
     </main>
+
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "BlogPosting",
+        "headline": {{ json_encode($post->title) }},
+        "description": {{ json_encode($post->seoDescription() ?: \Illuminate\Support\Str::limit(strip_tags($post->excerpt ?? ''), 160)) }},
+        "datePublished": {{ json_encode($post->published_at?->toIso8601String()) }},
+        "dateModified": {{ json_encode($post->updated_at?->toIso8601String()) }},
+        "author": {
+            "@@type": "Organization",
+            "name": "AMC Gestión de Riesgos SAS"
+        },
+        "publisher": {
+            "@@type": "Organization",
+            "name": "AMC Gestión de Riesgos SAS",
+            "logo": {
+                "@@type": "ImageObject",
+                "url": {{ json_encode(asset('assets/images/logo.webp')) }}
+            }
+        },
+        "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@id": {{ json_encode(route('blog.show', $post->slug)) }}
+        }@if($post->seoImage()), "image": {{ json_encode(\App\Support\ImageUrl::public($post->seoImage())) }}@endif
+    }
+    </script>
+
+    <x-footer />
 </x-layouts::app>

@@ -1,12 +1,8 @@
-<x-layouts::app :title="$project->seoTitle() . ' | AMC Gestión de Riesgos'" :description="$project->seoDescription()">
-    @if ($project->seoImage())
-        <meta property="og:image" content="{{ \App\Support\ImageUrl::public($project->seoImage()) }}">
-    @endif
-    <meta property="og:type" content="article">
+<x-layouts::app :title="$project->seoTitle() . ' | AMC Gestión de Riesgos'" :description="$project->seoDescription()" :ogImage="\App\Support\ImageUrl::public($project->seoImage())" ogType="article">
 
     <x-header />
 
-    <main class="bg-amc-gray-bg">
+    <main id="main-content" class="bg-amc-gray-bg">
 
         {{-- Hero --}}
         <section class="relative isolate flex min-h-screen items-end overflow-hidden bg-amc-blue text-white">
@@ -108,6 +104,11 @@
         {{-- Content --}}
         <section class="bg-amc-gray-bg px-6 py-16 lg:px-8">
             <div class="mx-auto max-w-7xl">
+                <x-breadcrumbs :items="[
+                    ['label' => __('Inicio'), 'href' => route('home')],
+                    ['label' => __('Proyectos'), 'href' => route('projects')],
+                    ['label' => $project->title],
+                ]" />
                 <div class="grid grid-cols-1 gap-6 {{ $project->video_url ? 'lg:grid-cols-2' : '' }}">
 
                     {{-- Descripción --}}
@@ -184,4 +185,6 @@
             lightbox.init();
         </script>
     @endonce
+
+    <x-footer />
 </x-layouts::app>
