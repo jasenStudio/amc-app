@@ -3,7 +3,7 @@
 )" bodyBg="bg-amc-blue">
     <x-header />
 
-    <main class="bg-amc-gray-bg text-white">
+    <main id="main-content" class="bg-amc-gray-bg text-white">
         <section class="mx-auto grid min-h-screen max-w-7xl items-start gap-12 px-6 py-32 lg:grid-cols-2 lg:px-8">
             <div class="max-w-2xl">
                 <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amc-orange-text">
@@ -28,4 +28,6 @@
             </figure>
         </section>
     </main>
+
+    <x-footer />
 </x-layouts::app>

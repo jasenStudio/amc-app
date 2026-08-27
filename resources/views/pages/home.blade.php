@@ -4,7 +4,7 @@
 
     <x-header />
 
-    <main>
+    <main id="main-content">
         <x-sections.hero />
 
         <x-sections.metrics />
@@ -15,39 +15,12 @@
 
         <x-sections.projects />
 
+        <x-sections.certification />
+
         <x-sections.blog />
 
-        <section id="contact" aria-labelledby="contact-title" class="bg-amc-blue text-white">
-            <div
-                class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-24 sm:flex-row sm:items-end sm:justify-between lg:px-8">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">
-                        {{ __('Contact') }}
-                    </p>
-                    <h2 id="contact-title" class="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
-                        {{ __('Have a project in mind? Let us talk.') }}</h2>
-                </div>
-                <a href="mailto:hello@example.com"
-                    class="shrink-0 rounded-full bg-amc-orange-text px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover">
-                    hello@example.com
-                </a>
-            </div>
-        </section>
+        <x-sections.contact />
     </main>
-
-    <footer class="border-t border-amc-gray-bg bg-white">
-        <div
-            class="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm text-amc-gray-text sm:flex-row sm:items-center sm:justify-between lg:px-8">
-            <span class="font-semibold text-amc-blue">AMC</span>
-            <div class="flex items-center gap-5 text-lg">
-                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-                    class="transition hover:text-amc-orange"><x-icon-linkedin class="size-5" /></a>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub"
-                    class="transition hover:text-amc-orange"><x-icon-github class="size-5" /></a>
-                <a href="mailto:hello@example.com" aria-label="Email" class="transition hover:text-amc-orange"><x-icon
-                        name="mail" class="size-5" /></a>
-            </div>
-            <span>&copy; {{ date('Y') }} AMC. {{ __('All rights reserved.') }}</span>
-        </div>
-    </footer>
+    <x-wp-button />
+    <x-footer />
 </x-layouts::app>

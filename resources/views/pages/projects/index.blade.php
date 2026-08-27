@@ -1,7 +1,7 @@
 <x-layouts::app :title="__('Proyectos | AMC Gestión de Riesgos')" :description="__('Conoce los proyectos y resultados prácticos de AMC Gestión de Riesgos.')">
     <x-header />
 
-    <main class="bg-amc-gray-bg">
+    <main id="main-content" class="bg-amc-gray-bg">
         <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">
                 {{ __('projects_page_kicker') }}
@@ -33,4 +33,6 @@
             @endif
         </div>
     </main>
+
+    <x-footer />
 </x-layouts::app>
