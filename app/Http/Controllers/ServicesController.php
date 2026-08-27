@@ -39,8 +39,17 @@ class ServicesController extends Controller
             throw new NotFoundHttpException;
         }
 
+        $relatedServices = Service::query()
+            ->active()
+            ->where('id', '!=', $service->id)
+            ->ordered()
+            ->with(['coverImage'])
+            ->limit(3)
+            ->get();
+
         return view('pages::services.show', [
             'service' => $service,
+            'relatedServices' => $relatedServices,
         ]);
     }
 }

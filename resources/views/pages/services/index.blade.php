@@ -3,7 +3,7 @@
 )">
     <x-header />
 
-    <main class="bg-amc-gray-bg">
+    <main id="main-content" class="bg-amc-gray-bg">
         <section aria-labelledby="services-page-title" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Servicios') }}</p>
             <h1 id="services-page-title"
@@ -39,4 +39,6 @@
             </div>
         </section>
     </main>
+
+    <x-footer />
 </x-layouts::app>

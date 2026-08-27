@@ -1,7 +1,7 @@
 <x-layouts::app :title="__('Blog | AMC Gestión de Riesgos')" :description="__('Perspectivas, guías e ideas prácticas de AMC Gestión de Riesgos.')">
     <x-header />
 
-    <main class="bg-amc-gray-bg">
+    <main id="main-content" class="bg-amc-gray-bg">
 
         <div class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Blog') }}</p>
@@ -65,7 +65,7 @@
                     @foreach ($posts as $post)
                         <a href="{{ route('blog.show', $post->slug) }}" class="group block">
                             @if ($post->cover_image_thumb_url)
-                                <img src="{{ $post->cover_image_thumb_url }}" alt=""
+                                <img src="{{ $post->cover_image_thumb_url }}" alt="{{ $post->title }}"
                                     class="aspect-3/2 w-full rounded-lg object-cover" loading="lazy">
                             @else
                                 <div class="aspect-3/2 w-full rounded-lg bg-zinc-100 dark:bg-zinc-800"></div>
@@ -100,4 +100,6 @@
 
 
     </main>
+
+    <x-footer />
 </x-layouts::app>

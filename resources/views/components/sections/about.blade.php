@@ -35,7 +35,7 @@
                 loading="lazy" decoding="async" class="aspect-4/3 w-full object-cover scale-125 origin-[83%_35%]">
         </figure>
         <div class="order-2">
-            <h2 id="nosotros-title" class="mb-6 max-w-2xl font-serif text-2xl italic text-amc-blue md:text-4xl">
+            <h2 id="nosotros-title" class="mb-6 max-w-2xl text-3xl font-bold text-amc-blue sm:text-4xl">
                 {{ $title }}
             </h2>
             <p class="mb-8 max-w-2xl text-base leading-relaxed text-amc-gray-text">{{ $description }}</p>

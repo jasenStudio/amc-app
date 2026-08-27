@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class NavbarTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_home_renders_the_responsive_navigation(): void
     {
         $response = $this->get(route('home'));
