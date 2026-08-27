@@ -28,6 +28,8 @@ class ContactFormTest extends TestCase
 
     public function test_renders_successfully(): void
     {
+        $this->app->setLocale('es');
+
         Livewire::test(ContactForm::class)
             ->assertStatus(200)
             ->assertSee('Nombre completo')
