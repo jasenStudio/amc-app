@@ -29,11 +29,11 @@
                 {{ __('La seguridad de su equipo es nuestra mayor responsabilidad.') }}
             </p>
             <div class="fade-in-up fade-in-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
-                <a href="#services"
+                <a href="#contact"
                     class="rounded-md bg-amc-orange-text px-6 py-3 text-sm font-semibold text-white transition hover:bg-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
                     {{ __('Solicitar asesoría') }}
                 </a>
-                <a href="#contact"
+                <a href="{{ url('/portafolio') }}" target="_blank"
                     class="rounded-md border border-white/50 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
                     {{ __('Ver portafolio') }}
                 </a>

@@ -6,7 +6,8 @@
 
         <div class="hidden items-center gap-8 lg:flex">
             <x-navbar.desktop-links />
-            <x-navbar.cta href="{{ route('projects') }}" />
+            <x-navbar.cta href="https://wa.me/573147874006?text={{ urlencode('Hola, quiero más información.') }}"
+                target="_blank" rel="noopener noreferrer" />
         </div>
 
         <x-navbar.toggle />
