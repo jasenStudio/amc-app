@@ -60,6 +60,8 @@
     "cancel": "Cancel",
     "Cancel invitation": "Cancelar invitación",
     "case_study": "Case study",
+    "certification_title": "Certifications and regulations",
+    "sectors_title": "Sectors we serve",
     "Choose": "Elija",
     "Choose :name": "Elegir :name",
     "Choose File": "Elija archivo",
@@ -276,6 +278,12 @@
     "manage_projects_and_clients": "Manage projects and clients.",
     "manage_services_offered": "Manage services offered.",
     "manage_tags": "Gestionar etiquetas del blog",
+    "manufacturing": "Manufacturing industry",
+    "construction": "Construction",
+    "energy": "Energy sector",
+    "telecommunications": "Telecommunications",
+    "logistics": "Logistics and warehousing",
+    "agribusiness": "Agribusiness",
     "Member removed.": "Miembro eliminado.",
     "Member role updated.": "Rol de miembro actualizado.",
     "Method Not Allowed": "Método no permitido",
@@ -604,5 +612,7 @@
     "Your account has been created, but it must be approved by an administrator before you can access the dashboard.": "Your account has been created, but it must be approved by an administrator before you can access the dashboard.",
     "Your account is pending approval": "Your account is pending approval",
     "Your email address is unverified.": "Su dirección de correo electrónico no está verificada.",
-    "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Durante el inicio de sesión, se le pedirá que introduzca un PIN seguro y aleatorio, que podrá obtener desde la aplicación compatible con TOTP en su teléfono."
+    "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Durante el inicio de sesión, se le pedirá que introduzca un PIN seguro y aleatorio, que podrá obtener desde la aplicación compatible con TOTP en su teléfono.",
+    "reCAPTCHA verification failed. Please try again.": "reCAPTCHA verification failed. Please try again.",
+    "Sending...": "Sending..."
 }
