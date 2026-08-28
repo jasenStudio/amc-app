@@ -14,7 +14,7 @@
         <livewire:comments.list-view :lazy="config('commenter.lazy_loading', true)" :model="$model"/>
         <hr class="text-gray-400"/>
         <div id="create-comment-form">
-            <livewire:comments.create-form :model="$model"/>
+            <livewire:blog.comment-form :model="$model"/>
         </div>
     </div>
 </div>
