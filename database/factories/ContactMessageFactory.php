@@ -25,6 +25,7 @@ class ContactMessageFactory extends Factory
             'message' => fake()->paragraphs(3, true),
             'ip' => fake()->ipv4(),
             'user_agent' => fake()->userAgent(),
+            'privacy_accepted_at' => now(),
         ];
     }
 }

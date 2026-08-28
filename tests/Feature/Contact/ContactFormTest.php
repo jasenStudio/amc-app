@@ -4,6 +4,7 @@ namespace Tests\Feature\Contact;
 
 use App\Livewire\Contact\ContactForm;
 use App\Mail\ContactMessageMail;
+use App\Models\ContactMessage;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -68,6 +69,7 @@ class ContactFormTest extends TestCase
             ->set('company', 'ACME Corp')
             ->set('service_id', $service->id)
             ->set('message', 'This is a test message with enough length.')
+            ->set('privacy_accepted', true)
             ->call('submit', 'test-token')
             ->assertHasNoErrors()
             ->assertSet('submitted', true);
@@ -79,9 +81,39 @@ class ContactFormTest extends TestCase
             'message' => 'This is a test message with enough length.',
         ]);
 
+        $this->assertNotNull(
+            ContactMessage::where('name', 'John Doe')->first()->privacy_accepted_at
+        );
+
         Mail::assertSent(ContactMessageMail::class, function ($mail) {
             return $mail->hasTo('gerencia@amcgestiondelriesgo.com.co');
         });
+    }
+
+    public function test_privacy_accepted_is_required(): void
+    {
+        $this->fakeRecaptchaSuccess();
+
+        Livewire::test(ContactForm::class)
+            ->set('name', 'John Doe')
+            ->set('message', 'This is a test message with enough length.')
+            ->set('privacy_accepted', false)
+            ->call('submit', 'test-token')
+            ->assertHasErrors(['privacy_accepted' => 'accepted']);
+    }
+
+    public function test_submit_fails_without_privacy_acceptance(): void
+    {
+        $this->fakeRecaptchaSuccess();
+        Mail::fake();
+
+        Livewire::test(ContactForm::class)
+            ->set('name', 'John Doe')
+            ->set('message', 'This is a test message with enough length.')
+            ->set('privacy_accepted', false)
+            ->call('submit', 'test-token')
+            ->assertHasErrors(['privacy_accepted'])
+            ->assertSet('submitted', false);
     }
 
     public function test_resets_form_after_submission(): void
@@ -92,9 +124,11 @@ class ContactFormTest extends TestCase
         Livewire::test(ContactForm::class)
             ->set('name', 'John Doe')
             ->set('message', 'This is a test message with enough length.')
+            ->set('privacy_accepted', true)
             ->call('submit', 'test-token')
             ->assertSet('name', '')
-            ->assertSet('message', '');
+            ->assertSet('message', '')
+            ->assertSet('privacy_accepted', false);
     }
 
     public function test_validates_service_id_exists(): void
@@ -168,6 +202,7 @@ class ContactFormTest extends TestCase
         Livewire::test(ContactForm::class)
             ->set('name', 'John Doe')
             ->set('message', 'This is a test message with enough length.')
+            ->set('privacy_accepted', true)
             ->call('submit', 'test-token')
             ->assertSet('submitting', false)
             ->assertSet('submitted', true);
