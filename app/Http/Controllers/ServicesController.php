@@ -42,7 +42,7 @@ class ServicesController extends Controller
         $relatedServices = Service::query()
             ->active()
             ->where('id', '!=', $service->id)
-            ->ordered()
+            ->inRandomOrder()
             ->with(['coverImage'])
             ->limit(3)
             ->get();
