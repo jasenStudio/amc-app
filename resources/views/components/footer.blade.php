@@ -78,7 +78,7 @@
         <div
             class="mx-auto max-w-7xl px-6 lg:px-8 py-5 flex flex-col gap-3 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; {{ date('Y') }} AMC Gestión de Riesgos SAS. {{ __('Todos los derechos reservados.') }}</p>
-            <a href=""
+            <a href="{{ route('privacy.policy') }}"
                 class="text-white/60 underline-offset-4 transition hover:text-amc-orange hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">
                 {{ __('Política de Tratamiento de Datos Personales') }}
             </a>
