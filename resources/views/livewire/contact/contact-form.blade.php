@@ -65,9 +65,9 @@
                 @enderror
             </div>
 
-            <div wire:ignore>
+            <div x-data="{ privacyAccepted: false }">
                 <div class="flex items-start gap-3">
-                    <input type="checkbox" wire:model.defer="privacy_accepted" id="privacy_accepted" required
+                    <input type="checkbox" x-model="privacyAccepted" @change="$wire.set('privacy_accepted', $event.target.checked)" id="privacy_accepted" required
                         class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-amc-blue focus:ring-amc-orange">
                     <label for="privacy_accepted" class="text-xs leading-relaxed text-amc-gray-text">
                         Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
