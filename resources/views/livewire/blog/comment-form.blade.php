@@ -125,24 +125,91 @@
                     </div>
                 </div>
             @else
-                <div x-data="{ privacyAccepted: false }">
-                    <div class="flex items-start gap-3 mb-4">
-                        <input type="checkbox" x-model="privacyAccepted" @change="$wire.set('privacy_accepted', $event.target.checked)" id="comment-privacy-accepted" required
-                            class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                        <label for="comment-privacy-accepted" class="text-xs leading-relaxed text-zinc-600">
+                <div wire:ignore wire:key="privacy-checkbox-{{ $editorId }}" x-data="privacyCheckbox()"
+                    x-init="init()">
+
+                    <div class="flex items-start gap-3 mb-3">
+                        <input type="checkbox" x-model="accepted" id="comment-privacy-accepted-{{ $editorId }}"
+                            class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300  text-amc-blue"
+                            style="background-color:#00203f">
+                        <label for="comment-privacy-accepted-{{ $editorId }}"
+                            class="text-xs leading-relaxed text-zinc-600">
                             Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
-                                class="text-blue-600 underline underline-offset-2 hover:text-blue-800">Política de Privacidad y Tratamiento de Datos Personales</a>.
-                            Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de acuerdo con la Ley 1581 de 2012.
+                                class="text-blue-600 underline underline-offset-2 hover:text-blue-800">Política de
+                                Privacidad y Tratamiento de Datos Personales</a>.
+                            Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de
+                            acuerdo con la Ley 1581 de 2012.
                         </label>
                     </div>
-                </div>
-                @error('privacy_accepted')
-                    <span class="align-top text-xs text-red-500 sm:text-sm mb-4 block">{{ __('Debes aceptar la política de privacidad para continuar') }}</span>
-                @enderror
 
-                <x-commenter::button wire:click="create" loadingTarget="create" class="w-full sm:w-auto">
-                    {{ __('Create') }}
-                </x-commenter::button>
+                    <p x-show="showError" x-cloak class="text-xs text-red-500 sm:text-sm mb-3">
+                        {{ __('Debes aceptar la política de privacidad para continuar') }}
+                    </p>
+
+                    <button @click="submit()" :disabled="!accepted || loading" type="button"
+                        class="w-full sm:w-auto py-1 px-2 text-sm lg:text-base lg:py-[0.4rem] lg:px-3 inline-flex items-center gap-x-2 font-semibold justify-center rounded-sm border border-transparent text-white disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                        style="background: {{ config('commenter.button_color') }}">
+                        <span x-show="!loading">{{ __('Create') }}</span>
+                        <span x-show="loading" x-cloak
+                            class="flex items-center gap-x-2">{{ __('Create') }}<x-commenter::spin
+                                color="white" /></span>
+                    </button>
+                </div>
+
+                <script>
+                    function privacyCheckbox() {
+                        return {
+                            accepted: false,
+                            loading: false,
+                            showError: false,
+                            _abortController: null,
+                            init() {
+                                this.$wire.$on('comment-created', () => {
+                                    this.accepted = false;
+                                    this.loading = false;
+                                    this.showError = false;
+                                });
+
+                                this._abortController = new AbortController();
+                                const signal = this._abortController.signal;
+
+                                // Escopado a ESTE componente, no a todo el documento
+                                const checkbox = this.$el.querySelector('input[type="checkbox"]');
+
+                                const forceRepaint = () => {
+                                    if (!checkbox) return;
+                                    checkbox.style.backgroundColor = this.accepted ? '#00203f' : '';
+                                };
+
+                                document.addEventListener('focusin', forceRepaint, {
+                                    signal
+                                });
+                                document.addEventListener('click', forceRepaint, {
+                                    signal
+                                });
+                                this.$watch('accepted', () => forceRepaint());
+                                forceRepaint();
+
+                                this.$el.addEventListener('alpine:destroyed', () => {
+                                    this._abortController?.abort();
+                                }, {
+                                    signal
+                                });
+                            },
+                            async submit() {
+                                if (!this.accepted) {
+                                    this.showError = true;
+                                    return;
+                                }
+                                this.showError = false;
+                                this.loading = true;
+                                await this.$wire.set('privacy_accepted', true);
+                                await this.$wire.create();
+                                this.loading = false;
+                            },
+                        }
+                    }
+                </script>
             @endif
         @else
             <div>
