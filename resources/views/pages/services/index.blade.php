@@ -4,7 +4,7 @@
     <x-header />
 
     <main id="main-content" class="bg-amc-gray-bg">
-        <section aria-labelledby="services-page-title" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <section aria-labelledby="services-page-title" class="mx-auto max-w-7xl px-6 py-16 pb-2.5 lg:px-8">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-amc-orange-text">{{ __('Servicios') }}</p>
             <h1 id="services-page-title"
                 class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-amc-blue sm:text-5xl">
@@ -16,7 +16,7 @@
         </section>
 
         <section aria-labelledby="services-catalog-title" class="bg-amc-gray-bg">
-            <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+            <div class="mx-auto max-w-7xl px-6 py-16 pt-2.5 lg:px-8 ">
                 <h2 id="services-catalog-title" class="sr-only">{{ __('Catálogo de servicios') }}</h2>
 
                 @if ($services->count() > 0)
