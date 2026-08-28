@@ -87,4 +87,16 @@ class CommentConsentTest extends TestCase
         $this->assertNotNull($consent->ip);
         $this->assertNotNull($consent->user_agent);
     }
+
+    public function test_checkbox_state_persists_after_editor_renders(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $post = Post::factory()->published()->create(['author_id' => $admin->id]);
+
+        Livewire::test(CommentForm::class, ['model' => $post])
+            ->set('text', 'First text')
+            ->set('privacy_accepted', true)
+            ->set('text', 'Second text after checkbox')
+            ->assertSet('privacy_accepted', true);
+    }
 }

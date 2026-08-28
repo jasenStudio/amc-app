@@ -65,14 +65,16 @@
                 @enderror
             </div>
 
-            <div class="flex items-start gap-3">
-                <input type="checkbox" wire:model="privacy_accepted" id="privacy_accepted" required
-                    class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-amc-blue focus:ring-amc-orange">
-                <label for="privacy_accepted" class="text-xs leading-relaxed text-amc-gray-text">
-                    Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
-                        class="text-amc-blue underline underline-offset-2 hover:text-amc-orange">Política de Privacidad y Tratamiento de Datos Personales</a>.
-                    Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de acuerdo con la Ley 1581 de 2012.
-                </label>
+            <div wire:ignore>
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" wire:model="privacy_accepted" id="privacy_accepted" required
+                        class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-amc-blue focus:ring-amc-orange">
+                    <label for="privacy_accepted" class="text-xs leading-relaxed text-amc-gray-text">
+                        Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
+                            class="text-amc-blue underline underline-offset-2 hover:text-amc-orange">Política de Privacidad y Tratamiento de Datos Personales</a>.
+                        Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de acuerdo con la Ley 1581 de 2012.
+                    </label>
+                </div>
             </div>
             @error('privacy_accepted')
                 <p class="text-sm text-red-600">{{ __('Debes aceptar la política de privacidad para continuar') }}</p>

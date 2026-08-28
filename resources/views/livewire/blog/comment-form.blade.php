@@ -125,14 +125,16 @@
                     </div>
                 </div>
             @else
-                <div class="flex items-start gap-3 mb-4">
-                    <input type="checkbox" wire:model="privacy_accepted" id="comment-privacy-accepted" required
-                        class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                    <label for="comment-privacy-accepted" class="text-xs leading-relaxed text-zinc-600">
-                        Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
-                            class="text-blue-600 underline underline-offset-2 hover:text-blue-800">Política de Privacidad y Tratamiento de Datos Personales</a>.
-                        Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de acuerdo con la Ley 1581 de 2012.
-                    </label>
+                <div wire:ignore>
+                    <div class="flex items-start gap-3 mb-4">
+                        <input type="checkbox" wire:model="privacy_accepted" id="comment-privacy-accepted" required
+                            class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                        <label for="comment-privacy-accepted" class="text-xs leading-relaxed text-zinc-600">
+                            Acepto la <a href="{{ route('privacy.policy') }}" target="_blank" rel="noopener noreferrer"
+                                class="text-blue-600 underline underline-offset-2 hover:text-blue-800">Política de Privacidad y Tratamiento de Datos Personales</a>.
+                            Autorizo el uso de mis datos exclusivamente para gestionar mi solicitud o suscripción de acuerdo con la Ley 1581 de 2012.
+                        </label>
+                    </div>
                 </div>
                 @error('privacy_accepted')
                     <span class="align-top text-xs text-red-500 sm:text-sm mb-4 block">{{ __('Debes aceptar la política de privacidad para continuar') }}</span>
