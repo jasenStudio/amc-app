@@ -7,7 +7,7 @@
     slug: @js($slug ?? ''),
 })"
     x-init="mount($el, $wire)">
-    <flux:label>{{ __('Body') }}</flux:label>
+    <flux:label :badge="__('required_field')">{{ __('Body') }}</flux:label>
 
     <div data-tiptap-target="toolbar"
         class="flex flex-wrap gap-1 rounded-t-lg border border-b-0 border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-800">

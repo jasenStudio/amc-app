@@ -7,17 +7,22 @@
     </div>
 
     <form wire:submit="save" class="space-y-6">
+        <x-dashboard.form-error-summary />
+
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="space-y-6 lg:col-span-2">
                 <div class="space-y-2">
-                    <flux:input wire:model.live.debounce.500ms="title" :label="__('Title')" required autofocus
-                        data-test="post-title" />
+                    <flux:input wire:model.live.debounce.500ms="title" :label="__('Title')" autofocus
+                        :label:badge="__('required_field')" data-test="post-title" />
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex items-end gap-2">
                         <div class="flex-1">
-                            <flux:input wire:model="slug" :label="__('Slug')" required data-test="post-slug" />
+                            <flux:input wire:model.live.blur="slug" :label="__('Slug')"
+                                :label:badge="__('required_field')"
+                                :description="__('Used in the public URL. Only letters, numbers and dashes.')"
+                                data-test="post-slug" />
                         </div>
                         @if ($post)
                             <flux:button type="button" variant="ghost" size="sm" wire:click="regenerateSlug"
@@ -26,14 +31,12 @@
                             </flux:button>
                         @endif
                     </div>
-                    <p class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('Used in the public URL. Only letters, numbers and dashes.') }}</p>
                 </div>
 
                 <x-blog.post-editor :body="$body" :slug="$slug" />
 
                 <div class="space-y-2">
-                    <flux:textarea wire:model="excerpt" :label="__('Excerpt')"
+                    <flux:textarea wire:model.live.blur="excerpt" :label="__('Excerpt')"
                         :placeholder="__('Short summary used in listings…')" rows="3" data-test="post-excerpt" />
                     <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ strlen($excerpt) }} / 500</p>
                 </div>
