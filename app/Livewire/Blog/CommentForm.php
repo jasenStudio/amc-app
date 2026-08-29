@@ -11,6 +11,7 @@ class CommentForm extends CreateForm
 {
     public bool $privacy_accepted = false;
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return array_merge(

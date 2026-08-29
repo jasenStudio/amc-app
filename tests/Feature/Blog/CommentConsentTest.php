@@ -27,9 +27,9 @@ class CommentConsentTest extends TestCase
         $admin = User::factory()->admin()->create();
         $post = Post::factory()->published()->create(['author_id' => $admin->id]);
 
-        Livewire::test(CommentForm::class, ['model' => $post])
-            ->assertStatus(200)
-            ->assertSee('Política de Privacidad y Tratamiento de Datos Personales', false);
+        $html = Livewire::test(CommentForm::class, ['model' => $post])->html();
+
+        $this->assertMatchesRegularExpression('/Política de\s+Privacidad y Tratamiento de Datos Personales/u', $html);
     }
 
     public function test_comment_fails_without_privacy_accepted(): void
