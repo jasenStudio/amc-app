@@ -86,7 +86,8 @@
                                 @if ($post->excerpt)
                                     <p class="mt-1 text-sm text-zinc-500 line-clamp-2">{{ $post->excerpt }}</p>
                                 @endif
-                                <p class="mt-2 text-xs text-zinc-500">{{ $post->published_at?->format('M d, Y') }}</p>
+                                <p class="mt-2 text-xs text-zinc-500">
+                                    {{ $post->published_at->translatedFormat('d \d\e F \d\e Y') }}</p>
                             </div>
                         </a>
                     @endforeach
