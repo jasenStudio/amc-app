@@ -413,6 +413,8 @@
     "Regards,": "Saludos,",
     "Regenerate": "Regenerate",
     "regenerate": "Regenerate",
+    "required_field": "Required",
+    "review_form_errors": "Please review the errors before saving.",
     "Regenerate codes": "Regenerar códigos",
     "Regenerate slug": "Regenerate slug",
     "Register": "Registrarse",
@@ -614,5 +616,14 @@
     "Your email address is unverified.": "Su dirección de correo electrónico no está verificada.",
     "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Durante el inicio de sesión, se le pedirá que introduzca un PIN seguro y aleatorio, que podrá obtener desde la aplicación compatible con TOTP en su teléfono.",
     "reCAPTCHA verification failed. Please try again.": "reCAPTCHA verification failed. Please try again.",
-    "Sending...": "Sending..."
+    "Sending...": "Sending...",
+    "Please choose a cover image.": "Please choose a cover image.",
+    "The cover image must be a valid image.": "The cover image must be a valid image.",
+    "The cover image must be a JPG, PNG or WebP file.": "The cover image must be a JPG, PNG or WebP file.",
+    "The cover image must not be larger than :max MB.": "The cover image must not be larger than :max MB.",
+    "cover image": "cover image",
+    "Each image is required.": "Each image is required.",
+    "Each file must be a valid image.": "Each file must be a valid image.",
+    "Each image must be a JPG, PNG or WebP file.": "Each image must be a JPG, PNG or WebP file.",
+    "Each image must not be larger than :max MB.": "Each image must not be larger than :max MB."
 }
