@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -26,16 +27,21 @@ class PostForm extends Component
 
     public ?Post $post = null;
 
+    #[Validate]
     public string $title = '';
 
+    #[Validate]
     public string $slug = '';
 
     public string $excerpt = '';
 
+    #[Validate]
     public string $body = '';
 
+    #[Validate]
     public string $status = 'draft';
 
+    #[Validate]
     public ?string $published_at = null;
 
     public bool $featured = false;
@@ -162,7 +168,7 @@ class PostForm extends Component
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    protected function rules(): array
     {
         $slugRules = ['required', 'string', 'max:255'];
         if ($this->post !== null) {
