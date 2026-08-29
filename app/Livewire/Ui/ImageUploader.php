@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use RuntimeException;
 
 class ImageUploader extends Component
 {
@@ -31,8 +32,6 @@ class ImageUploader extends Component
 
     public ?string $pendingFullPath = null;
 
-    public bool $loading = false;
-
     /** @var array{min_width:int,min_height:int,min_ratio:float,max_ratio:float}|null */
     public ?array $coverConstraints = null;
 
@@ -51,6 +50,29 @@ class ImageUploader extends Component
         $this->existingThumbUrl = $existingThumbUrl;
         $this->existingFullUrl = $existingFullUrl;
         $this->coverConstraints = $coverConstraints;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'upload.required' => __('Please choose a cover image.'),
+            'upload.image' => __('The cover image must be a valid image.'),
+            'upload.mimes' => __('The cover image must be a JPG, PNG or WebP file.'),
+            'upload.max' => __('The cover image must not be larger than :max MB.', ['max' => 2]),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function validationAttributes(): array
+    {
+        return [
+            'upload' => __('cover image'),
+        ];
     }
 
     public function updatedUpload(?UploadedFile $upload): void
@@ -73,6 +95,9 @@ class ImageUploader extends Component
 
         $this->upload = $file;
 
+        // Limpia errores de un intento anterior antes de procesar el nuevo archivo.
+        $this->resetErrorBag('upload');
+
         if ($this->isRateLimited()) {
             $this->addError('upload', __('Too many uploads. Please try again in a moment.'));
 
@@ -80,8 +105,6 @@ class ImageUploader extends Component
         }
 
         $this->hitRateLimiter();
-
-        $this->loading = true;
 
         try {
             $rules = ['upload' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']];
@@ -128,10 +151,12 @@ class ImageUploader extends Component
                     $this->addError($field, $message);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (RuntimeException $e) {
             $this->addError('upload', $e->getMessage());
-        } finally {
-            $this->loading = false;
+        } catch (\Throwable $e) {
+            report($e);
+
+            $this->addError('upload', __('The image could not be uploaded. Please try again.'));
         }
     }
 

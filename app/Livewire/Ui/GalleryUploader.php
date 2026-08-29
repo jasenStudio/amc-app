@@ -7,6 +7,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -20,8 +22,6 @@ class GalleryUploader extends Component
     public string $path;
 
     public ?string $slugHint = null;
-
-    public bool $loading = false;
 
     public int $maxFiles = 20;
 
@@ -39,11 +39,37 @@ class GalleryUploader extends Component
         $this->maxFiles = $maxFiles;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'uploads.*.required' => __('Each image is required.'),
+            'uploads.*.image' => __('Each file must be a valid image.'),
+            'uploads.*.mimes' => __('Each image must be a JPG, PNG or WebP file.'),
+            'uploads.*.max' => __('Each image must not be larger than :max MB.', ['max' => 2]),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function validationAttributes(): array
+    {
+        return [
+            'uploads.*' => __('image'),
+        ];
+    }
+
     public function updatedUploads(): void
     {
         if (empty($this->uploads)) {
             return;
         }
+
+        // Limpia errores de un intento anterior antes de procesar el nuevo lote.
+        $this->resetErrorBag('uploads');
 
         if ($this->isRateLimited()) {
             $this->addError('uploads', __('Too many uploads. Please try again in a moment.'));
@@ -53,18 +79,38 @@ class GalleryUploader extends Component
         }
 
         $this->hitRateLimiter();
-        $this->loading = true;
 
         try {
-            foreach ($this->uploads as $upload) {
-                $rules = ['uploads.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']];
-                $this->validate($rules);
+            $this->validate([
+                'uploads.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            ]);
+        } catch (ValidationException $e) {
+            $indexes = collect($this->uploads)->keys();
+            foreach ($e->errors() as $field => $messages) {
+                $index = (int) Str::afterLast($field, '.');
+                $filename = $indexes->has($index)
+                    ? $this->uploads[$index]->getClientOriginalName()
+                    : null;
 
+                foreach ($messages as $message) {
+                    $this->addError('uploads', $filename !== null ? $filename.': '.$message : $message);
+                }
+            }
+            $this->uploads = [];
+
+            return;
+        }
+
+        foreach ($this->uploads as $upload) {
+            try {
                 $paths = app(UploadImageAction::class)(
                     $upload,
                     $this->path,
                     $this->slugHint,
                     'public',
+                    minWidth: UploadImageAction::GALLERY_MIN_WIDTH,
+                    minHeight: UploadImageAction::GALLERY_MIN_HEIGHT,
+                    minRule: 'min',
                 );
 
                 $this->dispatch('gallery-image-uploaded', [
@@ -73,14 +119,14 @@ class GalleryUploader extends Component
                     'width' => $paths['width'],
                     'height' => $paths['height'],
                 ]);
+            } catch (\Throwable $e) {
+                // Un archivo individual falla (p.ej. dimensiones fuera de rango)
+                // sin descartar el resto del lote.
+                $this->addError('uploads', $upload->getClientOriginalName().': '.$e->getMessage());
             }
-
-            $this->uploads = [];
-        } catch (\Throwable $e) {
-            $this->addError('uploads', $e->getMessage());
-        } finally {
-            $this->loading = false;
         }
+
+        $this->uploads = [];
     }
 
     public function render(): View
