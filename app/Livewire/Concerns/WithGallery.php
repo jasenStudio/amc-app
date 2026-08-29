@@ -31,10 +31,13 @@ trait WithGallery
             }
         }
 
+        // La primera imagen de la galería se convierte en portada automáticamente.
+        $isFirstImage = count($this->galleryImages) === 0;
+
         $this->galleryImages[] = [
             'path' => $path,
             'order' => count($this->galleryImages),
-            'is_cover' => $isCover && count($this->galleryImages) === 0,
+            'is_cover' => $isCover || $isFirstImage,
             'width' => $imageData['width'] ?? null,
             'height' => $imageData['height'] ?? null,
         ];

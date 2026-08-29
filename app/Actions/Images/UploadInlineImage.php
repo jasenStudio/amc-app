@@ -20,7 +20,8 @@ class UploadInlineImage
             'blog/webp/body',
             $slugHint ?? 'inline',
             $disk,
-            false,
+            minWidth: null,
+            minHeight: null,
         );
 
         return Storage::disk($disk)->url($paths['full']);
