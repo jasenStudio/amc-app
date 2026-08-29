@@ -50,7 +50,7 @@
                     <livewire:ui.image-uploader path="blog/webp" :slug-hint="$slug" :existing-thumb-url="$coverImageThumb" :existing-full-url="$coverImageFull"
                         :cover-constraints="['min_width' => 1200, 'min_height' => 675, 'min_ratio' => 1.6, 'max_ratio' => 2.1]" />
 
-                    <div class="mt-3 text-sm text-zinc-500">
+                    <div class="mt-3 text-sm text-zinc-200">
                         {{ __('Tamaño recomendado') }}: <strong>1200 × 675px (16:9)</strong>.
                         {{ __('Puede recortar tu imagen en') }}
                         <a href="https://www.iloveimg.com/crop-image" target="_blank" rel="noopener"
