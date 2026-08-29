@@ -6,6 +6,7 @@ use App\Livewire\Ui\ImageUploader;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -19,6 +20,7 @@ class ImageUploaderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        App::setLocale('en');
         Storage::fake($this->disk);
     }
 
@@ -72,6 +74,33 @@ class ImageUploaderTest extends TestCase
         foreach ($files as $path) {
             $this->assertStringEndsWith('.webp', $path);
         }
+    }
+
+    public function test_oversized_cover_shows_specific_size_message(): void
+    {
+        $editor = User::factory()->editor()->create();
+        $file = UploadedFile::fake()->image('cover.png', 100, 100)->size(3000);
+
+        Livewire::actingAs($editor)
+            ->test(ImageUploader::class, ['path' => 'blog/webp'])
+            ->set('upload', $file)
+            ->assertHasErrors('upload')
+            ->assertSee('The cover image must not be larger than 2 MB.');
+    }
+
+    public function test_cover_image_below_minimum_width_is_rejected_by_cover_constraints(): void
+    {
+        $editor = User::factory()->editor()->create();
+        $file = UploadedFile::fake()->image('narrow.png', 675, 2000);
+
+        Livewire::actingAs($editor)
+            ->test(ImageUploader::class, [
+                'path' => 'blog/webp',
+                'coverConstraints' => ['min_width' => 1200, 'min_height' => 675, 'min_ratio' => 1.6, 'max_ratio' => 2.1],
+            ])
+            ->set('upload', $file)
+            ->assertHasErrors('upload')
+            ->assertSee('1200');
     }
 
     private function makePng(int $width = 1600, int $height = 900): string
