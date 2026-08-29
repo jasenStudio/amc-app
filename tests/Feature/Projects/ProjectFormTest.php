@@ -203,4 +203,79 @@ class ProjectFormTest extends TestCase
             ->call('regenerateSlug')
             ->assertSet('slug', 'updated-title');
     }
+
+    public function test_required_badge_is_rendered_for_required_fields(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->html();
+
+        // Cada campo requerido renderiza el badge en la pill del label y como
+        // atributo `label:badge` reenviado al control (2 apariciones por campo).
+        $this->assertSame(12, substr_count($html, __('required_field')));
+    }
+
+    public function test_slug_description_hint_is_rendered(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->assertSee(__('slug_hint'));
+    }
+
+    public function test_video_url_description_hint_is_rendered(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->assertSee(__('video_url_hint'));
+    }
+
+    public function test_error_summary_renders_after_invalid_submit(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->set('title', '')
+            ->call('save')
+            ->assertHasErrors()
+            ->assertSee(__('review_form_errors'));
+    }
+
+    public function test_real_time_validation_on_title_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->set('title', '')
+            ->assertHasErrors(['title' => 'required']);
+    }
+
+    public function test_real_time_validation_on_video_url_pattern(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->set('title', 'A project')
+            ->set('video_url', 'not-a-url')
+            ->assertHasErrors(['video_url' => 'url']);
+    }
+
+    public function test_real_time_validation_on_date_pattern(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ProjectForm::class)
+            ->set('title', 'A project')
+            ->set('date', 'not-a-date')
+            ->assertHasErrors(['date' => 'date']);
+    }
 }
