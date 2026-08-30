@@ -17,7 +17,7 @@ class HomeProjectsSectionTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertDontSee('id="projects"', false)
-            ->assertDontSee('Ver proyectos', false);
+            ->assertDontSee(__('projects_view_all'), false);
     }
 
     public function test_home_shows_projects_section_when_featured_projects_exist(): void
@@ -27,7 +27,7 @@ class HomeProjectsSectionTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSee('id="projects"', false)
-            ->assertSee('Ver proyectos', false)
+            ->assertSee(__('projects_view_all'), false)
             ->assertSee('Featured Project');
     }
 }
