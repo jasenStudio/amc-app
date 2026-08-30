@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
+use App\Models\Project;
+use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,6 +27,10 @@ class FooterTest extends TestCase
 
     public function test_footer_contains_all_navbar_links(): void
     {
+        Service::factory()->create(['status' => 'active', 'featured' => true]);
+        Project::factory()->active()->featured()->create();
+        Post::factory()->published()->featured()->create();
+
         $response = $this->get(route('home'));
 
         $response
@@ -33,6 +40,20 @@ class FooterTest extends TestCase
             ->assertSee('href="'.route('home').'#contact"', false)
             ->assertSee('href="'.route('projects').'"', false)
             ->assertSee('href="'.route('blog').'"', false);
+    }
+
+    public function test_footer_hides_section_links_when_no_featured_content(): void
+    {
+        $html = $this->get(route('home'))->getContent();
+
+        preg_match('/<footer.*?<\/footer>/s', $html, $matches);
+        $footer = $matches[0] ?? $html;
+
+        $this->assertStringContainsString('href="'.route('home').'#about"', $footer);
+        $this->assertStringContainsString('href="'.route('home').'#contact"', $footer);
+        $this->assertStringNotContainsString('href="'.route('home').'#services"', $footer);
+        $this->assertStringNotContainsString('href="'.route('projects').'"', $footer);
+        $this->assertStringNotContainsString('href="'.route('blog').'"', $footer);
     }
 
     public function test_footer_contains_social_icons(): void

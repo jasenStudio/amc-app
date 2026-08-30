@@ -34,9 +34,15 @@
                     'active' => request()->routeIs('about.mission'),
                 ],
             ]" />
-        <x-navbar.link href="{{ route('home') }}#services" :label="__('Servicios')" section="services" />
-        <x-navbar.link href="{{ route('home') }}#projects" :label="__('Proyectos')" section="projects" />
-        <x-navbar.link href="{{ route('home') }}#blog" :label="__('Blog')" section="blog" />
+        @if ($hasFeaturedServices)
+            <x-navbar.link href="{{ route('home') }}#services" :label="__('Servicios')" section="services" />
+        @endif
+        @if ($hasFeaturedProjects)
+            <x-navbar.link href="{{ route('home') }}#projects" :label="__('Proyectos')" section="projects" />
+        @endif
+        @if ($hasFeaturedPosts)
+            <x-navbar.link href="{{ route('home') }}#blog" :label="__('Blog')" section="blog" />
+        @endif
         <x-navbar.link href="{{ route('home') }}#contact" :label="__('Contacto')" section="contact" />
         <x-navbar.cta href="{{ route('projects') }}" />
     </nav>
