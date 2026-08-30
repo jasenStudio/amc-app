@@ -13,8 +13,14 @@
                 'active' => request()->routeIs('about.mission'),
             ],
         ]" />
-    <x-navbar.link href="{{ route('home') }}#services" :label="__('Servicios')" section="services" data-theme="light" />
-    <x-navbar.link href="{{ route('home') }}#projects" :label="__('Proyectos')" section="projects" data-theme="light" />
-    <x-navbar.link href="{{ route('home') }}#blog" :label="__('Blog')" section="blog" data-theme="light" />
+    @if ($hasFeaturedServices)
+        <x-navbar.link href="{{ route('home') }}#services" :label="__('Servicios')" section="services" data-theme="light" />
+    @endif
+    @if ($hasFeaturedProjects)
+        <x-navbar.link href="{{ route('home') }}#projects" :label="__('Proyectos')" section="projects" data-theme="light" />
+    @endif
+    @if ($hasFeaturedPosts)
+        <x-navbar.link href="{{ route('home') }}#blog" :label="__('Blog')" section="blog" data-theme="light" />
+    @endif
     <x-navbar.link href="{{ route('home') }}#contact" :label="__('Contacto')" section="contact" />
 </nav>

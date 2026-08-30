@@ -15,14 +15,18 @@
                     class="rounded-md bg-amc-orange-text px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
                     {{ __('Volver al inicio') }}
                 </a>
+                @if ($hasFeaturedServices)
                 <a href="{{ route('services') }}"
                     class="rounded-md border border-amc-blue/20 bg-white px-6 py-3 text-sm font-semibold text-amc-blue transition hover:border-amc-blue/30 hover:bg-amc-gray-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
                     {{ __('Ver servicios') }}
                 </a>
+                @endif
+                @if ($hasFeaturedPosts)
                 <a href="{{ route('blog') }}"
                     class="rounded-md border border-amc-blue/20 bg-white px-6 py-3 text-sm font-semibold text-amc-blue transition hover:border-amc-blue/30 hover:bg-amc-gray-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
                     {{ __('Ir al blog') }}
                 </a>
+                @endif
                 <a href="{{ route('home') }}#contact"
                     class="text-sm font-semibold text-amc-orange-text transition hover:text-amc-orange-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2">
                     {{ __('Contáctanos') }} <span aria-hidden="true">&rarr;</span>

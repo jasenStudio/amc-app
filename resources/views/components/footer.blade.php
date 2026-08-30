@@ -35,15 +35,21 @@
                 <li><a href="{{ route('home') }}#about"
                         class="text-white/80 transition hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">{{ __('Nosotros') }}</a>
                 </li>
+                @if ($hasFeaturedServices)
                 <li><a href="{{ route('home') }}#services"
                         class="text-white/80 transition hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">{{ __('Servicios') }}</a>
                 </li>
+                @endif
+                @if ($hasFeaturedProjects)
                 <li><a href="{{ route('projects') }}"
                         class="text-white/80 transition hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">{{ __('Proyectos') }}</a>
                 </li>
+                @endif
+                @if ($hasFeaturedPosts)
                 <li><a href="{{ route('blog') }}"
                         class="text-white/80 transition hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">{{ __('Blog') }}</a>
                 </li>
+                @endif
                 <li><a href="{{ route('home') }}#contact"
                         class="text-white/80 transition hover:text-amc-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amc-orange focus-visible:ring-offset-2 focus-visible:ring-offset-amc-blue">{{ __('Contacto') }}</a>
                 </li>

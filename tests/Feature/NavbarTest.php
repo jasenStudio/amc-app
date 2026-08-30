@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
+use App\Models\Project;
+use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -9,8 +12,17 @@ class NavbarTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function seedFeaturedContent(): void
+    {
+        Service::factory()->create(['status' => 'active', 'featured' => true]);
+        Project::factory()->active()->featured()->create();
+        Post::factory()->published()->featured()->create();
+    }
+
     public function test_home_renders_the_responsive_navigation(): void
     {
+        $this->seedFeaturedContent();
+
         $response = $this->get(route('home'));
 
         $response
@@ -55,6 +67,8 @@ class NavbarTest extends TestCase
 
     public function test_home_sections_link_to_their_dedicated_pages(): void
     {
+        $this->seedFeaturedContent();
+
         $response = $this->get(route('home'));
 
         $response
@@ -95,5 +109,31 @@ class NavbarTest extends TestCase
             ->assertOk()
             ->assertSee('href="'.route('home').'"', false)
             ->assertDontSee('href="#hero"', false);
+    }
+
+    public function test_navbar_hides_section_links_when_no_featured_content(): void
+    {
+        $response = $this->get(route('home'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('home').'#about"', false)
+            ->assertSee('href="'.route('home').'#contact"', false)
+            ->assertDontSee('href="'.route('home').'#services"', false)
+            ->assertDontSee('href="'.route('home').'#projects"', false)
+            ->assertDontSee('href="'.route('home').'#blog"', false);
+    }
+
+    public function test_navbar_shows_section_links_when_featured_content_exists(): void
+    {
+        $this->seedFeaturedContent();
+
+        $response = $this->get(route('home'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('home').'#services"', false)
+            ->assertSee('href="'.route('home').'#projects"', false)
+            ->assertSee('href="'.route('home').'#blog"', false);
     }
 }
