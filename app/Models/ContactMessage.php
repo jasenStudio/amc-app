@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $message
  * @property string|null $ip
  * @property string|null $user_agent
+ * @property Carbon|null $privacy_accepted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -31,6 +32,7 @@ class ContactMessage extends Model
         'message',
         'ip',
         'user_agent',
+        'privacy_accepted_at',
     ];
 
     /**

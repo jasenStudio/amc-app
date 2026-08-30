@@ -4,6 +4,7 @@ namespace App\Actions\Images;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -25,6 +26,10 @@ class UploadImageAction
 
     public const MIN_HEIGHT = 675;
 
+    public const GALLERY_MIN_WIDTH = 640;
+
+    public const GALLERY_MIN_HEIGHT = 480;
+
     /**
      * @var array<int, string>
      */
@@ -36,19 +41,32 @@ class UploadImageAction
      * @param  string  $basePath  Relative directory inside the disk (e.g. `blog/webp`).
      * @param  string|null  $slugHint  Optional semantic hint derived from a title or context.
      * @param  string  $disk  Laravel filesystem disk name.
-     * @param  bool  $enforceMinDimensions  Whether to enforce MIN_WIDTH/MIN_HEIGHT constraints.
+     * @param  int|null  $minWidth  Minimum width. Pass null (with $minHeight) to skip the minimum-dimensions check.
+     * @param  int|null  $minHeight  Minimum height. Pass null (with $minWidth) to skip the minimum-dimensions check.
+     * @param  string  $minRule  How to compare dimensions against the minimum: `both` requires both axes to meet
+     *                           their respective minimum; `min` requires only `min(width, height)` to meet
+     *                           `min($minWidth, $minHeight)` (orientation-agnostic).
      * @return array{thumb: string, full: string, width: int, height: int} Relative paths inside the disk.
      *
      * @throws RuntimeException When validation fails.
+     * @throws InvalidArgumentException When $minRule is not `both` or `min`.
      */
     public function __invoke(
         UploadedFile $file,
         string $basePath,
         ?string $slugHint = null,
         string $disk = 'public',
-        bool $enforceMinDimensions = true,
+        ?int $minWidth = self::MIN_WIDTH,
+        ?int $minHeight = self::MIN_HEIGHT,
+        string $minRule = 'both',
     ): array {
-        $this->validate($file, $enforceMinDimensions);
+        if (! in_array($minRule, ['both', 'min'], true)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid minRule "%s". Expected "both" or "min".', $minRule)
+            );
+        }
+
+        $this->validate($file, $minWidth, $minHeight, $minRule);
 
         $basename = $this->generateBasename($slugHint);
 
@@ -63,7 +81,7 @@ class UploadImageAction
     /**
      * @throws RuntimeException
      */
-    private function validate(UploadedFile $file, bool $enforceMinDimensions): void
+    private function validate(UploadedFile $file, ?int $minWidth, ?int $minHeight, string $minRule): void
     {
         if ($file->getSize() > self::MAX_BYTES) {
             throw new RuntimeException(
@@ -85,15 +103,8 @@ class UploadImageAction
 
         [$width, $height] = $dimensions;
 
-        if ($enforceMinDimensions && ($width < self::MIN_WIDTH || $height < self::MIN_HEIGHT)) {
-            throw new RuntimeException(
-                __('Image dimensions (:widthx:height) are below the minimum (:min_widthx:min_height).', [
-                    'width' => $width,
-                    'height' => $height,
-                    'min_width' => self::MIN_WIDTH,
-                    'min_height' => self::MIN_HEIGHT,
-                ])
-            );
+        if ($minWidth !== null && $minHeight !== null) {
+            $this->assertMinDimensions($width, $height, $minWidth, $minHeight, $minRule);
         }
 
         if ($width > self::MAX_WIDTH || $height > self::MAX_HEIGHT) {
@@ -103,6 +114,27 @@ class UploadImageAction
                     'height' => $height,
                     'max_width' => self::MAX_WIDTH,
                     'max_height' => self::MAX_HEIGHT,
+                ])
+            );
+        }
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    private function assertMinDimensions(int $width, int $height, int $minWidth, int $minHeight, string $minRule): void
+    {
+        $violated = $minRule === 'min'
+            ? min($width, $height) < min($minWidth, $minHeight)
+            : $width < $minWidth || $height < $minHeight;
+
+        if ($violated) {
+            throw new RuntimeException(
+                __('Image dimensions (:widthx:height) are below the minimum (:min_widthx:min_height).', [
+                    'width' => $width,
+                    'height' => $height,
+                    'min_width' => $minWidth,
+                    'min_height' => $minHeight,
                 ])
             );
         }

@@ -16,17 +16,21 @@
     </div>
 
     <form wire:submit="save" class="space-y-6 w-full">
+        <x-dashboard.form-error-summary />
+
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="space-y-6 lg:col-span-6">
                 <div class="space-y-2">
-                    <flux:input wire:model.live.debounce.500ms="name" :label="__('Name')" required autofocus
-                        data-test="tag-name" />
+                    <flux:input wire:model.live.debounce.500ms="name" :label="__('Name')" autofocus
+                        :label:badge="__('required_field')" data-test="tag-name" />
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex items-end gap-2">
                         <div class="flex-1">
-                            <flux:input wire:model="slug" :label="__('Slug')" required data-test="tag-slug" />
+                            <flux:input wire:model.live.blur="slug" :label="__('Slug')"
+                                :label:badge="__('required_field')" :description="__('tag_url_validation_message')"
+                                data-test="tag-slug" />
                         </div>
                         @if ($tag)
                             <flux:button type="button" variant="ghost" size="sm" wire:click="regenerateSlug"
@@ -35,8 +39,6 @@
                             </flux:button>
                         @endif
                     </div>
-                    <p class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('tag_url_validation_message') }}</p>
                 </div>
 
                 <div class="space-y-4">

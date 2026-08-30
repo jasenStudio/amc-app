@@ -7,18 +7,23 @@
     </div>
 
     <form wire:submit="save" class="space-y-6 w-full">
+        <x-dashboard.form-error-summary />
 
-        <flux:input wire:model="name" :label="__('Name')" required autofocus data-test="user-name" />
+        <flux:input wire:model.live.blur="name" :label="__('Name')" autofocus :label:badge="__('required_field')"
+            data-test="user-name" />
 
-        <flux:input wire:model="email" :label="__('Email')" type="email" required data-test="user-email" />
+        <flux:input wire:model.live.blur="email" :label="__('Email')" type="email" :label:badge="__('required_field')"
+            data-test="user-email" />
 
-        <flux:select wire:model="role" :label="__('Role')" :disabled="$isSelf" data-test="user-role">
+        <flux:select wire:model="role" :label="__('Role')" :label:badge="__('required_field')" :disabled="$isSelf"
+            data-test="user-role">
             @foreach ($availableRoles as $r)
                 <flux:select.option :value="$r->value">{{ $r->label() }}</flux:select.option>
             @endforeach
         </flux:select>
 
-        <flux:input wire:model="password" :label="__('Password')" type="password" :required="! $this->user"
+        <flux:input wire:model.live.blur="password" :label="__('Password')" type="password"
+            :label:badge="$this->user ? null : __('required_field')"
             :placeholder="$this->user ? __('Leave blank to keep current password') : ''" data-test="user-password" />
 
         <div class="flex items-center justify-end gap-3">

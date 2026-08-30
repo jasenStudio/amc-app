@@ -48,7 +48,7 @@ class FooterTest extends TestCase
         $response = $this->get(route('home'));
 
         $response
-            ->assertSee('href="https://drive.google.com/file/d/1PL4N41EoJhcPEcnnm1OoOX8hHQPykDRw/view?usp=sharing"', false)
+            ->assertSee('href="'.url('/portafolio').'"', false)
             ->assertSee('target="_blank"', false)
             ->assertSee('rel="noopener noreferrer"', false);
     }
@@ -91,5 +91,14 @@ class FooterTest extends TestCase
             ->assertOk()
             ->assertSee('AMC Gestión de Riesgos SAS', false)
             ->assertSee('Navegación', false);
+    }
+
+    public function test_footer_contains_privacy_policy_link(): void
+    {
+        $response = $this->get(route('home'));
+
+        $response
+            ->assertSee('href="'.route('privacy.policy').'"', false)
+            ->assertSee('Política de Tratamiento de Datos Personales', false);
     }
 }

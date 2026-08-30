@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
@@ -20,16 +21,20 @@ class ServiceForm extends Component
 
     public ?Service $service = null;
 
+    #[Validate]
     public string $title = '';
 
+    #[Validate]
     public string $slug = '';
 
+    #[Validate]
     public string $description = '';
 
     public string $excerpt = '';
 
     public ?string $price = null;
 
+    #[Validate]
     public string $status = 'active';
 
     public bool $featured = false;
@@ -133,7 +138,7 @@ class ServiceForm extends Component
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    protected function rules(): array
     {
         $slugRules = ['required', 'string', 'max:255'];
         if ($this->service !== null) {

@@ -7,10 +7,10 @@
                 <div class="relative group aspect-square">
                     <img src="{{ $image['url'] }}" alt="{{ $image['alt'] ?? '' }}"
                         class="w-full h-full object-cover rounded-md">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div
+                        class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <flux:button type="button" variant="ghost" icon="trash"
-                            wire:click="removeImage({{ $index }})"
-                            class="text-white"
+                            wire:click="removeImage({{ $index }})" class="text-white"
                             wire:loading.attr="disabled">
                             {{ __('Remove') }}
                         </flux:button>
@@ -28,8 +28,7 @@
                     <span class="text-xs text-zinc-500">({{ count($images) }}/{{ $maxFiles }})</span>
                 @endif
             </span>
-            <input type="file" wire:model="uploads" accept="image/png,image/jpeg,image/webp"
-                multiple
+            <input type="file" wire:model="uploads" accept="image/png,image/jpeg,image/webp" multiple
                 class="mt-1 block w-full text-sm text-zinc-500 dark:text-zinc-400
                        file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
                        file:text-sm file:font-semibold file:bg-zinc-100 file:text-zinc-700

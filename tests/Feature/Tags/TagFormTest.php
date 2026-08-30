@@ -207,4 +207,60 @@ class TagFormTest extends TestCase
             ->assertOk()
             ->assertSee(route('dashboard.tags.edit', $tag), false);
     }
+
+    public function test_required_badge_is_rendered_for_required_fields(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = Livewire::actingAs($admin)
+            ->test(TagForm::class)
+            ->html();
+
+        // Cada campo requerido renderiza el badge en la pill del label y como
+        // atributo `label:badge` reenviado al control (2 apariciones por campo).
+        $this->assertSame(4, substr_count($html, __('required_field')));
+    }
+
+    public function test_slug_description_hint_is_rendered(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(TagForm::class)
+            ->assertSee(__('tag_url_validation_message'));
+    }
+
+    public function test_error_summary_renders_after_invalid_submit(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(TagForm::class)
+            ->set('name', '')
+            ->set('slug', '')
+            ->call('save')
+            ->assertHasErrors()
+            ->assertSee(__('review_form_errors'));
+    }
+
+    public function test_real_time_validation_on_name_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(TagForm::class)
+            ->set('name', '')
+            ->assertHasErrors(['name' => 'required']);
+    }
+
+    public function test_real_time_validation_on_slug_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(TagForm::class)
+            ->set('name', 'Laravel')
+            ->set('slug', '')
+            ->assertHasErrors(['slug' => 'required']);
+    }
 }

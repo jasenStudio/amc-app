@@ -51,6 +51,12 @@ class SitemapController extends Controller
                 'changefreq' => 'monthly',
                 'priority' => '0.5',
             ],
+            [
+                'loc' => route('privacy.policy'),
+                'lastmod' => $deployDate,
+                'changefreq' => 'yearly',
+                'priority' => '0.3',
+            ],
         ]);
 
         if (Schema::hasTable('services')) {

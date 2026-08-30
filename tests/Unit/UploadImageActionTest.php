@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -197,6 +198,85 @@ class UploadImageActionTest extends TestCase
 
         $this->assertStringStartsWith('blog/webp/body/thumbs/', $paths['thumb']);
         $this->assertStringStartsWith('blog/webp/body/full/', $paths['full']);
+    }
+
+    public function test_default_rule_rejects_narrow_image(): void
+    {
+        $file = UploadedFile::fake()->image('narrow.png', 675, 2000)->size(100);
+
+        $action = app(UploadImageAction::class);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('below the minimum');
+
+        $action($file, 'blog/webp', 'test', $this->disk);
+    }
+
+    public function test_flexible_rule_accepts_min_axis_dimension(): void
+    {
+        $file = UploadedFile::fake()->image('portrait.png', 600, 800)->size(100);
+
+        $action = app(UploadImageAction::class);
+        $paths = $action(
+            $file,
+            'blog/webp',
+            'test',
+            $this->disk,
+            minWidth: UploadImageAction::GALLERY_MIN_WIDTH,
+            minHeight: UploadImageAction::GALLERY_MIN_HEIGHT,
+            minRule: 'min',
+        );
+
+        $this->assertStringStartsWith('blog/webp/full/', $paths['full']);
+    }
+
+    public function test_flexible_rule_rejects_very_small_image(): void
+    {
+        $file = UploadedFile::fake()->image('tiny.png', 200, 150)->size(100);
+
+        $action = app(UploadImageAction::class);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('below the minimum');
+
+        $action(
+            $file,
+            'blog/webp',
+            'test',
+            $this->disk,
+            minWidth: UploadImageAction::GALLERY_MIN_WIDTH,
+            minHeight: UploadImageAction::GALLERY_MIN_HEIGHT,
+            minRule: 'min',
+        );
+    }
+
+    public function test_skips_minimum_check_when_min_dimensions_are_null(): void
+    {
+        $file = UploadedFile::fake()->image('small.png', 320, 240)->size(100);
+
+        $action = app(UploadImageAction::class);
+        $paths = $action(
+            $file,
+            'blog/webp',
+            'test',
+            $this->disk,
+            minWidth: null,
+            minHeight: null,
+        );
+
+        $this->assertStringStartsWith('blog/webp/full/', $paths['full']);
+    }
+
+    public function test_invalid_min_rule_throws(): void
+    {
+        $file = UploadedFile::fake()->image('cover.png', 1600, 900)->size(100);
+
+        $action = app(UploadImageAction::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid minRule "bogus". Expected "both" or "min".');
+
+        $action($file, 'blog/webp', 'test', $this->disk, minRule: 'bogus');
     }
 
     private function makePng(int $width = 800, int $height = 600): string

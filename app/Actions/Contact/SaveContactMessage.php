@@ -20,6 +20,7 @@ class SaveContactMessage
             'message' => $data['message'],
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent(),
+            'privacy_accepted_at' => $data['privacy_accepted_at'] ?? null,
         ]);
 
         Mail::to('gerencia@amcgestiondelriesgo.com.co')->send(new ContactMessageMail($message));

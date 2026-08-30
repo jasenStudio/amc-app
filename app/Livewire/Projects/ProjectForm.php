@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
@@ -21,20 +22,26 @@ class ProjectForm extends Component
 
     public ?Project $project = null;
 
+    #[Validate]
     public string $title = '';
 
+    #[Validate]
     public string $slug = '';
 
+    #[Validate]
     public string $description = '';
 
     public string $excerpt = '';
 
+    #[Validate]
     public string $client = '';
 
     public ?string $location = null;
 
+    #[Validate]
     public string $date = '';
 
+    #[Validate]
     public string $status = 'active';
 
     public bool $featured = false;
@@ -43,6 +50,7 @@ class ProjectForm extends Component
 
     public string $title_seo = '';
 
+    #[Validate]
     public ?string $video_url = null;
 
     public function mount(int $projectId = 0): void
@@ -146,7 +154,7 @@ class ProjectForm extends Component
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    protected function rules(): array
     {
         $slugRules = ['required', 'string', 'max:255'];
         if ($this->project !== null) {

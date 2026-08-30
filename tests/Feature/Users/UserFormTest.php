@@ -266,4 +266,49 @@ class UserFormTest extends TestCase
         $this->assertNotSame('secret123', $user->password);
         $this->assertTrue(password_verify('secret123', $user->password));
     }
+
+    public function test_required_badge_is_rendered_for_required_fields(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = Livewire::actingAs($admin)
+            ->test(UserForm::class)
+            ->html();
+
+        // Cada campo requerido renderiza el badge en la pill del label y como
+        // atributo `label:badge` reenviado al control (2 apariciones por campo).
+        $this->assertSame(8, substr_count($html, __('required_field')));
+    }
+
+    public function test_error_summary_renders_after_invalid_submit(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(UserForm::class)
+            ->set('name', '')
+            ->call('save')
+            ->assertHasErrors()
+            ->assertSee(__('review_form_errors'));
+    }
+
+    public function test_real_time_validation_on_name_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(UserForm::class)
+            ->set('name', '')
+            ->assertHasErrors(['name' => 'required']);
+    }
+
+    public function test_real_time_validation_on_email_pattern(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(UserForm::class)
+            ->set('email', 'not-an-email')
+            ->assertHasErrors(['email' => 'email']);
+    }
 }

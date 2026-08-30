@@ -19,6 +19,8 @@ class ContactForm extends Component
 
     public string $message = '';
 
+    public bool $privacy_accepted = false;
+
     public bool $submitted = false;
 
     public bool $submitting = false;
@@ -33,6 +35,7 @@ class ContactForm extends Component
             'company' => ['nullable', 'string', 'max:255'],
             'service_id' => ['nullable', 'exists:services,id'],
             'message' => ['required', 'string', 'min:10'],
+            'privacy_accepted' => ['accepted'],
         ];
     }
 
@@ -65,11 +68,12 @@ class ContactForm extends Component
             'company' => $this->company,
             'service_id' => $this->service_id,
             'message' => $this->message,
+            'privacy_accepted_at' => $this->privacy_accepted ? now() : null,
         ]);
 
         $this->submitted = true;
         $this->submitting = false;
-        $this->reset(['name', 'company', 'service_id', 'message']);
+        $this->reset(['name', 'company', 'service_id', 'message', 'privacy_accepted']);
     }
 
     public function render(): View

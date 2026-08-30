@@ -35,6 +35,8 @@ Route::prefix('about')->name('about.')->group(function () {
     Route::view('mission', 'pages::about.mission')->name('mission');
 });
 
+Route::view('politica-de-privacidad', 'pages::privacy.policy')->name('privacy.policy');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('pending-approval', 'pending-approval')->name('pending.approval');
 });

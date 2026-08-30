@@ -200,6 +200,10 @@ h3 {
     padding-top: 20px;
 }
 
+.article-prose-content strong {
+    color: var(--color-amc-orange-text);
+}
+
 .article-prose-content p {
     margin-block-start: 0;
     margin-block-end: 10px;
@@ -207,6 +211,12 @@ h3 {
 
 .article-prose-content img {
     margin-block: 15px;
+}
+
+.prose
+    :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: var(--color-amc-orange-text);
+    font-weight: 600;
 }
 
 @media (min-width: 768px) {

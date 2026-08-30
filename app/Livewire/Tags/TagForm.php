@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
@@ -16,8 +17,10 @@ class TagForm extends Component
 {
     public ?Tag $tag = null;
 
+    #[Validate]
     public string $name = '';
 
+    #[Validate]
     public string $slug = '';
 
     public bool $confirmingDeletion = false;
@@ -97,7 +100,7 @@ class TagForm extends Component
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    protected function rules(): array
     {
         $slugRules = ['required', 'string', 'max:255'];
         if ($this->tag !== null) {

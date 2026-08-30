@@ -480,6 +480,62 @@ class PostFormTest extends TestCase
         $this->assertNotNull($post->published_at);
     }
 
+    public function test_required_badge_is_rendered_for_required_fields(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->html();
+
+        // Cada campo requerido renderiza el badge en la pill del label y como
+        // atributo `label:badge` reenviado al control (2 apariciones por campo).
+        // `body` va directo a <flux:label>, por lo que aporta solo 1.
+        $this->assertSame(7, substr_count($html, __('required_field')));
+    }
+
+    public function test_slug_description_hint_is_rendered(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->assertSee(__('Used in the public URL. Only letters, numbers and dashes.'));
+    }
+
+    public function test_error_summary_renders_after_invalid_submit(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', '')
+            ->call('save')
+            ->assertHasErrors()
+            ->assertSee(__('review_form_errors'));
+    }
+
+    public function test_real_time_validation_on_title_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', '')
+            ->assertHasErrors(['title' => 'required']);
+    }
+
+    public function test_real_time_validation_on_body_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PostForm::class)
+            ->set('title', 'A post')
+            ->set('body', '')
+            ->assertHasErrors(['body' => 'required']);
+    }
+
     private function makePng(int $width = 800, int $height = 600): string
     {
         $path = tempnam(sys_get_temp_dir(), 'png_').'.png';

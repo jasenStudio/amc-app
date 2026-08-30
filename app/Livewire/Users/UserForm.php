@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
@@ -18,12 +19,16 @@ class UserForm extends Component
 {
     public ?User $user = null;
 
+    #[Validate]
     public string $name = '';
 
+    #[Validate]
     public string $email = '';
 
+    #[Validate]
     public string $role = 'pending';
 
+    #[Validate]
     public string $password = '';
 
     public function mount(int $userId = 0): void
@@ -107,7 +112,7 @@ class UserForm extends Component
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    protected function rules(): array
     {
         $emailRules = ['required', 'email', 'max:255'];
         if ($this->user !== null) {

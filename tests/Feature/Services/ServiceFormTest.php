@@ -204,4 +204,59 @@ class ServiceFormTest extends TestCase
             ->call('regenerateSlug')
             ->assertSet('slug', 'updated-title');
     }
+
+    public function test_required_badge_is_rendered_for_required_fields(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = Livewire::actingAs($admin)
+            ->test(ServiceForm::class)
+            ->html();
+
+        // Cada campo requerido renderiza el badge en la pill del label y como
+        // atributo `label:badge` reenviado al control (2 apariciones por campo).
+        $this->assertSame(8, substr_count($html, __('required_field')));
+    }
+
+    public function test_slug_description_hint_is_rendered(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ServiceForm::class)
+            ->assertSee(__('slug_hint'));
+    }
+
+    public function test_error_summary_renders_after_invalid_submit(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ServiceForm::class)
+            ->set('title', '')
+            ->call('save')
+            ->assertHasErrors()
+            ->assertSee(__('review_form_errors'));
+    }
+
+    public function test_real_time_validation_on_title_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ServiceForm::class)
+            ->set('title', '')
+            ->assertHasErrors(['title' => 'required']);
+    }
+
+    public function test_real_time_validation_on_slug_update(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Livewire::actingAs($admin)
+            ->test(ServiceForm::class)
+            ->set('title', 'A service')
+            ->set('slug', '')
+            ->assertHasErrors(['slug' => 'required']);
+    }
 }
