@@ -38,7 +38,7 @@
                 <div class="border-t border-white/15"></div>
                 <div class="mt-4 flex items-center justify-between text-sm text-white/70">
                     <time datetime="{{ $project->date?->toIso8601String() }}">
-                        {{ $project->date?->format('M Y') }}
+                        {{ $project->date?->translatedFormat('d \d\e F \d\e Y') }}
                     </time>
                     <span
                         class="text-xl leading-none text-amc-orange-text transition-transform group-hover:translate-x-1"
