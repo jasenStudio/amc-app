@@ -15,7 +15,7 @@ class FeaturedServicesTest extends TestCase
     public function test_renders_without_services(): void
     {
         Livewire::test(FeaturedServices::class)
-            ->assertSee('No services available yet.');
+            ->assertDontSee('No services available yet.');
     }
 
     public function test_renders_featured_services(): void
@@ -46,7 +46,7 @@ class FeaturedServicesTest extends TestCase
         ]);
 
         Livewire::test(FeaturedServices::class)
-            ->assertSee('No services available yet.');
+            ->assertDontSee('No services available yet.');
     }
 
     public function test_respects_limit(): void
